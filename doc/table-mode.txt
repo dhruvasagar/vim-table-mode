@@ -1,0 +1,130 @@
+*table-mode.txt*	Table Mode for easy table formatting. v1.0
+===============================================================================
+	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
+				 VERSION 1.0
+===============================================================================
+CONTENTS						*table-mode-contents*
+
+	1. Introduction .................... |table-mode-introduction|
+	2. Requirements .................... |table-mode-requirements|
+	3. Getting Started ................. |table-mode-getting-started|
+	4. Options ......................... |table-mode-options|
+	5. Mappings ........................ |table-mode-mappings|
+	6. Commands ........................ |table-mode-commands|
+	7. Contributing .................... |table-mode-contributing|
+	8. Report Issues ................... |table-mode-report-issues|
+
+===============================================================================
+INTRODUCTION					*table-mode-introduction*
+
+Table Mode is simple plugin that makes building tables in vim a breeze. It is
+inspired from tpope's auto aligning script for creating tables in vim - 
+https://gist.github.com/tpope/287147, which in turn utilizes the Tabular
+Plugin.
+
+===============================================================================
+REQUIREMENTS					*table-mode-requirements*
+
+This depends on the Tabular plugin - https://github.com/godlygeek/tabular,
+make sure it is installed and loaded.
+
+===============================================================================
+GETTING STARTED					*table-mode-getting-started*
+
+Using Table Mode is dead simple. You simply start typing on a new line with
+the table separator - |g:table-mode-separator|, and you just type away! The
+plugin does the rest automatically for you as you type. With each additional
+separator you add, it aligns the table properly, without having to do
+anything else.
+
+The table mode is disabled by default and you can enter table mode using
+|table-mode-toggle-map| or you can also enable it permanently using
+|g:table-mode-always-active| if you wish.
+
+===============================================================================
+OPTIONS							*table-mode-options*
+
+Overview:
+	|table-mode-options-loaded| .......... Disable the plugin
+	|table-mode-options-border| .......... Enable border
+	|table-mode-options-corner| .......... Set corner character
+	|table-mode-options-separator| ....... Set separator character
+	|table-mode-options-fillchar| ........ Set table fillchar character
+	|table-mode-options-toggle-map| ...... Set table mode toggle mapping
+	|table-mode-options-always-active| ... Set table mode to always enabled
+
+g:table_mode_loaded				*table-mode-options-loaded*
+	Use this option to disable the plugin: >
+		let g:table_mode_loaded = 1
+<
+
+g:table_mode_border				*table-mode-options-border*
+	Use this option to enable / disable table border: >
+		let g:table_mode_border = 1
+<
+
+g:table_mode_corner				*table-mode-options-corner*
+	Use this option to define the table corner character: >
+		let g:table_mode_corner = '+'
+<
+g:table_mode_separator				*table-mode-options-separator*
+	Use this option to define the table column separator character: >
+		let g:table_mode_separator = '|'
+<
+	This option also defines the trigger to be used to start creating a
+	table row in insert mode.
+
+g:table_mode_fillchar				*table-mode-options-fillchar*
+	Use this option to define the table border fill character: >
+		let g:table_mode_fillchar = '-'
+<
+
+g:table_mode_toggle_map				*table-mode-options-toggle-map*
+	Use this option to define the mapping for toggling the table mode: >
+		let g:table_mode_toggle_map = '<Leader>tm'
+<
+	Read |table-mode-mappings-toggle| for more info.
+
+g:table_mode_always_active			*table-mode-options-always-active*
+	Use this option to permanently enable the table mode: >
+		let g:table_mode_always_active = 0
+<
+	This will trigger table creation once you type |table-mode-separator|
+	as long as it's the first character on the line, which can be
+	annoying. That's why I would recommend you to instead use
+	|table-mode-mappings-toggle| to enable / disable toggle mode when
+	needed.
+
+===============================================================================
+MAPPINGS						*table-mode-mappings*
+
+						*table-mode-mappings-toggle*
+<Leader>tm	Enable table mode for the current buffer. You can change this
+		using the |toggle-mode-options-toggle-map| option. This is
+		applicable only if |table-mode-always-active| is not set.
+
+						*table-mode-mappings-trigger*
+|		Trigger table creation in table mode. You can change this
+		using the |toggle-mode-options-separator| option.
+
+===============================================================================
+COMMANDS						*table-mode-commands*
+
+						*table-mode-commands-toggle*
+:TableModeToggle
+	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle| 
+
+===============================================================================
+CONTRIBUTING						*table-mode-contributing*
+
+If you want to take a stab at it, by all means, send me a pull request on
+Github (http://github.com/dhruvasagar/table-mode.git) or get in touch with me
+directly via e-mail at dhruva 'dot' sagar 'at' gmail.com.
+
+===============================================================================
+REPORT ISSUES					      *table-mode-report-issues*
+
+If you discover any issues, please report them at
+http://github.com/dhruvasagar/table-mode/issues.
+
+vim:tw=78:ts=8:ft=help:norl:
