@@ -114,6 +114,13 @@ COMMANDS						*table-mode-commands*
 :TableModeToggle
 	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle| 
 
+						*table-mode-commands-enable*
+:TableModeEnable
+	Enables Table Mode.
+
+						*table-mode-commands-disable*
+:TableModeDisable
+	Disables Table Mode.
 ===============================================================================
 CONTRIBUTING						*table-mode-contributing*
 

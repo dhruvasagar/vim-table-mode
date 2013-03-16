@@ -75,7 +75,15 @@ function! s:FillTableBorder()
   call cursor(current_line, current_col)
 endfunction
 
-function! s:ToggleTableMode()
+function! s:TableModeEnable()
+  let b:table_mode_active = 1
+endfunction
+
+function! s:TableModeDisable()
+  let b:table_mode_active = 0
+endfunction
+
+function! s:TableModeToggle()
   if g:table_mode_always_active
     return 1
   endif
@@ -94,7 +102,6 @@ function! s:IsTableModeActive()
 endfunction
 
 function! s:Tableize()
-  let p = '^\s*' . g:table_mode_separator . '[^' . g:table_mode_separator . ']*' . g:table_mode_separator . '\s*$'
   if s:IsTableModeActive() && exists(':Tabularize') && getline('.') =~# ('^\s*' . g:table_mode_separator)
     let column = strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
@@ -112,8 +119,10 @@ endfunction
 
 if !g:table_mode_always_active
   exec "nnoremap <silent> " . g:table_mode_toggle_map .
-       \ " <Esc>:call <SID>ToggleTableMode()<CR>"
-  command! -nargs=0 TableModeToggle call s:ToggleTableMode()
+       \ " <Esc>:call <SID>TableModeToggle()<CR>"
+  command! -nargs=0 TableModeToggle call s:TableModeToggle()
+  command! -nargs=0 TableModeEnable call s:TableModeEnable()
+  command! -nargs=0 TableModeDisable call s:TableModeDisable()
 endif
 exec "inoremap <silent> " . s:table_mode_separator_map . ' ' .
      \ s:table_mode_separator_map . "<Esc>:call <SID>Tableize()<CR>a"
