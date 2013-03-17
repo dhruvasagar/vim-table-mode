@@ -38,9 +38,7 @@ for further information.
 
 Demo:
 
-<iframe width="420" height="315"
-src="http://www.youtube.com/embed/sK2IH1hiDkw?rel=0" frameborder="0"
-allowfullscreen></iframe>
+<a href="http://www.youtube.com/watch?v=sK2IH1hiDkw"><img src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
 
 # Credits
 
