@@ -32,13 +32,16 @@ completed, formatted and aligned automatically.
 
 Since this could lead to unwanted behavior I have disabled table mode by
 default. You would have to use `:TableModeToggle` command or the table mode
-toggle mapping, which is `<Leader>tm` by default. This is on a per buffer basis
-and so it does not mess up unless enabled explicitly. Please read `:h table-mode`
+toggle mapping, which is `<Leader>tm` by default to toggle the table mode or
+you can directly use `:TableModeEnable` and `:TableModeDisable` to enable or
+disable the table mode. This is on a per buffer basis and so it does not cause
+any unusual behavior unless enabled explicitly. Please read `:h table-mode`
 for further information.
 
 Demo:
 
-<a href="http://www.youtube.com/watch?v=sK2IH1hiDkw"><img src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
+<a href="http://www.youtube.com/watch?v=sK2IH1hiDkw"><img
+src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
 
 # Credits
 
