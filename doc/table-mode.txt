@@ -2,6 +2,9 @@
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
 				 VERSION 1.0
+
+		Author: Dhruva Sagar <http://dhruvasagar.com/>
+		License: MIT <http://opensource.org/licenses/MIT/>
 ===============================================================================
 CONTENTS						*table-mode-contents*
 
@@ -135,4 +138,4 @@ REPORT ISSUES					      *table-mode-report-issues*
 If you discover any issues, please report them at
 http://github.com/dhruvasagar/table-mode/issues.
 
-vim:tw=78:ts=8:ft=help:norl:
+ vim:tw=78:ts=8:ft=help:norl:
