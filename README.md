@@ -40,3 +40,13 @@ Demo:
 
 <img src="https://raw.github.com/dhruvasagar/vim-table-mode/master/demo.gif"
 height="500" />
+
+# Credits
+
+I must thank Tim Pope for inspiration. The initial concept was created by him
+named cucumbertables.vim and can be found <a
+href="https://gist.github.com/tpope/287147">here</a>.
+
+Also a shout out to godlygeek who developed the incredible <a
+href="http://github.com/godlygeek/tabular">Tabular</a> plugin which does most
+of the grunt work behind the scenes.
