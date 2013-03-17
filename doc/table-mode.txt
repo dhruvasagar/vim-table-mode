@@ -89,11 +89,12 @@ g:table_mode_always_active			*table-mode-options-always-active*
 	Use this option to permanently enable the table mode: >
 		let g:table_mode_always_active = 0
 <
-	This will trigger table creation once you type |table-mode-separator|
-	as long as it's the first character on the line, which can be
-	annoying. That's why I would recommend you to instead use
-	|table-mode-mappings-toggle| to enable / disable toggle mode when
-	needed.
+	This will trigger table creation once you type the
+	|table-mode-options-separator| as long as it's the first character on
+	the line, which can be annoying. I recommend you to instead use the
+	|table-mode-mappings-toggle| or |table-mode-commands-toggle| to toggle
+	the table mode or |table-mode-commands-enable| to enable and
+	|table-mode-commands-disable| to disable mode when needed.
 
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
@@ -101,7 +102,7 @@ MAPPINGS						*table-mode-mappings*
 						*table-mode-mappings-toggle*
 <Leader>tm	Enable table mode for the current buffer. You can change this
 		using the |toggle-mode-options-toggle-map| option. This is
-		applicable only if |table-mode-always-active| is not set.
+		applicable only if |table-mode-options-always-active| is not set.
 
 						*table-mode-mappings-trigger*
 |		Trigger table creation in table mode. You can change this

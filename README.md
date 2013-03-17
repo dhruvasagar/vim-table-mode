@@ -35,3 +35,8 @@ default. You would have to use `:TableModeToggle` command or the table mode
 toggle mapping, which is `<Leader>tm` by default. This is on a per buffer basis
 and so it does not mess up unless enabled explicitly. Please read `:h table-mode`
 for further information.
+
+Demo:
+
+<img src="https://raw.github.com/dhruvasagar/vim-table-mode/master/demo.gif"
+height="500" />

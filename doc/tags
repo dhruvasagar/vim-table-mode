@@ -1,4 +1,6 @@
 table-mode-commands	table-mode.txt	/*table-mode-commands*
+table-mode-commands-disable	table-mode.txt	/*table-mode-commands-disable*
+table-mode-commands-enable	table-mode.txt	/*table-mode-commands-enable*
 table-mode-commands-toggle	table-mode.txt	/*table-mode-commands-toggle*
 table-mode-contents	table-mode.txt	/*table-mode-contents*
 table-mode-contributing	table-mode.txt	/*table-mode-contributing*
