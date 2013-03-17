@@ -38,8 +38,9 @@ for further information.
 
 Demo:
 
-<img src="https://raw.github.com/dhruvasagar/vim-table-mode/master/demo.gif"
-height="500" />
+<iframe width="420" height="315"
+src="http://www.youtube.com/embed/sK2IH1hiDkw?rel=0" frameborder="0"
+allowfullscreen></iframe>
 
 # Credits
 
