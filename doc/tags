@@ -1,3 +1,7 @@
+:TableModeDisable	table-mode.txt	/*:TableModeDisable*
+:TableModeEnable	table-mode.txt	/*:TableModeEnable*
+:TableModeToggle	table-mode.txt	/*:TableModeToggle*
+:Tableize	table-mode.txt	/*:Tableize*
 table-mode-commands	table-mode.txt	/*table-mode-commands*
 table-mode-commands-disable	table-mode.txt	/*table-mode-commands-disable*
 table-mode-commands-enable	table-mode.txt	/*table-mode-commands-enable*
