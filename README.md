@@ -4,10 +4,10 @@ An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
 ### Change Log
-version 1.1 :
+#### version 1.1 :
 * Added Tableize command and mapping to convert existing content into a table.
 
-version 1.0 :
+#### version 1.0 :
 * First stable release, create tables as you type.
 
 # Installation
@@ -53,8 +53,7 @@ src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
 # Credits
 
 I must thank Tim Pope for inspiration. The initial concept was created by him
-named cucumbertables.vim and can be found <a
-href="https://gist.github.com/tpope/287147">here</a>.
+named <a href="https://gist.github.com/tpope/287147">cucumbertables.vim</a>.
 
 Also a shout out to godlygeek who developed the incredible <a
 href="http://github.com/godlygeek/tabular">Tabular</a> plugin which does most
