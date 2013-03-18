@@ -109,9 +109,7 @@ function! s:IsTableModeActive()
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line)
-  if a:line
-    execute 'silent! ' . a:line . 's/^\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/ge'
-  endif
+  execute 'silent! ' . a:line . 's/^\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/ge'
 endfunction
 
 function! s:Tableize()
