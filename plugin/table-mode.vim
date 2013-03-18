@@ -109,7 +109,7 @@ function! s:IsTableModeActive()
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line)
-  if getline(a:line) =~# g:table_mode_delimiter
+  if a:line
     execute 'silent! ' . a:line . 's/^\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/ge'
   endif
 endfunction
