@@ -3,8 +3,12 @@
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
-Change Log for v1.1
-   Added Tableize command and mapping to convert existing content into a table.
+### Change Log
+version 1.1 :
+* Added Tableize command and mapping to convert existing content into a table.
+
+version 1.0 :
+* First stable release, create tables as you type.
 
 # Installation
 
