@@ -6,7 +6,7 @@
 " Notes:         This was inspired by Tim Pope's cucumbertables.vim
 "                (https://gist.github.com/tpope/287147)
 " =============================================================================
-"
+
 if exists('g:table_mode_loaded')
   finish
 endif
@@ -143,6 +143,8 @@ endfunction
 function! s:TableizeRange() range
   call s:Tableizeline(a:firstline)
   undojoin
+  " The first one causes 2 extra lines for top & bottom border while the
+  " following lines cause only 1 for the bottom border.
   let lnum = a:firstline+3
   while lnum <= (a:firstline + (a:lastline - a:firstline+1)*2)
     call s:Tableizeline(lnum)
