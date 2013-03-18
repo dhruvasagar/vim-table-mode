@@ -56,24 +56,24 @@ function! s:CountSeparator(line, separator)
   return s:strlen(substitute(getline(a:line), '[^' . a:separator . ']', '', 'g'))
 endfunction
 
-function! s:UpdateLineBorder(...)
-  let cline = a:0 ? a:1 : line('.')
+function! s:UpdateLineBorder(line)
+  let cline = a:line
   let hf = '^\s*' . g:table_mode_corner . '[' . g:table_mode_corner . ' ' . g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
   let curr_line_count = s:CountSeparator(cline, g:table_mode_separator)
 
   if getline(cline-1) =~# hf
     let prev_line_count = s:CountSeparator(cline-1, g:table_mode_corner)
-    if prev_line_count < curr_line_count
+    if curr_line_count > prev_line_count
       exec 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
     endif
   else
     call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
-    let cline = a:0 ? (a:1+1) : line('.')
+    let cline = a:line + 1
   endif
 
   if getline(cline+1) =~# hf
     let next_line_count = s:CountSeparator(cline+1, g:table_mode_corner)
-    if next_line_count < curr_line_count
+    if curr_line_count > next_line_count
       exec 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
     end
   else
@@ -123,7 +123,7 @@ function! s:Tableize()
     let column = s:strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border
-      call s:UpdateLineBorder()
+      call s:UpdateLineBorder(line('.'))
     endif
     exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
     if g:table_mode_border
