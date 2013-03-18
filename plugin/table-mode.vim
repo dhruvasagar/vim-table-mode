@@ -46,8 +46,14 @@ function! s:error(str)
   let v:errmsg = a:str
 endfunction
 
+" For counting multibyte characters accurately, see :h strlen() for more
+" details
+function! s:strlen(text)
+  return strlen(substitute(a:text, '.', 'x', 'g'))
+endfunction
+
 function! s:CountSeparator(line, separator)
-  return strlen(substitute(getline(a:line), '[^' . a:separator . ']', '', 'g'))
+  return s:strlen(substitute(getline(a:line), '[^' . a:separator . ']', '', 'g'))
 endfunction
 
 function! s:UpdateLineBorder(...)
@@ -78,7 +84,7 @@ endfunction
 function! s:FillTableBorder()
   let current_col = col('.')
   let current_line = line('.')
-  execute 'silent! %s/' . g:table_mode_corner . ' \zs\([\' . g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' . g:table_mode_fillchar . '", strlen(submatch(0)))/ge'
+  execute 'silent! %s/' . g:table_mode_corner . ' \zs\([' . g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' . g:table_mode_fillchar . '", s:strlen(submatch(0)))/g'
   call cursor(current_line, current_col)
 endfunction
 
@@ -109,13 +115,13 @@ function! s:IsTableModeActive()
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line)
-  execute 'silent! ' . a:line . 's/^\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/ge'
+  execute 'silent! ' . a:line . 's/^\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/g'
 endfunction
 
 function! s:Tableize()
   if s:IsTableModeActive() && exists(':Tabularize') && getline('.') =~# ('^\s*' . g:table_mode_separator)
-    let column = strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
-    let position = strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
+    let column = s:strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
+    let position = s:strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border
       call s:UpdateLineBorder()
     endif
