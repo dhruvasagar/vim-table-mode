@@ -166,3 +166,4 @@ exec "inoremap <silent> " . s:table_mode_separator_map . ' ' .
 
 command! -nargs=0 -range Tableize <line1>,<line2>call s:TableizeRange()
 exec "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
+exec "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
