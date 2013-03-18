@@ -1,7 +1,7 @@
 *table-mode.txt*	Table Mode for easy table formatting. v1.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 1.0
+				 VERSION 1.1
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -55,6 +55,7 @@ Overview:
 	|table-mode-options-fillchar| ........ Set table fillchar character
 	|table-mode-options-toggle-map| ...... Set table mode toggle mapping
 	|table-mode-options-always-active| ... Set table mode to always enabled
+	|table-mode-options-delimiter| ....... Set the delimiter for Tableize
 
 g:table_mode_loaded				*table-mode-options-loaded*
 	Use this option to disable the plugin: >
@@ -99,32 +100,55 @@ g:table_mode_always_active			*table-mode-options-always-active*
 	the table mode or |table-mode-commands-enable| to enable and
 	|table-mode-commands-disable| to disable mode when needed.
 
+g:table_mode_delimiter				*table-mode-options-delimiter*
+	Use this option to define the delimiter which used by
+	|table-mode-commands-tableize|
+
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 
 						*table-mode-mappings-toggle*
-<Leader>tm	Enable table mode for the current buffer. You can change this
-		using the |toggle-mode-options-toggle-map| option. This is
-		applicable only if |table-mode-options-always-active| is not set.
+<Leader>tm	Toggle table mode for the current buffer. You can change this
+		using the |toggle-mode-options-toggle-map| option.
+		
+		NOTE This is applicable only if
+		|table-mode-options-always-active| is not set.
 
 						*table-mode-mappings-trigger*
 |		Trigger table creation in table mode. You can change this
 		using the |toggle-mode-options-separator| option.
+
+<Leader>T	Triggers |table-mode-commands-tableize| on the visually
+		selected content.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*
 
 						*table-mode-commands-toggle*
 :TableModeToggle
-	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle| 
+	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle|.
+
+	NOTE this is applicable only if |table-mode-options-always-active| is
+	not set.
 
 						*table-mode-commands-enable*
 :TableModeEnable
 	Enables Table Mode.
 
+	NOTE this is applicable only if |table-mode-options-always-active| is
+	not set.
+
 						*table-mode-commands-disable*
 :TableModeDisable
-	Disables Table Mode.
+	Disables Table Mode. 
+
+	NOTE this is applicable only if |table-mode-options-always-active| is
+	not set.
+
+:Tableize					*table-mode-commands-tableize*
+	This converts the current line into a table if it consists of
+	|table-mode-options-delimiter|. This accepts a range, without which it
+	applies on the current line.
 ===============================================================================
 CONTRIBUTING						*table-mode-contributing*
 

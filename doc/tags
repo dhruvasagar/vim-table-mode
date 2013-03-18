@@ -1,6 +1,7 @@
 table-mode-commands	table-mode.txt	/*table-mode-commands*
 table-mode-commands-disable	table-mode.txt	/*table-mode-commands-disable*
 table-mode-commands-enable	table-mode.txt	/*table-mode-commands-enable*
+table-mode-commands-tableize	table-mode.txt	/*table-mode-commands-tableize*
 table-mode-commands-toggle	table-mode.txt	/*table-mode-commands-toggle*
 table-mode-contents	table-mode.txt	/*table-mode-contents*
 table-mode-contributing	table-mode.txt	/*table-mode-contributing*
@@ -13,6 +14,7 @@ table-mode-options	table-mode.txt	/*table-mode-options*
 table-mode-options-always-active	table-mode.txt	/*table-mode-options-always-active*
 table-mode-options-border	table-mode.txt	/*table-mode-options-border*
 table-mode-options-corner	table-mode.txt	/*table-mode-options-corner*
+table-mode-options-delimiter	table-mode.txt	/*table-mode-options-delimiter*
 table-mode-options-fillchar	table-mode.txt	/*table-mode-options-fillchar*
 table-mode-options-loaded	table-mode.txt	/*table-mode-options-loaded*
 table-mode-options-separator	table-mode.txt	/*table-mode-options-separator*

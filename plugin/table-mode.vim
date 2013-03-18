@@ -24,6 +24,8 @@ call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_toggle_map', '<Leader>tm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
+call s:SetGlobalOptDefault('table_mode_delimiter', ',')
+call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>T')
 
 function! s:SetBufferOptDefault(opt, val)
   if !exists('b:' . a:opt)
@@ -48,30 +50,35 @@ function! s:CountSeparator(line, separator)
   return strlen(substitute(getline(a:line), '[^' . a:separator . ']', '', 'g'))
 endfunction
 
-function! s:UpdateTableBorder()
+function! s:UpdateLineBorder(...)
+  let cline = a:0 ? a:1 : line('.')
   let hf = '^\s*' . g:table_mode_corner . '[' . g:table_mode_corner . ' ' . g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
-  
-  if getline(line('.')-1) =~# hf
-    if s:CountSeparator(line('.')-1, g:table_mode_corner) < s:CountSeparator(line('.'), g:table_mode_separator)
-      exec 'normal! kA' . g:table_mode_corner . "\<Esc>j"
+  let curr_line_count = s:CountSeparator(cline, g:table_mode_separator)
+
+  if getline(cline-1) =~# hf
+    let prev_line_count = s:CountSeparator(cline-1, g:table_mode_corner)
+    if prev_line_count < curr_line_count
+      exec 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
     endif
   else
-    call append(line('.')-1, g:table_mode_corner)
+    call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
+    let cline = a:0 ? (a:1+1) : line('.')
   endif
 
-  if getline(line('.')+1) =~# hf
-    if s:CountSeparator(line('.')+1, g:table_mode_corner) < s:CountSeparator(line('.'), g:table_mode_separator)
-      exec 'normal! jA' . g:table_mode_corner . "\<Esc>k"
+  if getline(cline+1) =~# hf
+    let next_line_count = s:CountSeparator(cline+1, g:table_mode_corner)
+    if next_line_count < curr_line_count
+      exec 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
     end
   else
-    call append(line('.'), g:table_mode_corner)
+    call append(cline, repeat(g:table_mode_corner, curr_line_count))
   endif
 endfunction
 
 function! s:FillTableBorder()
   let current_col = col('.')
   let current_line = line('.')
-  execute '%s/' . g:table_mode_corner . ' \zs\([\' . g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' . g:table_mode_fillchar . '", strlen(submatch(0)))/ge'
+  execute 'silent! %s/' . g:table_mode_corner . ' \zs\([\' . g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' . g:table_mode_fillchar . '", strlen(submatch(0)))/ge'
   call cursor(current_line, current_col)
 endfunction
 
@@ -101,12 +108,18 @@ function! s:IsTableModeActive()
   return b:table_mode_active
 endfunction
 
+function! s:ConvertDelimiterToSeparator(line)
+  if getline(a:line) =~# g:table_mode_delimiter
+    execute 'silent! ' . a:line . 's/^\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/ge'
+  endif
+endfunction
+
 function! s:Tableize()
   if s:IsTableModeActive() && exists(':Tabularize') && getline('.') =~# ('^\s*' . g:table_mode_separator)
     let column = strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border
-      call s:UpdateTableBorder()
+      call s:UpdateLineBorder()
     endif
     exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
     if g:table_mode_border
@@ -117,6 +130,24 @@ function! s:Tableize()
   endif
 endfunction
 
+function! s:Tableizeline(line)
+  call s:ConvertDelimiterToSeparator(a:line)
+  call s:UpdateLineBorder(a:line)
+  exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
+endfunction
+
+function! s:TableizeRange() range
+  call s:Tableizeline(a:firstline)
+  undojoin
+  let lnum = a:firstline+3
+  while lnum <= (a:firstline + (a:lastline - a:firstline+1)*2)
+    call s:Tableizeline(lnum)
+    undojoin
+    let lnum = lnum + 2
+  endwhile
+  call s:FillTableBorder()
+endfunction
+
 if !g:table_mode_always_active
   exec "nnoremap <silent> " . g:table_mode_toggle_map .
        \ " <Esc>:call <SID>TableModeToggle()<CR>"
@@ -125,4 +156,7 @@ if !g:table_mode_always_active
   command! -nargs=0 TableModeDisable call s:TableModeDisable()
 endif
 exec "inoremap <silent> " . s:table_mode_separator_map . ' ' .
-     \ s:table_mode_separator_map . "<Esc>:call <SID>Tableize()<CR>a"
+      \ s:table_mode_separator_map . "<Esc>:call <SID>Tableize()<CR>a"
+
+command! -nargs=0 -range Tableize <line1>,<line2>call s:TableizeRange()
+exec "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
