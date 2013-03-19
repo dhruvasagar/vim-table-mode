@@ -7,10 +7,10 @@ tables as you type.
 ### Version 2.0 :
 * Moved bulk of code to autoload for vimscript optimisation.
 
-### version 1.1 :
+### Version 1.1 :
 * Added Tableize command and mapping to convert existing content into a table.
 
-### version 1.0 :
+### Version 1.0 :
 * First stable release, create tables as you type.
 
 ## Getting Started
@@ -62,7 +62,7 @@ sure Tabular is installed and loaded into your runtime to ensure this works.
    the mapping `<Leader>T` with a `[count]` to apply it to the next `[count]`
    lines in usual vim style.
 
-### Demo:
+### Demo
 
 <a href="http://www.youtube.com/watch?v=sK2IH1hiDkw"><img
 src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
