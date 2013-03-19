@@ -26,8 +26,10 @@ There are 2 ways to do this
 $ cd ~/.vim
 $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-mode
    ```
-2. Copy table-mode.vim into ~/.vim/plugin/ (Unix) or vimfiles/plugin/ (Windows)
-   as with other plugins.
+2. Copy autoload/todomode.vim, plugin/todo-mode.vim, doc/todo-mode.txt to
+   respective ~/.vim/autoload/, ~/.vim/plugin and ~/.vim/doc under UNIX or 
+   vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
+   restart VIM
 
 ### Requirements
 
