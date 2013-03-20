@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.0
+" Version:       2.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -13,10 +13,10 @@
 "                Permission is hereby granted to use and distribute this code,
 "                with or without modifications, provided that this copyright
 "                notice is copied with it. Like anything else that's free,
-"                taglist.vim is provided *as is* and comes with no warranty of
-"                any kind, either expressed or implied. In no event will the
-"                copyright holder be liable for any damamges resulting from the
-"                use of this software.
+"                table-mode.vim is provided *as is* and comes with no warranty
+"                of any kind, either expressed or implied. In no event will
+"                the copyright holder be liable for any damamges resulting
+"                from the use of this software.
 " =============================================================================
 
 " Private Functions {{{1
@@ -75,11 +75,9 @@ endfunction
 " }}}2
 
 function! s:Tableizeline(line) "{{{2
-  if exists(':Tabularize')
-    call s:ConvertDelimiterToSeparator(a:line)
-    call s:UpdateLineBorder(a:line)
-    exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
-  endif
+  call s:ConvertDelimiterToSeparator(a:line)
+  call s:UpdateLineBorder(a:line)
+  exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
 endfunction
 " }}}2
 
@@ -97,7 +95,7 @@ endfunction
 " }}}2
 
 function! s:Tableize() "{{{2
-  if s:IsTableModeActive() && exists(':Tabularize') && getline('.') =~# ('^\s*' . g:table_mode_separator)
+  if s:IsTableModeActive() && getline('.') =~# ('^\s*' . g:table_mode_separator)
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif

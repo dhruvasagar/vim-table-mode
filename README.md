@@ -4,6 +4,12 @@ An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
 ## Change Log
+### Version 2.1 :
+* VIM loads plugins in alphabetical order and so table-mode would be loaded
+  before Tabularize which it depends on. Hence Moved plugin into an after
+  plugin. Checking if Tabularize is available and finish immidiately if it's
+  not.
+
 ### Version 2.0 :
 * Moved bulk of code to autoload for vimscript optimisation.
 
