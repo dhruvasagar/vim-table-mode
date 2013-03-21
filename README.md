@@ -4,6 +4,9 @@ An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
 ## Change Log
+### Version 2.1.2 :
+* Bug Fixes #2, #3 & #4
+
 ### Version 2.1.1 :
 * Added option g:table_mode_align to allow setting Tabular format option for
   more control on how Tabular aligns text.
