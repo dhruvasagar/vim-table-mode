@@ -40,12 +40,6 @@ function! s:CountSeparator(line, separator) "{{{2
 endfunction
 " }}}2
 
-function! s:ConvertDelimiterToSeparator(line) "{{{2
-  execute 'silent! ' . a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
-        \ '\|$/' . g:table_mode_separator . '/g'
-endfunction
-" }}}2
-
 function! s:IsTableModeActive() "{{{2
   if g:table_mode_always_active | return 1 | endif
 
@@ -92,7 +86,7 @@ function! s:UpdateLineBorder(line) "{{{2
     endif
   else
     call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
-    let cline = a:line + 1
+    let cline = a:line + 1 " because of the append, the current line moved down
   endif
 
   if getline(cline+1) =~# hf
@@ -129,9 +123,15 @@ function! s:Tableize() "{{{2
 endfunction
 " }}}2
 
+function! s:ConvertDelimiterToSeparator(line) "{{{2
+  execute 'silent! ' . a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
+        \ '\|$/' . g:table_mode_separator . '/g'
+endfunction
+" }}}2
+
 function! s:Tableizeline(line) "{{{2
   call s:ConvertDelimiterToSeparator(a:line)
-  call s:UpdateLineBorder(a:line)
+  if g:table_mode_border | call s:UpdateLineBorder(a:line) | endif
   execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
 endfunction
 " }}}2
@@ -161,17 +161,19 @@ endfunction
 " }}}2
 
 function! tablemode#TableizeRange() range "{{{2
+  let shift = 1
+  if g:table_mode_border | let shift = shift + 1 | endif
   call s:Tableizeline(a:firstline)
   undojoin
   " The first one causes 2 extra lines for top & bottom border while the
   " following lines cause only 1 for the bottom border.
-  let lnum = a:firstline+3
-  while lnum <= (a:firstline + (a:lastline - a:firstline+1)*2)
+  let lnum = a:firstline + shift + (g:table_mode_border > 0)
+  while lnum < (a:firstline + (a:lastline - a:firstline + 1)*shift)
     call s:Tableizeline(lnum)
     undojoin
-    let lnum = lnum + 2
+    let lnum = lnum + shift
   endwhile
-  call s:FillTableBorder()
+  if g:table_mode_border | call s:FillTableBorder() | endif
 endfunction
 " }}}2
 
