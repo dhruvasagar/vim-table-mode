@@ -45,7 +45,7 @@ call s:SetGlobalOptDefault('table_mode_border', 1)
 call s:SetGlobalOptDefault('table_mode_corner', '+')
 call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
-call s:SetGlobalOptDefault('table_mode_toggle_map', '<Leader>tm')
+call s:SetGlobalOptDefault('table_mode_toggle_map', '<LocalLeader>tm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
 call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>T')
@@ -59,6 +59,14 @@ if !g:table_mode_always_active
   command! -nargs=0 TableModeToggle call tablemode#TableModeToggle()
   command! -nargs=0 TableModeEnable call tablemode#TableModeEnable()
   command! -nargs=0 TableModeDisable call tablemode#TableModeDisable()
+else
+  let table_mode_separator_map = g:table_mode_separator
+  " '|' is a special character, we need to map <Bar> instead
+  if g:table_mode_separator ==# '|' | let table_mode_separator_map = '<Bar>' | endif
+
+  execute "inoremap <silent> " . table_mode_separator_map . ' ' .
+        \ table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
+  unlet table_mode_separator_map
 endif
 
 command! -nargs=0 -range Tableize <line1>,<line2>call tablemode#TableizeRange()

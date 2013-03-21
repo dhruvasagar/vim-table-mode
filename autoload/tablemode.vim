@@ -48,21 +48,16 @@ function! s:IsTableModeActive() "{{{2
 endfunction
 " }}}2
 
-function! s:TableModeSeparatorMap() "{{{2
-  if g:table_mode_separator ==# '|'
-    return '<Bar>'
-  else
-    return g:table_mode_separator
-  endif
-endfunction
-" }}}2
-
 function! s:ToggleMapping() "{{{2
   if exists('b:table_mode_active') && b:table_mode_active
-    execute "inoremap <silent> <buffer> " . s:TableModeSeparatorMap() . ' ' .
-          \ s:TableModeSeparatorMap() . "<Esc>:call <SID>Tableize()<CR>a"
+    call s:SetBufferOptDefault('table_mode_separator_map', g:table_mode_separator)
+    " '|' is a special character, we need to map <Bar> instead
+    if g:table_mode_separator ==# '|' | let b:table_mode_separator_map = '<Bar>' | endif
+
+    execute "inoremap <silent> <buffer> " . b:table_mode_separator_map . ' ' .
+          \ b:table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
   else
-    execute "iunmap <silent> " . s:TableModeSeparatorMap()
+    execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
   endif
 endfunction
 " }}}2
@@ -110,19 +105,6 @@ function! s:FillTableBorder() "{{{2
 endfunction
 " }}}2
 
-function! s:Tableize() "{{{2
-  if s:IsTableModeActive() && getline('.') =~# ('^\s*' . g:table_mode_separator)
-    let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
-    let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
-    if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
-    execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
-    if g:table_mode_border | call s:FillTableBorder() | endif
-    normal! 0
-    call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
-  endif
-endfunction
-" }}}2
-
 function! s:ConvertDelimiterToSeparator(line) "{{{2
   execute 'silent! ' . a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
         \ '\|$/' . g:table_mode_separator . '/g'
@@ -139,6 +121,19 @@ endfunction
 " }}}1
 
 " Public API {{{1
+
+function! tablemode#TableizeInsertMode() "{{{2
+  if s:IsTableModeActive() && getline('.') =~# ('^\s*' . g:table_mode_separator)
+    let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
+    let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
+    if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
+    execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
+    if g:table_mode_border | call s:FillTableBorder() | endif
+    normal! 0
+    call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
+  endif
+endfunction
+" }}}2
 
 function! tablemode#TableModeEnable() "{{{2
   call s:SetActive(1)
