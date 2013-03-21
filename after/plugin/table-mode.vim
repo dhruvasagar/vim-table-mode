@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1.1
+" Version:       2.1.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -62,9 +62,9 @@ if !g:table_mode_always_active
 endif
 
 command! -nargs=0 -range Tableize <line1>,<line2>call tablemode#TableizeRange()
-exec "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
-exec "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
+execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
+execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 "}}}1
 
 " ModeLine {{{
-" vim:fdm=marker
+" vim:fdl=0 fdm=marker

@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1.1
+" Version:       2.1.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -65,7 +65,7 @@ endfunction
 
 function! s:ToggleMapping() "{{{2
   if exists('b:table_mode_active') && b:table_mode_active
-    execute "inoremap <silent> " . s:TableModeSeparatorMap() . ' ' .
+    execute "inoremap <silent> <buffer> " . s:TableModeSeparatorMap() . ' ' .
           \ s:TableModeSeparatorMap() . "<Esc>:call <SID>Tableize()<CR>a"
   else
     execute "iunmap <silent> " . s:TableModeSeparatorMap()
