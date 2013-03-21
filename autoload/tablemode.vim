@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1
+" Version:       2.1.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -40,49 +40,9 @@ function! s:CountSeparator(line, separator) "{{{2
 endfunction
 " }}}2
 
-function! s:UpdateLineBorder(line) "{{{2
-  let cline = a:line
-  let hf = '^\s*' . g:table_mode_corner . '[' . g:table_mode_corner . ' ' . g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
-  let curr_line_count = s:CountSeparator(cline, g:table_mode_separator)
-
-  if getline(cline-1) =~# hf
-    let prev_line_count = s:CountSeparator(cline-1, g:table_mode_corner)
-    if curr_line_count > prev_line_count
-      exec 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
-    endif
-  else
-    call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
-    let cline = a:line + 1
-  endif
-
-  if getline(cline+1) =~# hf
-    let next_line_count = s:CountSeparator(cline+1, g:table_mode_corner)
-    if curr_line_count > next_line_count
-      exec 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
-    end
-  else
-    call append(cline, repeat(g:table_mode_corner, curr_line_count))
-  endif
-endfunction
-" }}}2
-
-function! s:FillTableBorder() "{{{2
-  let current_col = col('.')
-  let current_line = line('.')
-  execute 'silent! %s/' . g:table_mode_corner . ' \zs\([' . g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' . g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
-  call cursor(current_line, current_col)
-endfunction
-" }}}2
-
-function! s:Tableizeline(line) "{{{2
-  call s:ConvertDelimiterToSeparator(a:line)
-  call s:UpdateLineBorder(a:line)
-  exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
-endfunction
-" }}}2
-
 function! s:ConvertDelimiterToSeparator(line) "{{{2
-  execute 'silent! ' . a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter . '\|$/' . g:table_mode_separator . '/g'
+  execute 'silent! ' . a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
+        \ '\|$/' . g:table_mode_separator . '/g'
 endfunction
 " }}}2
 
@@ -94,35 +54,21 @@ function! s:IsTableModeActive() "{{{2
 endfunction
 " }}}2
 
-function! s:Tableize() "{{{2
-  if s:IsTableModeActive() && getline('.') =~# ('^\s*' . g:table_mode_separator)
-    let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
-    let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
-    if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
-    exec 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/l1'
-    if g:table_mode_border | call s:FillTableBorder() | endif
-    normal! 0
-    call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
-  endif
-endfunction
-" }}}2
-
 function! s:TableModeSeparatorMap() "{{{2
   if g:table_mode_separator ==# '|'
-    let table_mode_separator_map = '<Bar>'
+    return '<Bar>'
   else
-    let table_mode_separator_map = g:table_mode_separator
+    return g:table_mode_separator
   endif
-  return table_mode_separator_map
 endfunction
 " }}}2
 
 function! s:ToggleMapping() "{{{2
   if exists('b:table_mode_active') && b:table_mode_active
-    exec "inoremap <silent> " . s:TableModeSeparatorMap() . ' ' .
+    execute "inoremap <silent> " . s:TableModeSeparatorMap() . ' ' .
           \ s:TableModeSeparatorMap() . "<Esc>:call <SID>Tableize()<CR>a"
   else
-    exec "iunmap <silent> " . s:TableModeSeparatorMap()
+    execute "iunmap <silent> " . s:TableModeSeparatorMap()
   endif
 endfunction
 " }}}2
@@ -130,6 +76,63 @@ endfunction
 function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleMapping()
+endfunction
+" }}}2
+
+function! s:UpdateLineBorder(line) "{{{2
+  let cline = a:line
+  let hf = '^\s*' . g:table_mode_corner . '[' . g:table_mode_corner . ' ' .
+         \ g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
+  let curr_line_count = s:CountSeparator(cline, g:table_mode_separator)
+
+  if getline(cline-1) =~# hf
+    let prev_line_count = s:CountSeparator(cline-1, g:table_mode_corner)
+    if curr_line_count > prev_line_count
+      execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
+    endif
+  else
+    call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
+    let cline = a:line + 1
+  endif
+
+  if getline(cline+1) =~# hf
+    let next_line_count = s:CountSeparator(cline+1, g:table_mode_corner)
+    if curr_line_count > next_line_count
+      execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
+    end
+  else
+    call append(cline, repeat(g:table_mode_corner, curr_line_count))
+  endif
+endfunction
+" }}}2
+
+function! s:FillTableBorder() "{{{2
+  let current_col = col('.')
+  let current_line = line('.')
+  execute 'silent! %s/' . g:table_mode_corner . ' \zs\([' .
+        \ g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' .
+        \ g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
+  call cursor(current_line, current_col)
+endfunction
+" }}}2
+
+function! s:Tableize() "{{{2
+  if s:IsTableModeActive() && getline('.') =~# ('^\s*' . g:table_mode_separator)
+    let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
+    let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
+    if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
+    execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
+    if g:table_mode_border | call s:FillTableBorder() | endif
+    normal! 0
+    call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
+  endif
+endfunction
+" }}}2
+
+function! s:Tableizeline(line) "{{{2
+  call s:ConvertDelimiterToSeparator(a:line)
+  call s:UpdateLineBorder(a:line)
+  execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
 endfunction
 " }}}2
 

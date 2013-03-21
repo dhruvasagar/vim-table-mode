@@ -15,6 +15,7 @@ table-mode-mappings	table-mode.txt	/*table-mode-mappings*
 table-mode-mappings-toggle	table-mode.txt	/*table-mode-mappings-toggle*
 table-mode-mappings-trigger	table-mode.txt	/*table-mode-mappings-trigger*
 table-mode-options	table-mode.txt	/*table-mode-options*
+table-mode-options-align	table-mode.txt	/*table-mode-options-align*
 table-mode-options-always-active	table-mode.txt	/*table-mode-options-always-active*
 table-mode-options-border	table-mode.txt	/*table-mode-options-border*
 table-mode-options-corner	table-mode.txt	/*table-mode-options-corner*
