@@ -56,6 +56,7 @@ Overview:
 	|table-mode-options-toggle-map| ...... Set table mode toggle mapping
 	|table-mode-options-always-active| ... Set table mode to always enabled
 	|table-mode-options-delimiter| ....... Set the delimiter for Tableize
+	|table-mode-options-align| ........... Set the text alignment for Tableize
 
 g:table_mode_loaded				*table-mode-options-loaded*
 	Use this option to disable the plugin: >
@@ -104,6 +105,11 @@ g:table_mode_delimiter				*table-mode-options-delimiter*
 	Use this option to define the delimiter which used by
 	|table-mode-commands-tableize|
 
+g:table_mode_align				*table-mode-options-align*
+	Use this option to define the format for text alignment to be used for
+	the tables. Go through |tabular-walkthrough| for details on how to set
+	the format options for alignment. >
+		let g:table_mode_align = 'l1'
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 

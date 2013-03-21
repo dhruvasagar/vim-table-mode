@@ -4,6 +4,10 @@ An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
 ## Change Log
+### Version 2.1.1 :
+* Added option g:table_mode_align to allow setting Tabular format option for
+  more control on how Tabular aligns text.
+
 ### Version 2.1 :
 * VIM loads plugins in alphabetical order and so table-mode would be loaded
   before Tabularize which it depends on. Hence Moved plugin into an after

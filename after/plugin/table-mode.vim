@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1
+" Version:       2.1.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -49,6 +49,7 @@ call s:SetGlobalOptDefault('table_mode_toggle_map', '<Leader>tm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
 call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>T')
+call s:SetGlobalOptDefault('table_mode_align', 'l1')
 "}}}1
 
 " Define Commands & Mappings {{{1
