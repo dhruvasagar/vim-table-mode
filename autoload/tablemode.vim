@@ -77,7 +77,7 @@ function! s:UpdateLineBorder(line) "{{{2
   if getline(cline-1) =~# hf
     let prev_line_count = s:CountSeparator(cline-1, g:table_mode_corner)
     if curr_line_count > prev_line_count
-      execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
+      silent! execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
     endif
   else
     call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
@@ -87,7 +87,7 @@ function! s:UpdateLineBorder(line) "{{{2
   if getline(cline+1) =~# hf
     let next_line_count = s:CountSeparator(cline+1, g:table_mode_corner)
     if curr_line_count > next_line_count
-      execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
+      silent! execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
     end
   else
     call append(cline, repeat(g:table_mode_corner, curr_line_count))
@@ -96,9 +96,8 @@ endfunction
 " }}}2
 
 function! s:FillTableBorder() "{{{2
-  let current_col = col('.')
-  let current_line = line('.')
-  execute 'silent! %s/' . g:table_mode_corner . ' \zs\([' .
+  let [ current_col, current_line ] = [ col('.'), line('.') ]
+  silent! execute '%s/' . g:table_mode_corner . ' \zs\([' .
         \ g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' .
         \ g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
   call cursor(current_line, current_col)
@@ -106,7 +105,7 @@ endfunction
 " }}}2
 
 function! s:ConvertDelimiterToSeparator(line) "{{{2
-  execute 'silent! ' . a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
+  silent! execute a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
         \ '\|$/' . g:table_mode_separator . '/g'
 endfunction
 " }}}2
