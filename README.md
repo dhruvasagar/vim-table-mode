@@ -4,6 +4,10 @@ An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
 ## Change Log
+### Version 2.1.3 :
+* Bug Fix #1, added new option `g:table_mode_no_border_padding` which removes
+  padding from the border.
+
 ### Version 2.1.2 :
 * Bug Fixes #2, #3 & #4
 

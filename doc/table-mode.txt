@@ -48,15 +48,17 @@ The table mode is disabled by default and you can enter table mode using
 OPTIONS							*table-mode-options*
 
 Overview:
-	|table-mode-options-loaded| .......... Disable the plugin
-	|table-mode-options-border| .......... Enable border
-	|table-mode-options-corner| .......... Set corner character
-	|table-mode-options-separator| ....... Set separator character
-	|table-mode-options-fillchar| ........ Set table fillchar character
-	|table-mode-options-toggle-map| ...... Set table mode toggle mapping
-	|table-mode-options-always-active| ... Set table mode to always enabled
-	|table-mode-options-delimiter| ....... Set the delimiter for Tableize
-	|table-mode-options-align| ........... Set the text alignment for Tableize
+	|table-mode-options-loaded| ............. Disable the plugin
+	|table-mode-options-border| ............. Enable border
+	|table-mode-options-corner| ............. Set corner character
+	|table-mode-options-separator| .......... Set separator character
+	|table-mode-options-fillchar| ........... Set table fillchar character
+	|table-mode-options-toggle-map| ......... Set table mode toggle mapping
+	|table-mode-options-always-active| ...... Set table mode to always enabled
+	|table-mode-options-delimiter| .......... Set the delimiter for Tableize
+	|table-mode-options-align| .............. Set the text alignment for
+						Tableize
+	|table-mode-options-no-border-padding| .. Set for no border padding.
 
 g:table_mode_loaded				*table-mode-options-loaded*
 	Use this option to disable the plugin: >
@@ -110,6 +112,15 @@ g:table_mode_align				*table-mode-options-align*
 	the tables. Go through |tabular-walkthrough| for details on how to set
 	the format options for alignment. >
 		let g:table_mode_align = 'l1'
+<
+
+g:table_mode_no_border_padding		*table-mode-options-no-border-padding*
+	Use this option to remove the border padding (extra spaces around the
+	|table-mode-options-fillchar|). >
+		let g:table_mode_no_border_padding = 0
+<
+	NOTE this option changes |table-mode-options-align| to 'c0', so that
+	there is no extra padding around the contents.
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 

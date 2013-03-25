@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1.2
+" Version:       2.1.3
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -97,9 +97,15 @@ endfunction
 
 function! s:FillTableBorder() "{{{2
   let [ current_col, current_line ] = [ col('.'), line('.') ]
-  silent! execute '%s/' . g:table_mode_corner . ' \zs\([' .
-        \ g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner . '/\=repeat("' .
-        \ g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
+  if g:table_mode_no_border_padding
+    silent! execute '%s/' . g:table_mode_corner . '\zs\([' .
+          \ g:table_mode_fillchar . ' ]*\)\ze' . g:table_mode_corner .
+          \ '/\=repeat("' . g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
+  else
+    silent! execute '%s/' . g:table_mode_corner . ' \zs\([' .
+          \ g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner .
+          \ '/\=repeat("' . g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
+  endif
   call cursor(current_line, current_col)
 endfunction
 " }}}2
@@ -126,6 +132,7 @@ function! tablemode#TableizeInsertMode() "{{{2
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
+    if g:table_mode_no_border_padding && g:table_mode_align !=# 'c0' | let g:table_mode_align = 'c0' | endif
     execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
     if g:table_mode_border | call s:FillTableBorder() | endif
     normal! 0
