@@ -2,11 +2,11 @@
 :TableModeEnable	table-mode.txt	/*:TableModeEnable*
 :TableModeToggle	table-mode.txt	/*:TableModeToggle*
 :Tableize	table-mode.txt	/*:Tableize*
+table-mode-:TableModeDisable	table-mode.txt	/*table-mode-:TableModeDisable*
+table-mode-:TableModeEnable	table-mode.txt	/*table-mode-:TableModeEnable*
+table-mode-:TableModeToggle	table-mode.txt	/*table-mode-:TableModeToggle*
+table-mode-:Tableize	table-mode.txt	/*table-mode-:Tableize*
 table-mode-commands	table-mode.txt	/*table-mode-commands*
-table-mode-commands-disable	table-mode.txt	/*table-mode-commands-disable*
-table-mode-commands-enable	table-mode.txt	/*table-mode-commands-enable*
-table-mode-commands-tableize	table-mode.txt	/*table-mode-commands-tableize*
-table-mode-commands-toggle	table-mode.txt	/*table-mode-commands-toggle*
 table-mode-contents	table-mode.txt	/*table-mode-contents*
 table-mode-contributing	table-mode.txt	/*table-mode-contributing*
 table-mode-getting-started	table-mode.txt	/*table-mode-getting-started*
@@ -22,6 +22,7 @@ table-mode-options-corner	table-mode.txt	/*table-mode-options-corner*
 table-mode-options-delimiter	table-mode.txt	/*table-mode-options-delimiter*
 table-mode-options-fillchar	table-mode.txt	/*table-mode-options-fillchar*
 table-mode-options-loaded	table-mode.txt	/*table-mode-options-loaded*
+table-mode-options-no-border-padding	table-mode.txt	/*table-mode-options-no-border-padding*
 table-mode-options-separator	table-mode.txt	/*table-mode-options-separator*
 table-mode-options-toggle-map	table-mode.txt	/*table-mode-options-toggle-map*
 table-mode-report-issues	table-mode.txt	/*table-mode-report-issues*

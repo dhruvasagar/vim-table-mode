@@ -33,6 +33,11 @@ if !exists(':Tabularize')
 endif
 " }}}1
 
+" Avoiding side effects {{{1
+let s:save_cpo = &cpo
+set cpo&vim
+" }}}1
+
 function! s:SetGlobalOptDefault(opt, val) "{{{1
   if !exists('g:' . a:opt)
     let g:{a:opt} = a:val
@@ -74,6 +79,10 @@ command! -nargs=0 -range Tableize <line1>,<line2>call tablemode#TableizeRange()
 execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 "}}}1
+
+" Avoiding side effects {{{1
+let &cpo = s:save_cpo
+" }}}1
 
 " ModeLine {{{
 " vim:fdl=0 fdm=marker

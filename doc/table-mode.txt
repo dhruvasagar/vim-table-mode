@@ -142,7 +142,7 @@ MAPPINGS						*table-mode-mappings*
 COMMANDS						*table-mode-commands*
 
 							*:TableModeToggle*
-						*table-mode-commands-toggle*
+						*table-mode-:TableModeToggle*
 :TableModeToggle
 	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle|.
 
@@ -150,7 +150,7 @@ COMMANDS						*table-mode-commands*
 	not set.
 
 							*:TableModeEnable*
-						*table-mode-commands-enable*
+						*table-mode-:TableModeEnable*
 :TableModeEnable
 	Enables Table Mode.
 
@@ -158,7 +158,7 @@ COMMANDS						*table-mode-commands*
 	not set.
 
 							*:TableModeDisable*
-						*table-mode-commands-disable*
+						*table-mode-:TableModeDisable*
 :TableModeDisable
 	Disables Table Mode. 
 
@@ -166,7 +166,8 @@ COMMANDS						*table-mode-commands*
 	not set.
 
 								*:Tableize*
-:Tableize					*table-mode-commands-tableize*
+							*table-mode-:Tableize*
+:Tableize
 	This converts the current line into a table if it consists of
 	|table-mode-options-delimiter|. This accepts a range, without which it
 	applies on the current line.
@@ -174,7 +175,7 @@ COMMANDS						*table-mode-commands*
 CONTRIBUTING						*table-mode-contributing*
 
 If you want to take a stab at it, by all means, send me a pull request on
-Github (http://github.com/dhruvasagar/table-mode.git) or get in touch with me
+Github (http://github.com/dhruvasagar/table-mode) or get in touch with me
 directly via e-mail at dhruva 'dot' sagar 'at' gmail.com.
 
 ===============================================================================
