@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1.3
+" Version:       2.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -110,14 +110,18 @@ function! s:FillTableBorder() "{{{2
 endfunction
 " }}}2
 
-function! s:ConvertDelimiterToSeparator(line) "{{{2
-  silent! execute a:line . 's/^\s*\zs\ze.\|' . g:table_mode_delimiter .
-        \ '\|$/' . g:table_mode_separator . '/g'
+function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
+  let delim = g:table_mode_delimiter
+  if a:0 | let delim = a:1 | endif
+  silent! execute a:line . 's/^\s*\zs\ze.\|' . delim .  '\|$/' .
+        \ g:table_mode_separator . '/g'
 endfunction
 " }}}2
 
-function! s:Tableizeline(line) "{{{2
-  call s:ConvertDelimiterToSeparator(a:line)
+function! s:Tableizeline(line, ...) "{{{2
+  let delim = g:table_mode_delimiter
+  if a:0 && type(a:1) == type('') && !empty(a:1) | let delim = a:1[1:-1] | endif
+  call s:ConvertDelimiterToSeparator(a:line, delim)
   if g:table_mode_border | call s:UpdateLineBorder(a:line) | endif
   execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
 endfunction
@@ -161,20 +165,30 @@ function! tablemode#TableModeToggle() "{{{2
 endfunction
 " }}}2
 
-function! tablemode#TableizeRange() range "{{{2
+function! tablemode#TableizeRange(...) range "{{{2
   let shift = 1
   if g:table_mode_border | let shift = shift + 1 | endif
-  call s:Tableizeline(a:firstline)
+  call s:Tableizeline(a:firstline, a:1)
   undojoin
   " The first one causes 2 extra lines for top & bottom border while the
   " following lines cause only 1 for the bottom border.
   let lnum = a:firstline + shift + (g:table_mode_border > 0)
   while lnum < (a:firstline + (a:lastline - a:firstline + 1)*shift)
-    call s:Tableizeline(lnum)
+    call s:Tableizeline(lnum, a:1)
     undojoin
     let lnum = lnum + shift
   endwhile
   if g:table_mode_border | call s:FillTableBorder() | endif
+endfunction
+" }}}2
+
+function! tablemode#TableizeByDelimiter() "{{{2
+  let delim = input('/')
+  if delim =~# "\<Esc>" || delim =~# "\<C-C>" | return | endif
+  let vm = visualmode()
+  if vm ==? 'line' || vm ==? 'V'
+    exec line("'<") . ',' . line("'>") . "call tablemode#TableizeRange('/' . delim)"
+  endif
 endfunction
 " }}}2
 

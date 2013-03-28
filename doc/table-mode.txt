@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v2.1.2
+*table-mode.txt*			Table Mode for easy table formatting. v2.2
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 2.1.2
+				 VERSION 2.2
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -48,78 +48,95 @@ The table mode is disabled by default and you can enter table mode using
 OPTIONS							*table-mode-options*
 
 Overview:
-	|table-mode-options-loaded| ............. Disable the plugin
-	|table-mode-options-border| ............. Enable border
-	|table-mode-options-corner| ............. Set corner character
-	|table-mode-options-separator| .......... Set separator character
-	|table-mode-options-fillchar| ........... Set table fillchar character
-	|table-mode-options-toggle-map| ......... Set table mode toggle mapping
-	|table-mode-options-always-active| ...... Set table mode to always enabled
-	|table-mode-options-delimiter| .......... Set the delimiter for Tableize
-	|table-mode-options-align| .............. Set the text alignment for
-						Tableize
-	|table-mode-options-no-border-padding| .. Set for no border padding.
+	|table-mode-loaded| ............. Disable the plugin.
+	|table-mode-border| ............. Enable border.
+	|table-mode-corner| ............. Set corner character.
+	|table-mode-separator| .......... Set separator character.
+	|table-mode-fillchar| ........... Set table fillchar character.
+	|table-mode-toggle-map| ......... Set table mode toggle mapping.
+	|table-mode-always-active| ...... Set table mode to always enabled.
+	|table-mode-delimiter| .......... Set the delimiter for Tableize.
+	|table-mode-tableize-map| ....... Set mapping for Tableize.
+	|table-mode-tableize-op-map| .... Set mapping for Tableize with input.
+	|table-mode-align| .............. Set the text alignment for
+		        		Tableize.
+	|table-mode-no-border-padding| .. Set for no border padding.
 
-g:table_mode_loaded				*table-mode-options-loaded*
+g:table_mode_loaded					*table-mode-loaded*
 	Use this option to disable the plugin: >
 		let g:table_mode_loaded = 1
 <
 
-g:table_mode_border				*table-mode-options-border*
+g:table_mode_border					*table-mode-border*
 	Use this option to enable / disable table border: >
 		let g:table_mode_border = 1
 <
 
-g:table_mode_corner				*table-mode-options-corner*
+g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
 		let g:table_mode_corner = '+'
 <
-g:table_mode_separator				*table-mode-options-separator*
+g:table_mode_separator					*table-mode-separator*
 	Use this option to define the table column separator character: >
 		let g:table_mode_separator = '|'
 <
 	This option also defines the trigger to be used to start creating a
 	table row in insert mode.
 
-g:table_mode_fillchar				*table-mode-options-fillchar*
+g:table_mode_fillchar					*table-mode-fillchar*
 	Use this option to define the table border fill character: >
 		let g:table_mode_fillchar = '-'
 <
 
-g:table_mode_toggle_map				*table-mode-options-toggle-map*
+g:table_mode_toggle_map					*table-mode-toggle-map*
 	Use this option to define the mapping for toggling the table mode: >
 		let g:table_mode_toggle_map = '<Leader>tm'
 <
 	Read |table-mode-mappings-toggle| for more info.
 
-g:table_mode_always_active			*table-mode-options-always-active*
+g:table_mode_always_active				*table-mode-always-active*
 	Use this option to permanently enable the table mode: >
 		let g:table_mode_always_active = 0
 <
 	This will trigger table creation once you type the
-	|table-mode-options-separator| as long as it's the first character on
+	|table-mode-separator| as long as it's the first character on
 	the line, which can be annoying. I recommend you to instead use the
 	|table-mode-mappings-toggle| or |table-mode-commands-toggle| to toggle
 	the table mode or |table-mode-commands-enable| to enable and
 	|table-mode-commands-disable| to disable mode when needed.
 
-g:table_mode_delimiter				*table-mode-options-delimiter*
+g:table_mode_delimiter					*table-mode-delimiter*
 	Use this option to define the delimiter which used by
-	|table-mode-commands-tableize|
+	|table-mode-commands-tableize| >
+		let g:table_mode_delimiter = ','
+<
 
-g:table_mode_align				*table-mode-options-align*
+g:table_mode_tableize_map			*table-mode-tableize-map*
+	Use this option to define the mapping to invoke |:Tableize| with
+	default delimiter, i.e. |:Tableize| without input. >
+		let g:table_mode_tableize_map = '<Leader>tt'
+<
+
+g:table_mode_tableize_op_map			*table-mode-tableize-op-map*
+	Use this option to define the mapping to invoke |:Tableize| with input
+	parameter. This option will ask for command-line input {pattern} that
+	defines the delimiter. >
+		let g:table_mode_tableize_op_map = '<Leader>T'
+<
+
+g:table_mode_align					*table-mode-align*
 	Use this option to define the format for text alignment to be used for
 	the tables. Go through |tabular-walkthrough| for details on how to set
 	the format options for alignment. >
 		let g:table_mode_align = 'l1'
 <
 
-g:table_mode_no_border_padding		*table-mode-options-no-border-padding*
+g:table_mode_no_border_padding			*table-mode-no-border-padding*
 	Use this option to remove the border padding (extra spaces around the
-	|table-mode-options-fillchar|). >
+	|table-mode-fillchar|). >
 		let g:table_mode_no_border_padding = 0
 <
-	NOTE this option changes |table-mode-options-align| to 'c0', so that
+	NOTE this option changes |table-mode-align| to 'c0', so that
 	there is no extra padding around the contents.
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
@@ -129,14 +146,18 @@ MAPPINGS						*table-mode-mappings*
 		using the |toggle-mode-options-toggle-map| option.
 		
 		NOTE This is applicable only if
-		|table-mode-options-always-active| is not set.
+		|table-mode-always-active| is not set.
 
 						*table-mode-mappings-trigger*
 |		Trigger table creation in table mode. You can change this
 		using the |toggle-mode-options-separator| option.
 
-<Leader>T	Triggers |table-mode-commands-tableize| on the visually
+<Leader>tt	Triggers |table-mode-commands-tableize| on the visually
 		selected content.
+
+						*table-mode-mappings-op-trigger*
+<Leader>T	Triggers |table-mode-commands-tableize| on the visually
+		selected asking for user to input the delimiter.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*
@@ -146,7 +167,7 @@ COMMANDS						*table-mode-commands*
 :TableModeToggle
 	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle|.
 
-	NOTE this is applicable only if |table-mode-options-always-active| is
+	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
 
 							*:TableModeEnable*
@@ -154,7 +175,7 @@ COMMANDS						*table-mode-commands*
 :TableModeEnable
 	Enables Table Mode.
 
-	NOTE this is applicable only if |table-mode-options-always-active| is
+	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
 
 							*:TableModeDisable*
@@ -162,15 +183,24 @@ COMMANDS						*table-mode-commands*
 :TableModeDisable
 	Disables Table Mode. 
 
-	NOTE this is applicable only if |table-mode-options-always-active| is
+	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
 
 								*:Tableize*
 							*table-mode-:Tableize*
 :Tableize
 	This converts the current line into a table if it consists of
-	|table-mode-options-delimiter|. This accepts a range, without which it
+	|table-mode-delimiter|. This accepts a range, without which it
 	applies on the current line.
+
+	This accepts a {pattern} similar to Tabular which defines the
+	delimiter. eg.) >
+		:Tableize/;
+<
+	The above command will Tableize using ';' as the delimiter.
+
+	NOTE this is optional, by default without the expression it will
+	tableize the content using |g:table-mode-delimiter| as the delimiter.
 ===============================================================================
 CONTRIBUTING						*table-mode-contributing*
 

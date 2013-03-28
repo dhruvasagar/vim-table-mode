@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.1.3
+" Version:       2.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -53,7 +53,8 @@ call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_toggle_map', '<LocalLeader>tm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
-call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>T')
+call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>tt')
+call s:SetGlobalOptDefault('table_mode_tableize_op_map', '<Leader>T')
 call s:SetGlobalOptDefault('table_mode_align', 'l1')
 call s:SetGlobalOptDefault('table_mode_no_border_padding', '0')
 "}}}1
@@ -75,9 +76,10 @@ else
   unlet table_mode_separator_map
 endif
 
-command! -nargs=0 -range Tableize <line1>,<line2>call tablemode#TableizeRange()
+command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
 execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
+execute "xnoremap <silent> " . g:table_mode_tableize_op_map . " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
 "}}}1
 
 " Avoiding side effects {{{1
