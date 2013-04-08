@@ -46,7 +46,12 @@ endfunction
 " }}}2
 
 function! s:StartExpr() "{{{2
-  return '^\s*\(' . s:GetCommentStart() . '\)\?\s*\ze'
+  return '^\s*\(' . s:GetCommentStart() . '\)\?\s*'
+endfunction
+" }}}2
+
+function! s:StartCommentExpr() "{{{2
+  return '^\s*' . s:GetCommentStart() . '\s*'
 endfunction
 " }}}2
 
@@ -90,8 +95,8 @@ function! s:UpdateLineBorder(line) "{{{2
       silent! execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
     endif
   else
-    if getline(cline) =~# s:StartExpr()
-      let indent = matchstr(getline(cline), s:StartExpr())
+    if getline(cline) =~# s:StartCommentExpr()
+      let indent = matchstr(getline(cline), s:StartCommentExpr())
       call append(cline-1, indent . repeat(g:table_mode_corner, curr_line_count))
     else
       call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
@@ -105,8 +110,8 @@ function! s:UpdateLineBorder(line) "{{{2
       silent! execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
     end
   else
-    if getline(cline) =~# s:StartExpr()
-      let indent = matchstr(getline(cline), s:StartExpr())
+    if getline(cline) =~# s:StartCommentExpr()
+      let indent = matchstr(getline(cline), s:StartCommentExpr())
       call append(cline, indent . repeat(g:table_mode_corner, curr_line_count))
     else
       call append(cline, repeat(g:table_mode_corner, curr_line_count))
