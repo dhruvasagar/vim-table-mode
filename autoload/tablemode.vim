@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.2
+" Version:       2.2.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -40,6 +40,16 @@ function! s:CountSeparator(line, separator) "{{{2
 endfunction
 " }}}2
 
+function! s:GetCommentStart() "{{{2
+  return split(substitute(&commentstring, '%s', ' ', 'g'))[0]
+endfunction
+" }}}2
+
+function! s:StartExpr() "{{{2
+  return '^\s*\(' . s:GetCommentStart() . '\)\?\s*\ze'
+endfunction
+" }}}2
+
 function! s:IsTableModeActive() "{{{2
   if g:table_mode_always_active | return 1 | endif
 
@@ -70,7 +80,7 @@ endfunction
 
 function! s:UpdateLineBorder(line) "{{{2
   let cline = a:line
-  let hf = '^\s*' . g:table_mode_corner . '[' . g:table_mode_corner . ' ' .
+  let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner . ' ' .
          \ g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
   let curr_line_count = s:CountSeparator(cline, g:table_mode_separator)
 
@@ -80,7 +90,12 @@ function! s:UpdateLineBorder(line) "{{{2
       silent! execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
     endif
   else
-    call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
+    if getline(cline) =~# s:StartExpr()
+      let indent = matchstr(getline(cline), s:StartExpr())
+      call append(cline-1, indent . repeat(g:table_mode_corner, curr_line_count))
+    else
+      call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
+    endif
     let cline = a:line + 1 " because of the append, the current line moved down
   endif
 
@@ -90,7 +105,12 @@ function! s:UpdateLineBorder(line) "{{{2
       silent! execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
     end
   else
-    call append(cline, repeat(g:table_mode_corner, curr_line_count))
+    if getline(cline) =~# s:StartExpr()
+      let indent = matchstr(getline(cline), s:StartExpr())
+      call append(cline, indent . repeat(g:table_mode_corner, curr_line_count))
+    else
+      call append(cline, repeat(g:table_mode_corner, curr_line_count))
+    endif
   endif
 endfunction
 " }}}2
@@ -113,7 +133,7 @@ endfunction
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
   let delim = g:table_mode_delimiter
   if a:0 | let delim = a:1 | endif
-  silent! execute a:line . 's/^\s*\zs\ze.\|' . delim .  '\|$/' .
+  silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze.\|' . delim .  '\|$/' .
         \ g:table_mode_separator . '/g'
 endfunction
 " }}}2
@@ -132,7 +152,7 @@ endfunction
 " Public API {{{1
 
 function! tablemode#TableizeInsertMode() "{{{2
-  if s:IsTableModeActive() && getline('.') =~# ('^\s*' . g:table_mode_separator)
+  if s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator)
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif

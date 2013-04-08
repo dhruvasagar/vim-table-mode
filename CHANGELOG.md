@@ -1,4 +1,10 @@
 # Change Log
+## Version 2.2.1
+* Added feature to allow Table-Mode to work within comments. Uses
+  'commentstring' option of vim to identify comments, so it should work for
+  most filetypes as long as 'commentstring' option has been set. This is
+  usually done appropriately in filetype plugins.
+
 ## Version 2.2
 * Improved :Tableize to now accept a {pattern} just like :Tabular to match the
   delimiter.
