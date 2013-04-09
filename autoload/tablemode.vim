@@ -41,17 +41,32 @@ endfunction
 " }}}2
 
 function! s:GetCommentStart() "{{{2
-  return split(substitute(&commentstring, '%s', ' ', 'g'))[0]
+  let cstring = &commentstring
+  if s:Strlen(cstring) > 0
+    return substitute(split(substitute(cstring, '%s', ' ', 'g'))[0], '.', '\\\0', 'g')
+  else
+    return ''
+  endif
 endfunction
 " }}}2
 
 function! s:StartExpr() "{{{2
-  return '^\s*\(' . s:GetCommentStart() . '\)\?\s*'
+  let cstart = s:GetCommentStart()
+  if s:Strlen(cstart) > 0
+    return '^\s*\(' . cstart . '\)\?\s*'
+  else
+    return '^\s*'
+  endif
 endfunction
 " }}}2
 
 function! s:StartCommentExpr() "{{{2
-  return '^\s*' . s:GetCommentStart() . '\s*'
+  let cstartexpr = s:GetCommentStart()
+  if s:Strlen(cstartexpr) > 0
+    return '^\s*' . cstartexpr . '\s*'
+  else
+    return ''
+  endif
 endfunction
 " }}}2
 
@@ -95,7 +110,8 @@ function! s:UpdateLineBorder(line) "{{{2
       silent! execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
     endif
   else
-    if getline(cline) =~# s:StartCommentExpr()
+    let cstartexpr = s:StartCommentExpr()
+    if s:Strlen(cstartexpr) > 0 && getline(cline) =~# cstartexpr
       let indent = matchstr(getline(cline), s:StartCommentExpr())
       call append(cline-1, indent . repeat(g:table_mode_corner, curr_line_count))
     else
@@ -110,7 +126,8 @@ function! s:UpdateLineBorder(line) "{{{2
       silent! execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
     end
   else
-    if getline(cline) =~# s:StartCommentExpr()
+    let cstartexpr = s:StartCommentExpr()
+    if s:Strlen(cstartexpr) > 0 && getline(cline) =~# cstartexpr
       let indent = matchstr(getline(cline), s:StartCommentExpr())
       call append(cline, indent . repeat(g:table_mode_corner, curr_line_count))
     else
@@ -138,8 +155,14 @@ endfunction
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
   let delim = g:table_mode_delimiter
   if a:0 | let delim = a:1 | endif
+  if delim ==# ','
+    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/g"
+  endif
   silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze.\|' . delim .  '\|$/' .
         \ g:table_mode_separator . '/g'
+  if delim ==# ','
+    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/g"
+  endif
 endfunction
 " }}}2
 
