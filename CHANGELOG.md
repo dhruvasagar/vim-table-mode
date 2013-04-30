@@ -1,4 +1,8 @@
 # Change Log
+## Version 2.2.2
+* Added mapping for realigning table columns.
+* Added table motions to move around in the table.
+
 ## Version 2.2.1
 * Added feature to allow Table-Mode to work within comments. Uses
   'commentstring' option of vim to identify comments, so it should work for
@@ -17,7 +21,7 @@
 * Bug Fixes #2, #3 & #4
 
 ## Version 2.1.1 :
-* Added option g:table_mode_align to allow setting Tabular format option for
+* Added option `g:table_mode_align` to allow setting Tabular format option for
   more control on how Tabular aligns text.
 
 ## Version 2.1 :

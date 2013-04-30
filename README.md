@@ -58,6 +58,10 @@ sure Tabular is installed and loaded into your runtime to ensure this works.
    `:line1,line2Tableize`, but this is not that intuitive. You can also use
    the mapping `<Leader>T` with a `[count]` to apply it to the next `[count]`
    lines in usual vim style.
+- Move between cells :
+
+   Now you can move between cells using table mode motions. Check `:h
+   table-mode-motion-prefix` for more details.
 
 ### Demo
 

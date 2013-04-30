@@ -154,7 +154,9 @@ g:table_mode_motion_prefix				*table-mode-motion-prefix*
 	You can move to the next / previous row / column using the motion
 	commands. The motions 'hjkl' follow the prefix are in accordance to
 	standard vim character motions to make them easier to remember. They
-	may also be preceeded with a [count].
+	may also be preceeded with a [count]. The 'h', 'l' (left and right
+	motions) wrap around the table row and move to the previous rows last
+	column, next rows first column respectively if one exists.
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 
