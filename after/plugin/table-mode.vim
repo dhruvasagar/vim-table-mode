@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.2.1
+" Version:       2.2.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -57,7 +57,17 @@ call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>tt')
 call s:SetGlobalOptDefault('table_mode_tableize_op_map', '<Leader>T')
 call s:SetGlobalOptDefault('table_mode_align', 'l1')
 call s:SetGlobalOptDefault('table_mode_no_border_padding', '0')
+call s:SetGlobalOptDefault('table_mode_realign_map', '<Leader>tr')
+call s:SetGlobalOptDefault('table_mode_motion_prefix', '<Leader>t')
 "}}}1
+
+function! s:TableMotion() "{{{1
+  let direction = nr2char(getchar())
+  for i in range(v:count1)
+    call tablemode#TableMotion(direction)
+  endfor
+endfunction
+" }}}1
 
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active
@@ -80,6 +90,9 @@ command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q
 execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "xnoremap <silent> " . g:table_mode_tableize_op_map . " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
+
+execute "nnoremap <silent> " . g:table_mode_realign_map . " :<C-U>call tablemode#TableRealign()<CR>"
+execute "nnoremap <silent> " . g:table_mode_motion_prefix . " :<C-U>call <SID>TableMotion()<CR>"
 "}}}1
 
 " Avoiding side effects {{{1

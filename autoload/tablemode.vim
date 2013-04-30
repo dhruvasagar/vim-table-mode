@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.2.1
+" Version:       2.2.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -171,7 +171,22 @@ function! s:Tableizeline(line, ...) "{{{2
   if a:0 && type(a:1) == type('') && !empty(a:1) | let delim = a:1[1:-1] | endif
   call s:ConvertDelimiterToSeparator(a:line, delim)
   if g:table_mode_border | call s:UpdateLineBorder(a:line) | endif
-  execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
+  call tablemode#TableRealign()
+endfunction
+" }}}2
+
+function! s:ColumnCount(line) "{{{2
+  return s:Strlen(substitute(getline(a:line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
+endfunction
+" }}}2
+
+function! s:IsFirstCell() "{{{2
+  return tablemode#TableColumnNr('.') ==# 1
+endfunction
+" }}}2
+
+function! s:IsLastCell() "{{{2
+  return tablemode#TableColumnNr('.') ==# s:ColumnCount('.')
 endfunction
 " }}}2
 
@@ -185,7 +200,7 @@ function! tablemode#TableizeInsertMode() "{{{2
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
     if g:table_mode_no_border_padding && g:table_mode_align !=# 'c0' | let g:table_mode_align = 'c0' | endif
-    execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
+    call tablemode#TableRealign()
     if g:table_mode_border | call s:FillTableBorder() | endif
     normal! 0
     call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
@@ -240,7 +255,88 @@ function! tablemode#TableizeByDelimiter() "{{{2
 endfunction
 " }}}2
 
-" }}}1
+function! tablemode#TableRealign() "{{{2
+  execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
+endfunction
+" }}}2
 
-" ModeLine {{{
-" vim:fdm=marker
+function! tablemode#IsATableRow(line) "{{{2
+  return getline(a:line) =~# (s:StartExpr() . g:table_mode_separator)
+endfunction
+" }}}2
+
+function! tablemode#TableRowNr(pos) "{{{2
+  let line = 0
+  if type(a:pos) == type('')
+    let line = line(a:pos)
+  elseif type(a:pos) == type(1)
+    let line = a:pos
+  endif
+
+  let rowNr = 0
+  while line > 0
+    if tablemode#IsATableRow(line)
+      let rowNr = rowNr + 1
+    else
+      break
+    endif
+    let line = line - 2
+  endwhile
+  return rowNr
+endfunction
+" }}}2
+
+function! tablemode#TableColumnNr(pos) "{{{2
+  let pos = []
+  if type(a:pos) == type('')
+    let pos = [line(a:pos), col(a:pos)]
+  elseif type(a:pos) == type([])
+    let pos = a:pos
+  else
+    return 0
+  endif
+  return s:Strlen(substitute(getline(pos[0])[0:pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
+endfunction
+" }}}2
+
+function! tablemode#TableMotion(direction) "{{{2
+  if tablemode#IsATableRow('.')
+    let rowCount = 1
+    if g:table_mode_border | let rowCount = 2 | endif
+
+    if a:direction ==# 'l'
+      if s:IsLastCell()
+        if !tablemode#IsATableRow(line('.') + rowCount) | return | endif
+        call tablemode#TableMotion('j')
+        normal! 0
+      endif
+
+      " If line starts with g:table_mode_separator
+      if getline('.')[col('.')-1] ==# g:table_mode_separator
+        execute 'normal! 2l'
+      else
+        execute 'normal! f' . g:table_mode_separator . '2l'
+      endif
+    elseif a:direction ==# 'h'
+      if s:IsFirstCell()
+        if !tablemode#IsATableRow(line('.') - rowCount) | return | endif
+        call tablemode#TableMotion('k')
+        normal! $
+      endif
+
+      " If line ends with g:table_mode_separator
+      if getline('.')[col('.')-1] ==# g:table_mode_separator
+        execute 'normal! F' . g:table_mode_separator . '2l'
+      else
+        execute 'normal! 2F' . g:table_mode_separator . '2l'
+      endif
+    elseif a:direction ==# 'j'
+      if tablemode#IsATableRow(line('.') + rowCount) | execute 'normal ' . rowCount . 'j' | endif
+    elseif a:direction ==# 'k'
+      if tablemode#IsATableRow(line('.') - rowCount) | execute 'normal ' . rowCount . 'k' | endif
+    endif
+  endif
+endfunction
+" }}}2
+
+" }}}1

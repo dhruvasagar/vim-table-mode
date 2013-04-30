@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v2.2.1
+*table-mode.txt*			Table Mode for easy table formatting. v2.2.2
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 2.2.1
+				 VERSION 2.2.2
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -61,6 +61,8 @@ Overview:
 	|table-mode-align| .............. Set the text alignment for
 		        		Tableize.
 	|table-mode-no-border-padding| .. Set for no border padding.
+	|table-mode-realign-map| ........ Set mapping for table realigning.
+	|table-mode-motion-prefix| ...... Set prefix for table mode motions.
 
 g:table_mode_loaded					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -138,6 +140,21 @@ g:table_mode_no_border_padding			*table-mode-no-border-padding*
 <
 	NOTE this option changes |table-mode-align| to 'c0', so that
 	there is no extra padding around the contents.
+
+g:table_mode_realign_map				*table-mode-realign-map*
+	Use this option to define the mapping for realigning table columns.
+	This is useful in case you make edits to an existing table. >
+		let g:table_mode_realign_map = '<Leader>tr'
+<
+
+g:table_mode_motion_prefix				*table-mode-motion-prefix*
+	Use this option to define the prefix for table mode motion commands. >
+		let g:table_mode_motion_prefix = '<Leader>t'
+<
+	You can move to the next / previous row / column using the motion
+	commands. The motions 'hjkl' follow the prefix are in accordance to
+	standard vim character motions to make them easier to remember. They
+	may also be preceeded with a [count].
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 
@@ -159,6 +176,8 @@ MAPPINGS						*table-mode-mappings*
 <Leader>T	Triggers |table-mode-commands-tableize| on the visually
 		selected asking for user to input the delimiter.
 
+						*table-mode-mappings-realign*
+<Leader>tr	Realigns table columns
 ===============================================================================
 COMMANDS						*table-mode-commands*
 
