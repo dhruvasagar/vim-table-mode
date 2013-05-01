@@ -199,9 +199,7 @@ function! tablemode#TableizeInsertMode() "{{{2
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
-    if g:table_mode_no_border_padding && g:table_mode_align !=# 'c0' | let g:table_mode_align = 'c0' | endif
     call tablemode#TableRealign()
-    if g:table_mode_border | call s:FillTableBorder() | endif
     normal! 0
     call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
   endif
@@ -256,7 +254,9 @@ endfunction
 " }}}2
 
 function! tablemode#TableRealign() "{{{2
+  if g:table_mode_no_border_padding && g:table_mode_align !=# 'c0' | let g:table_mode_align = 'c0' | endif
   execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
+  if g:table_mode_border | call s:FillTableBorder() | endif
 endfunction
 " }}}2
 
