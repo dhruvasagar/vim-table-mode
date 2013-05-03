@@ -175,18 +175,13 @@ function! s:Tableizeline(line, ...) "{{{2
 endfunction
 " }}}2
 
-function! s:ColumnCount(line) "{{{2
-  return s:Strlen(substitute(getline(a:line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
-endfunction
-" }}}2
-
 function! s:IsFirstCell() "{{{2
   return tablemode#TableColumnNr('.') ==# 1
 endfunction
 " }}}2
 
 function! s:IsLastCell() "{{{2
-  return tablemode#TableColumnNr('.') ==# s:ColumnCount('.')
+  return tablemode#TableColumnNr('.') ==# tablemode#ColumnCount('.')
 endfunction
 " }}}2
 
@@ -265,13 +260,51 @@ function! tablemode#IsATableRow(line) "{{{2
 endfunction
 " }}}2
 
-function! tablemode#TableRowNr(pos) "{{{2
+function! tablemode#RowCount(line) "{{{2
   let line = 0
-  if type(a:pos) == type('')
-    let line = line(a:pos)
-  elseif type(a:pos) == type(1)
-    let line = a:pos
+  if type(line) == type('')
+    let line = line(a:line)
+  else
+    let line = a:line
   endif
+
+  let rowCount = 1
+  if g:table_mode_border | let rowCount = 2 | endif
+
+  let [tline, totalRowCount] = [line, 0]
+  while tline > 0
+    if tablemode#IsATableRow(tline)
+      let totalRowCount = totalRowCount + 1
+    else
+      break
+    endif
+    let tline = tline - rowCount
+  endwhile
+
+  let tline = line + rowCount
+  while tline <= line('$')
+    if tablemode#IsATableRow(tline)
+      let totalRowCount = totalRowCount + 1
+    else
+      break
+    endif
+    let tline = tline + rowCount
+  endwhile
+
+  return totalRowCount
+endfunction
+" }}}2
+
+function! tablemode#RowNr(line) "{{{2
+  let line = 0
+  if type(a:line) == type('')
+    let line = line(a:line)
+  else
+    let line = a:line
+  endif
+
+  let rowCount = 1
+  if g:table_mode_border | let rowCount = 2 | endif
 
   let rowNr = 0
   while line > 0
@@ -280,13 +313,26 @@ function! tablemode#TableRowNr(pos) "{{{2
     else
       break
     endif
-    let line = line - 2
+    let line = line - rowCount
   endwhile
+
   return rowNr
 endfunction
 " }}}2
 
-function! tablemode#TableColumnNr(pos) "{{{2
+function! tablemode#ColumnCount(line) "{{{2
+  let line = 0
+  if type(line) == type('')
+    let line = line(a:line)
+  else
+    let line = a:line
+  endif
+
+  return s:Strlen(substitute(getline(line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
+endfunction
+" }}}2
+
+function! tablemode#ColumnNr(pos) "{{{2
   let pos = []
   if type(a:pos) == type('')
     let pos = [line(a:pos), col(a:pos)]
@@ -295,6 +341,7 @@ function! tablemode#TableColumnNr(pos) "{{{2
   else
     return 0
   endif
+
   return s:Strlen(substitute(getline(pos[0])[0:pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
 endfunction
 " }}}2
@@ -313,7 +360,7 @@ function! tablemode#TableMotion(direction) "{{{2
 
       " If line starts with g:table_mode_separator
       if getline('.')[col('.')-1] ==# g:table_mode_separator
-        execute 'normal! 2l'
+        normal! 2l
       else
         execute 'normal! f' . g:table_mode_separator . '2l'
       endif
