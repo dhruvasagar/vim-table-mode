@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v2.2.2
+*table-mode.txt*			Table Mode for easy table formatting. v2.3.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 2.2.2
+				 VERSION 2.3.0
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -43,6 +43,12 @@ anything else.
 The table mode is disabled by default and you can enter table mode using
 |table-mode-toggle-map| or you can also enable it permanently using
 |g:table-mode-always-active| if you wish.
+
+Table Mode allows for creation of tables within comments, it looks at the
+'commentstring' setting to identify whether the current line is commented.
+
+Table Mode enables conversion of delimited text into tables. Again like table
+creation, this is also applicable within comments.
 
 ===============================================================================
 OPTIONS							*table-mode-options*
@@ -180,6 +186,9 @@ MAPPINGS						*table-mode-mappings*
 
 						*table-mode-mappings-realign*
 <Leader>tr	Realigns table columns
+
+						*table-mode-mappings-motions*
+<Leader>t[hjkl]	Move to previous | below | above | right cell in the table.
 ===============================================================================
 COMMANDS						*table-mode-commands*
 

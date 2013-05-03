@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.2.2
+" Version:       2.3.0
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -32,11 +32,6 @@ endfunction
 " See :h strlen() for more details
 function! s:Strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
-endfunction
-" }}}2
-
-function! s:CountSeparator(line, separator) "{{{2
-  return s:Strlen(substitute(getline(a:line), '[^' . a:separator . ']', '', 'g'))
 endfunction
 " }}}2
 
@@ -98,57 +93,53 @@ function! s:SetActive(bool) "{{{2
 endfunction
 " }}}2
 
-function! s:UpdateLineBorder(line) "{{{2
-  let cline = a:line
-  let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner . ' ' .
-         \ g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
-  let curr_line_count = s:CountSeparator(cline, g:table_mode_separator)
-
-  if getline(cline-1) =~# hf
-    let prev_line_count = s:CountSeparator(cline-1, g:table_mode_corner)
-    if curr_line_count > prev_line_count
-      silent! execute 'normal! kA' . repeat(g:table_mode_corner, curr_line_count - prev_line_count) . "\<Esc>j"
-    endif
+function! s:GenerateBorder(line) "{{{2
+  let line = 0
+  if type(a:line) == type('')
+    let line = line(a:line)
   else
-    let cstartexpr = s:StartCommentExpr()
-    if s:Strlen(cstartexpr) > 0 && getline(cline) =~# cstartexpr
-      let indent = matchstr(getline(cline), s:StartCommentExpr())
-      call append(cline-1, indent . repeat(g:table_mode_corner, curr_line_count))
-    else
-      call append(cline-1, repeat(g:table_mode_corner, curr_line_count))
-    endif
-    let cline = a:line + 1 " because of the append, the current line moved down
+    let line = a:line
   endif
 
-  if getline(cline+1) =~# hf
-    let next_line_count = s:CountSeparator(cline+1, g:table_mode_corner)
-    if curr_line_count > next_line_count
-      silent! execute 'normal! jA' . repeat(g:table_mode_corner, curr_line_count - next_line_count) . "\<Esc>k"
-    end
+  let border = substitute(getline(line)[stridx(getline(line), g:table_mode_separator):-1], g:table_mode_separator, g:table_mode_corner, 'g')
+  let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
+
+  let cstartexpr = s:StartCommentExpr()
+  if s:Strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
+    let indent = matchstr(getline(line), s:StartCommentExpr())
+    return indent . border
+  elseif getline(line) =~# s:StartExpr()
+    let indent = matchstr(getline(line), s:StartExpr())
+    return indent . border
   else
-    let cstartexpr = s:StartCommentExpr()
-    if s:Strlen(cstartexpr) > 0 && getline(cline) =~# cstartexpr
-      let indent = matchstr(getline(cline), s:StartCommentExpr())
-      call append(cline, indent . repeat(g:table_mode_corner, curr_line_count))
-    else
-      call append(cline, repeat(g:table_mode_corner, curr_line_count))
-    endif
+    return border
   endif
 endfunction
 " }}}2
 
-function! s:FillTableBorder() "{{{2
-  let [ current_col, current_line ] = [ col('.'), line('.') ]
-  if g:table_mode_no_border_padding
-    silent! execute '%s/' . g:table_mode_corner . '\zs\([' .
-          \ g:table_mode_fillchar . ' ]*\)\ze' . g:table_mode_corner .
-          \ '/\=repeat("' . g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
+function! s:UpdateLineBorder(line) "{{{2
+  let cline = a:line
+  let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner .
+        \  g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
+
+  let border = s:GenerateBorder(cline)
+
+  let [prev_line, next_line] = [getline(cline-1), getline(cline+1)]
+  if next_line =~# hf
+    if next_line !=# border
+      call setline(cline+1, border)
+    endif
   else
-    silent! execute '%s/' . g:table_mode_corner . ' \zs\([' .
-          \ g:table_mode_fillchar . ' ]*\)\ze ' . g:table_mode_corner .
-          \ '/\=repeat("' . g:table_mode_fillchar . '", s:Strlen(submatch(0)))/g'
+    call append(cline, border)
   endif
-  call cursor(current_line, current_col)
+
+  if prev_line =~# hf
+    if prev_line !=# border
+      call setline(cline-1, border)
+    endif
+  else
+    call append(cline-1, border)
+  endif
 endfunction
 " }}}2
 
@@ -171,7 +162,6 @@ function! s:Tableizeline(line, ...) "{{{2
   if a:0 && type(a:1) == type('') && !empty(a:1) | let delim = a:1[1:-1] | endif
   call s:ConvertDelimiterToSeparator(a:line, delim)
   if g:table_mode_border | call s:UpdateLineBorder(a:line) | endif
-  call tablemode#TableRealign()
 endfunction
 " }}}2
 
@@ -193,8 +183,7 @@ function! tablemode#TableizeInsertMode() "{{{2
   if s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator)
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
-    if g:table_mode_border | call s:UpdateLineBorder(line('.')) | endif
-    call tablemode#TableRealign()
+    call tablemode#TableRealign('.')
     normal! 0
     call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
   endif
@@ -234,7 +223,8 @@ function! tablemode#TableizeRange(...) range "{{{2
     undojoin
     let lnum = lnum + shift
   endwhile
-  if g:table_mode_border | call s:FillTableBorder() | endif
+
+  if g:table_mode_border | call tablemode#TableRealign(lnum - shift) | endif
 endfunction
 " }}}2
 
@@ -248,10 +238,47 @@ function! tablemode#TableizeByDelimiter() "{{{2
 endfunction
 " }}}2
 
-function! tablemode#TableRealign() "{{{2
-  if g:table_mode_no_border_padding && g:table_mode_align !=# 'c0' | let g:table_mode_align = 'c0' | endif
-  execute 'Tabularize/[' . g:table_mode_separator . g:table_mode_corner . ']/' . g:table_mode_align
-  if g:table_mode_border | call s:FillTableBorder() | endif
+function! tablemode#TableRealign(line) "{{{2
+  let line = 0
+  if type(a:line) == type('')
+    let line = line(a:line)
+  else
+    let line = a:line
+  endif
+
+  let rowCount = 1
+  if g:table_mode_border | let rowCount = 2 | endif
+
+  let [lnums, lines] = [[], []]
+  let tline = line
+  while tline > 0
+    if tablemode#IsATableRow(tline)
+      call insert(lnums, tline)
+      call insert(lines, getline(tline))
+    else
+      break
+    endif
+    let tline = tline - rowCount
+  endwhile
+
+  let tline = line + rowCount
+  while tline <= line('$')
+    if tablemode#IsATableRow(tline)
+      call add(lnums, tline)
+      call add(lines, getline(tline))
+    else
+      break
+    endif
+    let tline = tline + rowCount
+  endwhile
+
+  call tabular#TabularizeStrings(lines, g:table_mode_separator)
+
+  for lnum in lnums
+    let index = index(lnums, lnum)
+    call setline(lnum, lines[index])
+    call s:UpdateLineBorder(lnum)
+  endfor
 endfunction
 " }}}2
 
@@ -262,7 +289,7 @@ endfunction
 
 function! tablemode#RowCount(line) "{{{2
   let line = 0
-  if type(line) == type('')
+  if type(a:line) == type('')
     let line = line(a:line)
   else
     let line = a:line
@@ -322,7 +349,7 @@ endfunction
 
 function! tablemode#ColumnCount(line) "{{{2
   let line = 0
-  if type(line) == type('')
+  if type(a:line) == type('')
     let line = line(a:line)
   else
     let line = a:line
