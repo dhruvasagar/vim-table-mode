@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.3.0
+" Version:       2.4.0
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -58,6 +58,9 @@ call s:SetGlobalOptDefault('table_mode_tableize_op_map', '<Leader>T')
 call s:SetGlobalOptDefault('table_mode_align', 'l1')
 call s:SetGlobalOptDefault('table_mode_realign_map', '<Leader>tr')
 call s:SetGlobalOptDefault('table_mode_motion_prefix', '<Leader>t')
+call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
+call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
+call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
 "}}}1
 
 function! s:TableMotion() "{{{1
@@ -69,7 +72,7 @@ endfunction
 " }}}1
 
 " Define Commands & Mappings {{{1
-if !g:table_mode_always_active
+if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent> " . g:table_mode_toggle_map .
        \ " <Esc>:call tablemode#TableModeToggle()<CR>"
   command! -nargs=0 TableModeToggle call tablemode#TableModeToggle()
@@ -84,14 +87,21 @@ else
         \ table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
   unlet table_mode_separator_map
 endif
+" }}}2
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
+
 execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "xnoremap <silent> " . g:table_mode_tableize_op_map . " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
 
 execute "nnoremap <silent> " . g:table_mode_realign_map . " :<C-U>call tablemode#TableRealign('.')<CR>"
 execute "nnoremap <silent> " . g:table_mode_motion_prefix . " :<C-U>call <SID>TableMotion()<CR>"
+
+execute "onoremap <silent> " . g:table_mode_cell_text_object . " :<C-U>call tablemode#CellTextObject()<CR>"
+
+execute "nnoremap <silent> " . g:table_mode_delete_row_map . " :<C-U>call tablemode#DeleteRow()<CR>"
+execute "nnoremap <silent> " . g:table_mode_delete_column_map . " :<C-U>call tablemode#DeleteColumn()<CR>"
 "}}}1
 
 " Avoiding side effects {{{1

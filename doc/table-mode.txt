@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v2.3.0
+*table-mode.txt*			Table Mode for easy table formatting. v2.4.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 2.3.0
+				 VERSION 2.4.0
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -34,21 +34,40 @@ make sure it is installed and loaded.
 ===============================================================================
 GETTING STARTED					*table-mode-getting-started*
 
-Using Table Mode is dead simple. You simply start typing on a new line with
-the table separator - |g:table-mode-separator|, and you just type away! The
-plugin does the rest automatically for you as you type. With each additional
-separator you add, it aligns the table properly, without having to do
-anything else.
+Create Table on the fly:
+	Using Table Mode is dead simple. You simply start typing on a new line
+	with the table separator - |g:table-mode-separator|, and you just type
+	away! The plugin does the rest automatically for you as you type. With
+	each additional separator you add, it aligns the table properly,
+	without having to do anything else.
 
-The table mode is disabled by default and you can enter table mode using
-|table-mode-toggle-map| or you can also enable it permanently using
-|g:table-mode-always-active| if you wish.
+	The table mode is disabled by default and you can enter table mode
+	using |table-mode-toggle-map| or you can also enable it permanently
+	using |g:table-mode-always-active| if you wish.
 
-Table Mode allows for creation of tables within comments, it looks at the
-'commentstring' setting to identify whether the current line is commented.
+	Table Mode allows for creation of tables within comments, it looks at
+	the 'commentstring' setting to identify whether the current line is
+	commented.
 
-Table Mode enables conversion of delimited text into tables. Again like table
-creation, this is also applicable within comments.
+Tableize content:
+	Table Mode enables conversion of delimited text into tables. Again
+	like table creation, this is also applicable within comments.
+
+Manipulation of tables:
+	Tableize provides 3 easy ways to quickly manipulate tables.
+
+	1. Cell Text Object : A text object for table cell
+	defined by |table-mode-cell-text-object|.  You can use it with an
+	operator (d,c,y) to manipulate it easily. If you delete the cell using
+	this, it will delete the table separator along with it so if you type
+	out some new stuff, you will have to re-add it, which triggers a
+	re-alignment and the table would be formatted again.
+
+	2. Delete Column : Delete an entire table column using
+	|table-mode-delete-column-map| .
+
+	3. Delete Row : Delete an entire table row using
+	|table-mode-delete-row-map|
 
 ===============================================================================
 OPTIONS							*table-mode-options*
@@ -69,6 +88,10 @@ Overview:
 	|table-mode-no-border-padding| .. Set for no border padding.
 	|table-mode-realign-map| ........ Set mapping for table realigning.
 	|table-mode-motion-prefix| ...... Set prefix for table mode motions.
+	|table-mode-cell-text-object| ... Set mapping for table cell object.
+	|table-mode-delete-row-map| ..... Set mapping for deleting table row.
+	|table-mode-delete-column-map| .. Set mapping for deleting table
+					column.
 
 g:table_mode_loaded					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -163,6 +186,36 @@ g:table_mode_motion_prefix				*table-mode-motion-prefix*
 	may also be preceeded with a [count]. The 'h', 'l' (left and right
 	motions) wrap around the table row and move to the previous rows last
 	column, next rows first column respectively if one exists.
+
+g:table_mode_cell_text_object			*table-mode-cell-text-object*
+	Use this option to define the table mode cell text object. >
+		let g:table_mode_cell_text_object = 'tc'
+<
+	This text object automatically selects different text depending on the
+	context.
+	
+	If you delete the cell using either the 'd' or the 'c'
+	operator, it will delete cell contents along with the table separator.
+	In case you do it with 'c' while you add new content for the cell, you
+	will have to re-add the |table-mode-separator|, which will trigger the
+	re-alignment of the table again and format it correctly.
+
+	If you simply want to yank the table content, this text object will
+	select only the table cell contents, without the padding (extra space
+	around the text) or the |table-mode-separator|.
+
+g:table_mode_delete_row_map			*table-mode-delete-row-map*
+	Use this option to define the mapping for deletion of the entire table
+	row. You can delete multiple rows by preceeding this with a [count]. >
+		let g:table_mode_delete_column_map = '<Leader>tdd'
+
+g:table_mode_delete_column_map			*table-mode-delete-column-map*
+	USe this option to define the mapping for deletion of the entire table
+	column. You can delete multiple columns to the right by preceeding
+	this with a [count] >
+		let g:table_mode_delete_column_map = '<Leader>tdc'
+<
+
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 
@@ -189,6 +242,17 @@ MAPPINGS						*table-mode-mappings*
 
 						*table-mode-mappings-motions*
 <Leader>t[hjkl]	Move to previous | below | above | right cell in the table.
+
+						*table-mode-mappings-delete-row*
+<Leader>tdd	Delete the entire table row you are on or multiple rows using
+		a [count]. You can change this using |table-mode-delete-row-map|
+		option.
+
+					      *table-mode-mappings-delete-column*
+<Leader>tdc	Delete entire table column you are within. You can preceed it
+		with a [count] to delete multiple columns to the right. You
+		can change this using |table-mode-delete-column-map| option.
+
 ===============================================================================
 COMMANDS						*table-mode-commands*
 
@@ -244,4 +308,4 @@ REPORT ISSUES					      *table-mode-report-issues*
 If you discover any issues, please report them at
 http://github.com/dhruvasagar/table-mode/issues.
 
- vim:tw=78:ts=8:ft=help:norl:
+ vim:tw=78:ts=8:ft=help:norl:ai

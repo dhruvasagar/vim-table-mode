@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.3.0
+" Version:       2.4.0
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -93,13 +93,17 @@ function! s:SetActive(bool) "{{{2
 endfunction
 " }}}2
 
-function! s:GenerateBorder(line) "{{{2
-  let line = 0
+function! s:Line(line) "{{{2
   if type(a:line) == type('')
-    let line = line(a:line)
+    return line(a:line)
   else
-    let line = a:line
+    return a:line
   endif
+endfunction
+" }}}2
+
+function! s:GenerateBorder(line) "{{{2
+  let line = s:Line(a:line)
 
   let border = substitute(getline(line)[stridx(getline(line), g:table_mode_separator):-1], g:table_mode_separator, g:table_mode_corner, 'g')
   let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
@@ -118,27 +122,28 @@ endfunction
 " }}}2
 
 function! s:UpdateLineBorder(line) "{{{2
-  let cline = a:line
+  let line = s:Line(a:line)
+
   let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner .
         \  g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
 
-  let border = s:GenerateBorder(cline)
+  let border = s:GenerateBorder(line)
 
-  let [prev_line, next_line] = [getline(cline-1), getline(cline+1)]
+  let [prev_line, next_line] = [getline(line-1), getline(line+1)]
   if next_line =~# hf
-    if next_line !=# border
-      call setline(cline+1, border)
+    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line + s:RowGap())) || !tablemode#IsATableRow(line + s:RowGap())
+      call setline(line+1, border)
     endif
   else
-    call append(cline, border)
+    call append(line, border)
   endif
 
   if prev_line =~# hf
-    if prev_line !=# border
-      call setline(cline-1, border)
+    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line - s:RowGap())) || !tablemode#IsATableRow(line - s:RowGap())
+      call setline(line-1, border)
     endif
   else
-    call append(cline-1, border)
+    call append(line-1, border)
   endif
 endfunction
 " }}}2
@@ -166,12 +171,58 @@ endfunction
 " }}}2
 
 function! s:IsFirstCell() "{{{2
-  return tablemode#TableColumnNr('.') ==# 1
+  return tablemode#ColumnNr('.') ==# 1
 endfunction
 " }}}2
 
 function! s:IsLastCell() "{{{2
-  return tablemode#TableColumnNr('.') ==# tablemode#ColumnCount('.')
+  return tablemode#ColumnNr('.') ==# tablemode#ColumnCount('.')
+endfunction
+" }}}2
+
+function! s:MoveToFirstRow() "{{{2
+  if tablemode#IsATableRow('.')
+    let line = s:Line('.')
+    while line > 0
+      if !tablemode#IsATableRow(line)
+        break
+      endif
+      let line = line - s:RowGap()
+    endwhile
+    call cursor(line + s:RowGap(), col('.'))
+  endif
+endfunction
+" }}}2
+
+function! s:MoveToLastRow() "{{{2
+  if tablemode#IsATableRow('.')
+    let line = s:Line('.')
+    while line <= line('$')
+      if !tablemode#IsATableRow(line)
+        break
+      endif
+      let line = line + s:RowGap()
+    endwhile
+    call cursor(line - s:RowGap(), col('.'))
+  endif
+endfunction
+" }}}2
+
+function! s:MoveToStartOfCell() "{{{2
+  if getline('.')[col('.')-1] ==# g:table_mode_separator && !s:IsLastCell()
+    normal! 2l
+  else
+    execute 'normal! F' . g:table_mode_separator . '2l'
+  endif
+endfunction
+" }}}2
+
+function! s:RowGap() "{{{2
+  if g:table_mode_border
+    return 2
+  else
+    return 1
+  endif
 endfunction
 " }}}2
 
@@ -246,9 +297,6 @@ function! tablemode#TableRealign(line) "{{{2
     let line = a:line
   endif
 
-  let rowCount = 1
-  if g:table_mode_border | let rowCount = 2 | endif
-
   let [lnums, lines] = [[], []]
   let tline = line
   while tline > 0
@@ -258,10 +306,10 @@ function! tablemode#TableRealign(line) "{{{2
     else
       break
     endif
-    let tline = tline - rowCount
+    let tline = tline - s:RowGap()
   endwhile
 
-  let tline = line + rowCount
+  let tline = line + s:RowGap()
   while tline <= line('$')
     if tablemode#IsATableRow(tline)
       call add(lnums, tline)
@@ -269,7 +317,7 @@ function! tablemode#TableRealign(line) "{{{2
     else
       break
     endif
-    let tline = tline + rowCount
+    let tline = tline + s:RowGap()
   endwhile
 
   call tabular#TabularizeStrings(lines, g:table_mode_separator)
@@ -277,6 +325,7 @@ function! tablemode#TableRealign(line) "{{{2
   for lnum in lnums
     let index = index(lnums, lnum)
     call setline(lnum, lines[index])
+    undojoin
     call s:UpdateLineBorder(lnum)
   endfor
 endfunction
@@ -288,15 +337,7 @@ endfunction
 " }}}2
 
 function! tablemode#RowCount(line) "{{{2
-  let line = 0
-  if type(a:line) == type('')
-    let line = line(a:line)
-  else
-    let line = a:line
-  endif
-
-  let rowCount = 1
-  if g:table_mode_border | let rowCount = 2 | endif
+  let line = s:Line(a:line)
 
   let [tline, totalRowCount] = [line, 0]
   while tline > 0
@@ -305,17 +346,17 @@ function! tablemode#RowCount(line) "{{{2
     else
       break
     endif
-    let tline = tline - rowCount
+    let tline = tline - s:RowGap()
   endwhile
 
-  let tline = line + rowCount
+  let tline = line + s:RowGap()
   while tline <= line('$')
     if tablemode#IsATableRow(tline)
       let totalRowCount = totalRowCount + 1
     else
       break
     endif
-    let tline = tline + rowCount
+    let tline = tline + s:RowGap()
   endwhile
 
   return totalRowCount
@@ -323,15 +364,7 @@ endfunction
 " }}}2
 
 function! tablemode#RowNr(line) "{{{2
-  let line = 0
-  if type(a:line) == type('')
-    let line = line(a:line)
-  else
-    let line = a:line
-  endif
-
-  let rowCount = 1
-  if g:table_mode_border | let rowCount = 2 | endif
+  let line = s:Line(a:line)
 
   let rowNr = 0
   while line > 0
@@ -340,7 +373,7 @@ function! tablemode#RowNr(line) "{{{2
     else
       break
     endif
-    let line = line - rowCount
+    let line = line - s:RowGap()
   endwhile
 
   return rowNr
@@ -348,12 +381,7 @@ endfunction
 " }}}2
 
 function! tablemode#ColumnCount(line) "{{{2
-  let line = 0
-  if type(a:line) == type('')
-    let line = line(a:line)
-  else
-    let line = a:line
-  endif
+  let line = s:Line(a:line)
 
   return s:Strlen(substitute(getline(line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
 endfunction
@@ -375,12 +403,9 @@ endfunction
 
 function! tablemode#TableMotion(direction) "{{{2
   if tablemode#IsATableRow('.')
-    let rowCount = 1
-    if g:table_mode_border | let rowCount = 2 | endif
-
     if a:direction ==# 'l'
       if s:IsLastCell()
-        if !tablemode#IsATableRow(line('.') + rowCount) | return | endif
+        if !tablemode#IsATableRow(line('.') + s:RowGap()) | return | endif
         call tablemode#TableMotion('j')
         normal! 0
       endif
@@ -393,7 +418,7 @@ function! tablemode#TableMotion(direction) "{{{2
       endif
     elseif a:direction ==# 'h'
       if s:IsFirstCell()
-        if !tablemode#IsATableRow(line('.') - rowCount) | return | endif
+        if !tablemode#IsATableRow(line('.') - s:RowGap()) | return | endif
         call tablemode#TableMotion('k')
         normal! $
       endif
@@ -405,10 +430,60 @@ function! tablemode#TableMotion(direction) "{{{2
         execute 'normal! 2F' . g:table_mode_separator . '2l'
       endif
     elseif a:direction ==# 'j'
-      if tablemode#IsATableRow(line('.') + rowCount) | execute 'normal ' . rowCount . 'j' | endif
+      if tablemode#IsATableRow(line('.') + s:RowGap()) | execute 'normal ' . s:RowGap() . 'j' | endif
     elseif a:direction ==# 'k'
-      if tablemode#IsATableRow(line('.') - rowCount) | execute 'normal ' . rowCount . 'k' | endif
+      if tablemode#IsATableRow(line('.') - s:RowGap()) | execute 'normal ' . s:RowGap() . 'k' | endif
     endif
+  endif
+endfunction
+" }}}2
+
+function! tablemode#CellTextObject() "{{{2
+  if tablemode#IsATableRow('.')
+    call s:MoveToStartOfCell()
+
+    if v:operator ==# 'y'
+      normal! v
+      call search('[^' . g:table_mode_separator . ']\ze\s*' . g:table_mode_separator)
+    else
+      execute 'normal! vf' . g:table_mode_separator
+    endif
+  endif
+endfunction
+" }}}2
+
+function! tablemode#DeleteColumn() "{{{2
+  if tablemode#IsATableRow('.')
+    for i in range(v:count1)
+      call s:MoveToFirstRow()
+      call s:MoveToStartOfCell()
+      silent! execute "normal! h\<C-V>f" . g:table_mode_separator
+      call s:MoveToLastRow()
+      normal! d
+    endfor
+
+    call tablemode#TableRealign('.')
+  endif
+endfunction
+" }}}2
+
+function! tablemode#DeleteRow() "{{{2
+  if tablemode#IsATableRow('.')
+    for i in range(v:count1)
+      if tablemode#RowCount('.') ==# 1
+        normal! kVjjd
+      else
+        normal! kVjd
+      endif
+
+      if tablemode#IsATableRow(line('.')+1)
+        normal! j
+      else
+        normal! k
+      endif
+    endfor
+
+    call tablemode#TableRealign('.')
   endif
 endfunction
 " }}}2

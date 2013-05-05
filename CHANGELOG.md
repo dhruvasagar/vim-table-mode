@@ -1,4 +1,12 @@
 # Change Log
+## Version 2.4.0
+* Added Table Cell text object.
+* Added api to delete entire table row.
+* Added api to delete entire table column.
+
+## Version 2.3.0
+* Refactored realignment logic. Generating borders by hand.
+
 ## Version 2.2.2
 * Added mapping for realigning table columns.
 * Added table motions to move around in the table.
