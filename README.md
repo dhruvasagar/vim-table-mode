@@ -33,41 +33,56 @@ sure Tabular is installed and loaded into your runtime to ensure this works.
 
 ### Usage
 
-- On the fly table creation :
+- **On the fly table creation** :
 
-   By default the table column separator is '|' (it can be changed). As soon as
-   you type it on a new line (ignores indentation) the script gets to work on
-   creating a table around it. As you type and define more columns, the table
-   is completed, formatted and aligned automatically on the fly.
+   By default the table column separator is `|` defined by the
+   `g:table_mode_separator` option. As soon as you type it on a new line (ignores
+   indentation) the script gets to work on creating a table around it. As you
+   type and define more columns, the table is completed, formatted and aligned
+   automatically on the fly.
 
    Since this could lead to unwanted behavior I have disabled table mode by
-   default. You would have to use `:TableModeToggle` command or the table mode
-   toggle mapping, which is `<Leader>tm` by default to toggle the table mode or
-   you can directly use `:TableModeEnable` and `:TableModeDisable` to enable or
-   disable the table mode. This is on a per buffer basis and so it does not
-   cause any unusual behavior unless enabled explicitly. Please read `:h
-   table-mode` for further information.
+   default. You have to use `:TableModeToggle` command or the table mode
+   toggle mapping, which is `<Leader>tm` defined by `g:table_mode_toggle_map`
+   option to toggle the table mode or you can directly use `:TableModeEnable`
+   and `:TableModeDisable` to enable or disable the table mode. This is on a
+   per buffer basis and so it does not cause any unusual behavior unless it is
+   enabled explicitly. Please read `:h table-mode` for further information.
 
-- Format existing content into a table :
+- **Format existing content into a table** :
 
    Table Mode wouldn't justify it's name if it didn't allow formatting
    existing content into a table. And it does as promised. Like table creation
    on the fly as you type, formatting existing content into a table is equally
-   simple. You can visually select multiple lines and call `:Tableize` on it, or
-   alternatively use the mapping `<Leader>T` (this is configurable). `:Tableize`
-   accepts a range and so you can also call it by giving lines manually like
-   `:line1,line2Tableize`, but this is not that intuitive. You can also use
-   the mapping `<Leader>T` with a `[count]` to apply it to the next `[count]`
-   lines in usual vim style.
+   simple. You can visually select multiple lines and call `:Tableize` on it,
+   or alternatively use the mapping `<Leader>tt` defined by the
+   `g:table_mode_tableize_map` option which would convert CSV (Comma Separated
+   Value) data into a table and use `,` defined by `g:table_mode_delimiter`
+   option as the delimiter.
 
-- Move between cells :
+   If however you wish to use a different delimiter, you can use the command
+   `:Tableize/{pattern}` in a similar fashion as you use tabular (eg.
+   `:Tableize/;` uses ';' as the delimiter) or use the mapping `<Leader>T`
+   defined by `g:table_mode_tableize_op_map` option which takes input in the
+   cmd-line and uses the `{pattern}` input as the delimiter.
 
-   Now you can move between cells using table mode motions. Check `:h
-   table-mode-motion-prefix` for more details.
+   `:Tableize` also accepts a range and so you can also call it by giving
+   lines manually like `:line1,line2Tableize`, but this is not very intuitive.
+   You can use the mapping `<Leader>T` with a `[count]` to apply it to the
+   next `[count]` lines in standard vim style.
 
-- Manipulating Table :
+- **Move between cells** :
 
-  - Cell Text Object :
+   Now you can move between cells using table mode motions `<Leader>t[hjkl]`
+   to move left | down | up | right cells respectively. You can use
+   `g:table_mode_motion_prefix` option to define the prefix mapping to be used
+   before 'hjkl'. The left | right motions wrap around the table and move to
+   the next | previous row after the last | first cell in the current row if
+   one exists. 
+
+- **Manipulating Table** :
+
+  - **Cell Text Object** :
 
       Tableize provides a text object for manipulating table cells. By default
       it's `tc`, but that can be changed if you wish to by setting the
@@ -81,14 +96,15 @@ sure Tabular is installed and loaded into your runtime to ensure this works.
       text object itself). However if you were to 'y' or yank the text, it
       would copy the right text, i.e. the contents of the cell and nothing
       else.
-  - Delete Row :
+
+  - **Delete Row** :
 
       You can use the `<Leader>tdd` mapping defined by the option
       `g:table_mode_delete_row_map` to delete the current table row (provided
       you are within a table row), this can be preceeded with a [count] to
       delete multiple rows just like you would with 'dd'.
 
-  - Delete Column :
+  - **Delete Column** :
 
       You can use the `<Leader>tdc` mapping defined by the option
       `g:table_mode_delete_column_map` to delete the entire current column
