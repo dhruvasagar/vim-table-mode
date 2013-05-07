@@ -493,4 +493,4 @@ function! tablemode#DeleteRow() "{{{2
 endfunction
 " }}}2
 
-" }}}1
+" vim: sw=2 sts=2 fdl=0 fdm=marker

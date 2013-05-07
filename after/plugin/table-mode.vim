@@ -109,4 +109,4 @@ let &cpo = s:save_cpo
 " }}}1
 
 " ModeLine {{{
-" vim:fdl=0 fdm=marker
+" vim: sw=2 sts=2 fdl=0 fdm=marker
