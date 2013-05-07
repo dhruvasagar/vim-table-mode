@@ -21,6 +21,11 @@
 
 " Private Functions {{{1
 
+if exists('g:autoloaded_table_mode')
+  finish
+endif
+let g:autoloaded_table_mode = 1
+
 function! s:SetBufferOptDefault(opt, val) "{{{2
   if !exists('b:' . a:opt)
     let b:{a:opt} = a:val
@@ -488,4 +493,4 @@ function! tablemode#DeleteRow() "{{{2
 endfunction
 " }}}2
 
-" }}}1
+" vim: sw=2 sts=2 fdl=0 fdm=marker
