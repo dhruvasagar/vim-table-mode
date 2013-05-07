@@ -20,10 +20,10 @@
 " =============================================================================
 
 " Finish if already loaded {{{1
-if exists('g:table_mode_loaded')
+if exists('g:loaded_table_mode')
   finish
 endif
-let g:table_mode_loaded = 1
+let g:loaded_table_mode = 1
 "}}}1
 "
 " Finish if Tabularize plugin is not available {{{1
