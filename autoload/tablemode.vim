@@ -127,11 +127,12 @@ function! s:UpdateLineBorder(line) "{{{2
   let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner .
         \  g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
 
+  let rowgap = s:RowGap()
   let border = s:GenerateBorder(line)
 
   let [prev_line, next_line] = [getline(line-1), getline(line+1)]
   if next_line =~# hf
-    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line + s:RowGap())) || !tablemode#IsATableRow(line + s:RowGap())
+    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line + rowgap)) || !tablemode#IsATableRow(line + rowgap)
       call setline(line+1, border)
     endif
   else
@@ -139,7 +140,7 @@ function! s:UpdateLineBorder(line) "{{{2
   endif
 
   if prev_line =~# hf
-    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line - s:RowGap())) || !tablemode#IsATableRow(line - s:RowGap())
+    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line - rowgap)) || !tablemode#IsATableRow(line - rowgap)
       call setline(line-1, border)
     endif
   else
@@ -290,12 +291,7 @@ endfunction
 " }}}2
 
 function! tablemode#TableRealign(line) "{{{2
-  let line = 0
-  if type(a:line) == type('')
-    let line = line(a:line)
-  else
-    let line = a:line
-  endif
+  let line = s:Line(a:line)
 
   let [lnums, lines] = [[], []]
   let tline = line
