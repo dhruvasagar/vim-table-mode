@@ -71,6 +71,44 @@ function! s:TableMotion() "{{{1
 endfunction
 " }}}1
 
+let s:tables = {}
+
+function! s:AddFormula(formula, range) abort "{{{1
+  let line = line('.')
+  let colm = tablemode#ColumnNr('.')
+  let bufnr = bufnr('%')
+  let formula = 'tablemode#'.a:formula.'('.a:range.','.line.','.colm.')'
+
+  if has_key(s:tables, bufnr)
+    if has_key(s:tables[bufnr], line)
+      let s:tables[bufnr][line][colm] = formula
+    else
+      let s:tables[bufnr][line] = { colm: formula }
+    endif
+  else
+    let s:tables[bufnr] = {}
+    let s:tables[bufnr][line] = {}
+    let s:tables[bufnr][line][colm] = formula
+  endif
+endfunction
+" }}}1
+
+function! s:RecalculateFormulas() "{{{1
+  let bufnr = bufnr('%')
+  if has_key(s:tables, bufnr)
+    let formulas = s:tables[bufnr]
+    for [line, cform] in items(formulas)
+      let line = str2nr(line)
+      for [colm, formula] in items(cform)
+        let colm = str2nr(colm)
+        let row = tablemode#RowNr(line)
+        call tablemode#SetCell(eval(formula), line, row, colm)
+      endfor
+    endfor
+  endif
+endfunction
+" }}}1
+
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent> " . g:table_mode_toggle_map .
@@ -94,14 +132,14 @@ command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q
 execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
 execute "xnoremap <silent> " . g:table_mode_tableize_op_map . " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
-
 execute "nnoremap <silent> " . g:table_mode_realign_map . " :<C-U>call tablemode#TableRealign('.')<CR>"
 execute "nnoremap <silent> " . g:table_mode_motion_prefix . " :<C-U>call <SID>TableMotion()<CR>"
-
 execute "onoremap <silent> " . g:table_mode_cell_text_object . " :<C-U>call tablemode#CellTextObject()<CR>"
-
 execute "nnoremap <silent> " . g:table_mode_delete_row_map . " :<C-U>call tablemode#DeleteRow()<CR>"
 execute "nnoremap <silent> " . g:table_mode_delete_column_map . " :<C-U>call tablemode#DeleteColumn()<CR>"
+
+command! -nargs=* TableForumla call s:AddFormula(<f-args>)
+command! TableRecalc call s:RecalculateFormulas()
 "}}}1
 
 " Avoiding side effects {{{1

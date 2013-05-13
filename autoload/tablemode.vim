@@ -1,5 +1,4 @@
 " =============================================================================
-" File:          autoload/tablemode.vim
 " Description:   Table mode for vim for creating neat tables.
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
@@ -21,21 +20,73 @@
 
 " Private Functions {{{1
 
-function! s:SetBufferOptDefault(opt, val) "{{{2
+" Utility Functions {{{2
+
+function! s:throw(string) abort "{{{3
+  let v:errmsg = 'table-mode: ' . a:string
+  throw v:errmsg
+endfunction
+" }}}3
+
+function! s:sub(str,pat,rep) abort "{{{3
+  return substitute(a:str,'\v\C'.a:pat,a:rep,'')
+endfunction
+" }}}3
+
+function! s:gsub(str,pat,rep) abort "{{{3
+  return substitute(a:str,'\v\C'.a:pat,a:rep,'g')
+endfunction
+" }}}3
+
+function! s:SetBufferOptDefault(opt, val) "{{{3
   if !exists('b:' . a:opt)
     let b:{a:opt} = a:val
   endif
 endfunction
-" }}}2
+" }}}3
 
-" s:Strlen(text) For counting multibyte characters accurately {{{2
+function! s:Line(line) "{{{3
+  if type(a:line) == type('')
+    return line(a:line)
+  else
+    return a:line
+  endif
+endfunction
+" }}}3
+
+" s:Strlen(text) For counting multibyte characters accurately {{{3
 " See :h strlen() for more details
 function! s:Strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
 endfunction
-" }}}2
+" }}}3
 
-function! s:GetCommentStart() "{{{2
+function! s:Strip(input_string) "{{{3
+    return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
+endfunction
+" }}}3
+
+function! s:Sum(list) "{{{3
+  let result = 0
+  for item in a:list
+    if type(item) == type(1)
+      let result = result + item
+    elseif type(item) == type('')
+      let result = result + str2nr(item)
+    elseif type(item) == type([])
+      let result = result + s:Sum(item)
+    endif
+  endfor
+  return result
+endfunction
+" }}}3
+
+function! s:Average(list) "{{{3
+  return s:Sum(a:list)/len(a:list)
+endfunction
+" }}}3
+
+function! s:GetCommentStart() "{{{3
   let cstring = &commentstring
   if s:Strlen(cstring) > 0
     return substitute(split(substitute(cstring, '%s', ' ', 'g'))[0], '.', '\\\0', 'g')
@@ -43,9 +94,9 @@ function! s:GetCommentStart() "{{{2
     return ''
   endif
 endfunction
-" }}}2
+" }}}3
 
-function! s:StartExpr() "{{{2
+function! s:StartExpr() "{{{3
   let cstart = s:GetCommentStart()
   if s:Strlen(cstart) > 0
     return '^\s*\(' . cstart . '\)\?\s*'
@@ -53,9 +104,9 @@ function! s:StartExpr() "{{{2
     return '^\s*'
   endif
 endfunction
-" }}}2
+" }}}3
 
-function! s:StartCommentExpr() "{{{2
+function! s:StartCommentExpr() "{{{3
   let cstartexpr = s:GetCommentStart()
   if s:Strlen(cstartexpr) > 0
     return '^\s*' . cstartexpr . '\s*'
@@ -63,14 +114,25 @@ function! s:StartCommentExpr() "{{{2
     return ''
   endif
 endfunction
-" }}}2
+" }}}3
 
-function! s:IsTableModeActive() "{{{2
+function! s:IsTableModeActive() "{{{3
   if g:table_mode_always_active | return 1 | endif
 
   call s:SetBufferOptDefault('table_mode_active', 0)
   return b:table_mode_active
 endfunction
+" }}}3
+
+function! s:RowGap() "{{{3
+  if g:table_mode_border
+    return 2
+  else
+    return 1
+  endif
+endfunction
+" }}}3
+
 " }}}2
 
 function! s:ToggleMapping() "{{{2
@@ -93,27 +155,16 @@ function! s:SetActive(bool) "{{{2
 endfunction
 " }}}2
 
-function! s:Line(line) "{{{2
-  if type(a:line) == type('')
-    return line(a:line)
-  else
-    return a:line
-  endif
-endfunction
-" }}}2
-
 function! s:GenerateBorder(line) "{{{2
-  let line = s:Line(a:line)
-
-  let border = substitute(getline(line)[stridx(getline(line), g:table_mode_separator):-1], g:table_mode_separator, g:table_mode_corner, 'g')
+  let border = substitute(getline(a:line)[stridx(getline(a:line), g:table_mode_separator):-1], g:table_mode_separator, g:table_mode_corner, 'g')
   let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
 
   let cstartexpr = s:StartCommentExpr()
-  if s:Strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
-    let indent = matchstr(getline(line), s:StartCommentExpr())
+  if s:Strlen(cstartexpr) > 0 && getline(a:line) =~# cstartexpr
+    let indent = matchstr(getline(a:line), s:StartCommentExpr())
     return indent . border
-  elseif getline(line) =~# s:StartExpr()
-    let indent = matchstr(getline(line), s:StartExpr())
+  elseif getline(a:line) =~# s:StartExpr()
+    let indent = matchstr(getline(a:line), s:StartExpr())
     return indent . border
   else
     return border
@@ -181,30 +232,44 @@ function! s:IsLastCell() "{{{2
 endfunction
 " }}}2
 
-function! s:MoveToFirstRow() "{{{2
-  if tablemode#IsATableRow('.')
-    let line = s:Line('.')
+function! s:GetFirstRow(line) "{{{2
+  if tablemode#IsATableRow(a:line)
+    let line = s:Line(a:line)
+
     while line > 0
-      if !tablemode#IsATableRow(line)
-        break
-      endif
+      if !tablemode#IsATableRow(line - s:RowGap()) | break | endif
       let line = line - s:RowGap()
     endwhile
-    call cursor(line + s:RowGap(), col('.'))
+
+    return line
+  endif
+endfunction
+" }}}2
+
+function! s:MoveToFirstRow() "{{{2
+  if tablemode#IsATableRow('.')
+    call cursor(s:GetFirstRow('.'), col('.'))
+  endif
+endfunction
+" }}}2
+
+function! s:GetLastRow(line) "{{{2
+  if tablemode#IsATableRow(a:line)
+    let line = s:Line(a:line)
+
+    while line <= line('$')
+      if !tablemode#IsATableRow(line + s:RowGap()) | break | endif
+      let line = line + s:RowGap()
+    endwhile
+
+    return line
   endif
 endfunction
 " }}}2
 
 function! s:MoveToLastRow() "{{{2
   if tablemode#IsATableRow('.')
-    let line = s:Line('.')
-    while line <= line('$')
-      if !tablemode#IsATableRow(line)
-        break
-      endif
-      let line = line + s:RowGap()
-    endwhile
-    call cursor(line - s:RowGap(), col('.'))
+    call cursor(s:GetLastRow('.'), col('.'))
   endif
 endfunction
 " }}}2
@@ -218,12 +283,166 @@ function! s:MoveToStartOfCell() "{{{2
 endfunction
 " }}}2
 
-function! s:RowGap() "{{{2
-  if g:table_mode_border
-    return 2
-  else
-    return 1
+" s:GetCells() - Function to get values of cells in a table {{{2
+" s:GetCells(row) - Get values of all cells in a row as a List.
+" s:GetCells(0, col) - Get values of all cells in a column as a List.
+" s:GetCells(row, col) - Get the value of table cell by given row, col.
+function! s:GetCells(line, ...) abort
+  let line = s:Line(a:line)
+
+  if tablemode#IsATableRow(line)
+    if a:0 < 1
+      let [row, colm] = [line, 0]
+    elseif a:0 < 2
+      let [row, colm] = [a:1, 0]
+    elseif a:0 < 3
+      let [row, colm] = a:000
+    endif
+
+    if row > 0
+      let line =  line + (row - tablemode#RowNr(line)) * s:RowGap()
+
+      if colm > 0
+        return s:Strip(split(getline(line), g:table_mode_separator)[colm-1])
+      else
+        return map(split(getline(line), g:table_mode_separator), 's:Strip(v:val)')
+      endif
+    elseif colm > 0
+      let values = []
+      let line = s:GetFirstRow(line)
+      while line <= line('$')
+        if tablemode#IsATableRow(line)
+          call add(values, s:Strip(split(getline(line), g:table_mode_separator)[colm-1]))
+        else
+          break
+        endif
+        let line = line + s:RowGap()
+      endwhile
+      return values
+    endif
   endif
+endfunction
+" }}}2
+
+function! s:GetCell(...) "{{{2
+  if a:0 == 0
+    let [row, colm] = [tablemode#RowNr('.'), tablemode#ColumnNr('.')]
+  elseif a:0 == 2
+    let [row, colm] = [a:1, a:2]
+  endif
+
+  return s:GetCells('.', row, col)
+endfunction
+" }}}2
+
+function! s:SetCell(val, ...) abort "{{{2
+  if a:0 == 0
+    let [line, row, colm] = ['.', tablemode#RowNr('.'), tablemode#ColumnNr('.')]
+  elseif a:0 == 2
+    let [line, row, colm] = ['.', a:1, a:2]
+  elseif a:0 == 3
+    let [line, row, colm] = a:000
+  endif
+
+  if tablemode#IsATableRow(line)
+    let line = s:Line(line) + (row - tablemode#RowNr(line)) * s:RowGap()
+    let values = split(getline(line), g:table_mode_separator)
+    let values[colm-1] = a:val
+    let line_value = g:table_mode_separator . join(values, g:table_mode_separator) . g:table_mode_separator
+    call setline(line, line_value)
+    call tablemode#TableRealign(line)
+  endif
+endfunction
+" }}}2
+
+function! s:GetRow(row, ...) abort "{{{2
+  if a:0 < 1
+    let line = '.'
+  elseif a:0 < 2
+    let line = a:1
+  endif
+
+  return s:GetCells(line, a:row)
+endfunction
+" }}}2
+
+function! s:GetColumn(col, ...) "{{{2
+  if a:0 < 1
+    let line = '.'
+  elseif a:0 < 2
+    let line = a:1
+  endif
+  return s:GetCells(line, 0, a:col)
+endfunction
+" }}}2
+
+function! s:ParseRange(range, ...) "{{{2
+  if a:0 < 1
+    let default_col = tablemode#ColumnNr('.')
+  elseif a:0 < 2
+    let default_col = a:1
+  endif
+
+  let [rowcol1, rowcol2] = split(a:range, ':')
+  let [rcs1, rcs2] = [map(split(rowcol1, ','), 'str2nr(v:val)'), map(split(rowcol2, ','), 'str2nr(v:val)')]
+
+  if len(rcs1) == 2
+    let [row1, col1] = rcs1
+  else
+    let [row1, col1] = [rcs1[0], default_col]
+  endif
+
+  if len(rcs2) == 2
+    let [row2, col2] = rcs2
+  else
+    let [row2, col2] = [rcs2[0], default_col]
+  endif
+  
+  return [row1, col1, row2, col2]
+endfunction
+" }}}2
+
+" function! s:GetCellRange(range, ...) {{{2
+" range: A string representing range of cells.
+"        - Can be row1:row2 for values in the current columns in those rows.
+"        - Can be row1,col1:row2,col2 for range between row1,col1 till
+"          row2,col2.
+function! s:GetCellRange(range, ...) abort
+  if a:0 < 1
+    let [line, colm] = ['.', tablemode#ColumnNr('.')]
+  elseif a:0 < 2
+    let [line, colm] = [a:1, tablemode#ColumnNr('.')]
+  elseif a:0 < 3
+    let [line, colm] = [a:1, a:2]
+  else
+    call s:throw('Invalid Range')
+  endif
+
+  let values = []
+
+  if tablemode#IsATableRow(line)
+    let [row1, col1, row2, col2] = s:ParseRange(a:range, colm)
+
+    if row1 == row2
+      if col1 == col2
+        call add(values, s:GetCells(line, row1, col1))
+      else
+        let values = s:GetRow(row1, line)[(col1-1):(col2-1)]
+      endif
+    else
+      if col1 == col2
+        let values = s:GetColumn(col1, line)[(row1-1):(row2-1)]
+      else
+        let tcol = col1
+        while tcol <= col2
+          call add(values, s:GetColumn(tcol, line)[(row1-1):(row2-1)])
+          let tcol = tcol + 1
+        endwhile
+      endif
+    endif
+  endif
+
+  return values
 endfunction
 " }}}2
 
@@ -481,6 +700,41 @@ function! tablemode#DeleteRow() "{{{2
 
     call tablemode#TableRealign('.')
   endif
+endfunction
+" }}}2
+
+function! tablemode#GetCells(...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, '.')
+  return call('s:GetCells', args)
+endfunction
+" }}}2
+
+function! tablemode#SetCell(val, ...) "{{{2
+  let args = copy(a:000)
+  call insert(args, a:val)
+  call call('s:SetCell', args)
+endfunction
+" }}}2
+
+function! tablemode#GetCellRange(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return call('s:GetCellRange', args)
+endfunction
+" }}}2
+
+function! tablemode#Sum(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:Sum(call('s:GetCellRange', args))
+endfunction
+" }}}2
+
+function! tablemode#Average(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:Average(call('s:GetCellRange', args))
 endfunction
 " }}}2
 
