@@ -383,7 +383,13 @@ function! s:ParseRange(range, ...) "{{{2
     let default_col = a:1
   endif
 
-  let [rowcol1, rowcol2] = split(a:range, ':')
+  if type(a:range) != type('')
+    let range = string(a:range)
+  else
+    let range = a:range
+  endif
+
+  let [rowcol1, rowcol2] = split(range, ':')
   let [rcs1, rcs2] = [map(split(rowcol1, ','), 'str2nr(v:val)'), map(split(rowcol2, ','), 'str2nr(v:val)')]
 
   if len(rcs1) == 2
@@ -535,7 +541,7 @@ function! tablemode#TableRealign(line) "{{{2
     let tline = tline + s:RowGap()
   endwhile
 
-  call tabular#TabularizeStrings(lines, g:table_mode_separator)
+  call tabular#TabularizeStrings(lines, g:table_mode_separator, g:table_mode_align)
 
   for lnum in lnums
     let index = index(lnums, lnum)

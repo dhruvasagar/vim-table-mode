@@ -61,6 +61,8 @@ call s:SetGlobalOptDefault('table_mode_motion_prefix', '<Leader>t')
 call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
 call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
 call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
+call s:SetGlobalOptDefault('table_mode_add_formula_map', '<Leader>tfa')
+call s:SetGlobalOptDefault('table_mode_recalculate_map', '<Leader>tfr')
 "}}}1
 
 function! s:TableMotion() "{{{1
@@ -73,39 +75,31 @@ endfunction
 
 let s:tables = {}
 
-function! s:AddFormula(formula, range) abort "{{{1
-  let line = line('.')
-  let colm = tablemode#ColumnNr('.')
-  let bufnr = bufnr('%')
-  let formula = 'tablemode#'.a:formula.'('.a:range.','.line.','.colm.')'
+function! s:AddTableFormula() abort "{{{1
+  let fr = input('f=')
 
-  if has_key(s:tables, bufnr)
-    if has_key(s:tables[bufnr], line)
-      let s:tables[bufnr][line][colm] = formula
-    else
-      let s:tables[bufnr][line] = { colm: formula }
-    endif
-  else
-    let s:tables[bufnr] = {}
-    let s:tables[bufnr][line] = {}
-    let s:tables[bufnr][line][colm] = formula
+  if fr !=# ''
+    let [formula, range] = split(fr)
+
+    let [line, colm] = [line('.'), tablemode#ColumnNr('.')]
+    let key = join([bufnr('%'), line, colm], ':')
+    let formula = 'tablemode#'.formula.'('.string(range).','.line.','.colm.')'
+
+    let row = tablemode#RowNr(line)
+    call tablemode#SetCell(eval(formula), line, row, colm)
+
+    let s:tables[key] = formula
   endif
 endfunction
 " }}}1
 
 function! s:RecalculateFormulas() "{{{1
-  let bufnr = bufnr('%')
-  if has_key(s:tables, bufnr)
-    let formulas = s:tables[bufnr]
-    for [line, cform] in items(formulas)
-      let line = str2nr(line)
-      for [colm, formula] in items(cform)
-        let colm = str2nr(colm)
-        let row = tablemode#RowNr(line)
-        call tablemode#SetCell(eval(formula), line, row, colm)
-      endfor
-    endfor
-  endif
+  let formulas = filter(s:tables, 'split(v:key, ":")[0] == string(bufnr("%"))')
+  for [key, formula] in items(formulas)
+    let [bufnr, line, colm] = map(split(key, ':'), 'str2nr(v:val)')
+    let row = tablemode#RowNr(line)
+    call tablemode#SetCell(eval(formula), line, row, colm)
+  endfor
 endfunction
 " }}}1
 
@@ -129,17 +123,28 @@ endif
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
 
-execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
-execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
-execute "xnoremap <silent> " . g:table_mode_tableize_op_map . " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
-execute "nnoremap <silent> " . g:table_mode_realign_map . " :<C-U>call tablemode#TableRealign('.')<CR>"
-execute "nnoremap <silent> " . g:table_mode_motion_prefix . " :<C-U>call <SID>TableMotion()<CR>"
-execute "onoremap <silent> " . g:table_mode_cell_text_object . " :<C-U>call tablemode#CellTextObject()<CR>"
-execute "nnoremap <silent> " . g:table_mode_delete_row_map . " :<C-U>call tablemode#DeleteRow()<CR>"
-execute "nnoremap <silent> " . g:table_mode_delete_column_map . " :<C-U>call tablemode#DeleteColumn()<CR>"
+execute "xnoremap <silent> " . g:table_mode_tableize_map .
+      \ " :Tableize<CR>"
+execute "nnoremap <silent> " . g:table_mode_tableize_map .
+      \ " :Tableize<CR>"
+execute "xnoremap <silent> " . g:table_mode_tableize_op_map .
+      \ " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
+execute "nnoremap <silent> " . g:table_mode_realign_map .
+      \ " :call tablemode#TableRealign('.')<CR>"
+execute "nnoremap <silent> " . g:table_mode_motion_prefix .
+      \ " :call <SID>TableMotion()<CR>"
+execute "onoremap <silent> " . g:table_mode_cell_text_object .
+      \ " :<C-U>call tablemode#CellTextObject()<CR>"
+execute "nnoremap <silent> " . g:table_mode_delete_row_map .
+      \ " :call tablemode#DeleteRow()<CR>"
+execute "nnoremap <silent> " . g:table_mode_delete_column_map .
+      \ " :call tablemode#DeleteColumn()<CR>"
 
-command! -nargs=* TableForumla call s:AddFormula(<f-args>)
-command! TableRecalc call s:RecalculateFormulas()
+command! TableFormula call s:AddTableFormula()
+command! TableRecalc  call s:RecalculateFormulas()
+
+execute "nnoremap <silent> " . g:table_mode_add_formula_map . " :TableFormula<CR>"
+execute "nnoremap <silent> " . g:table_mode_recalculate_map . " :TableRecalc<CR>"
 "}}}1
 
 " Avoiding side effects {{{1
