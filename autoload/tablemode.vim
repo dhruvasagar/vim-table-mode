@@ -376,7 +376,9 @@ function! s:GetColumn(col, ...) "{{{2
 endfunction
 " }}}2
 
-function! s:ParseRange(range, ...) "{{{2
+" Borrowed from Tabular : {{{2
+
+function! s:ParseRange(range, ...) "{{{3
   if a:0 < 1
     let default_col = tablemode#ColumnNr('.')
   elseif a:0 < 2
@@ -406,9 +408,9 @@ function! s:ParseRange(range, ...) "{{{2
   
   return [row1, col1, row2, col2]
 endfunction
-" }}}2
+" }}}3
 
-" function! s:GetCellRange(range, ...) {{{2
+" function! s:GetCellRange(range, ...) {{{3
 " range: A string representing range of cells.
 "        - Can be row1:row2 for values in the current columns in those rows.
 "        - Can be row1,col1:row2,col2 for range between row1,col1 till
@@ -450,6 +452,109 @@ function! s:GetCellRange(range, ...) abort
 
   return values
 endfunction
+" }}}3
+
+function! s:Padding(string, length, where) "{{{3
+  let gap_length = a:length - s:Strlen(a:string)
+  if a:where =~# 'l'
+    return a:string . repeat(" ", gap_length)
+  elseif a:where =~# 'r'
+    return repeat(" ", gap_length) . a:string
+  elseif a:where =~# 'c'
+    let right = spaces / 2
+    let left = right + (right * 2 != gap_length)
+    return repeat(" ", left) . a:string . repeat(" ", right)
+  endif
+endfunction
+" }}}3
+
+" Split a string into fields and delimiters                               {{{3
+" Like split(), but include the delimiters as elements
+" All odd numbered elements are delimiters
+" All even numbered elements are non-delimiters (including zero)
+function! s:SplitDelim(string, delim)
+  let rv = []
+  let beg = 0
+
+  let len = len(a:string)
+  let searchoff = 0
+
+  while 1
+    let mid = match(a:string, a:delim, beg + searchoff, 1)
+    if mid == -1 || mid == len
+      break
+    endif
+
+    let matchstr = matchstr(a:string, a:delim, beg + searchoff, 1)
+    let length = strlen(matchstr)
+
+    if length == 0 && beg == mid
+      " Zero-length match for a zero-length delimiter - advance past it
+      let searchoff += 1
+      continue
+    endif
+
+    if beg == mid
+      let rv += [ "" ]
+    else
+      let rv += [ a:string[beg : mid-1] ]
+    endif
+
+    let rv += [ matchstr ]
+
+    let beg = mid + length
+    let searchoff = 0
+  endwhile
+
+  let rv += [ strpart(a:string, beg) ]
+
+  call filter(rv, 'len(v:val) > 0')
+
+  return rv
+endfunction
+" }}}3
+
+function! s:Align(lines) "{{{3
+  let lines = map(a:lines, 's:SplitDelim(v:val, g:table_mode_separator)')
+
+  for line in lines
+    if len(line) <= 1 | continue | endif
+    for i in range(len(line))
+      let line[i] = s:Strip(line[i])
+    endfor
+  endfor
+
+  let maxes = []
+  for line in lines
+    if len(line) <= 1 | continue | endif
+    for i in range(len(line))
+      if i == len(maxes)
+        let maxes += [ s:Strlen(line[i]) ]
+      else
+        let maxes[i] = max([ maxes[i], s:Strlen(line[i]) ])
+      endif
+    endfor
+  endfor
+
+  for idx in range(len(lines))
+    let line = lines[idx]
+
+    if len(line) <= 1 | continue | endif
+    for i in range(len(line))
+      if line[i] !~# '[^0-9]'
+        let line[i] = s:Padding(line[i], maxes[i], 'r')
+      else
+        let line[i] = s:Padding(line[i], maxes[i], 'l')
+      endif
+    endfor
+
+    let lines[idx] = join(line)
+  endfor
+
+  return lines
+endfunction
+" }}}3
+
 " }}}2
 
 " }}}1
@@ -541,7 +646,8 @@ function! tablemode#TableRealign(line) "{{{2
     let tline = tline + s:RowGap()
   endwhile
 
-  call tabular#TabularizeStrings(lines, g:table_mode_separator, g:table_mode_align)
+  " call tabular#TabularizeStrings(lines, g:table_mode_separator, g:table_mode_align)
+  let lines = s:Align(lines)
 
   for lnum in lnums
     let index = index(lnums, lnum)
