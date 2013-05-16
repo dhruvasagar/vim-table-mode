@@ -1,4 +1,4 @@
-" =============================================================================
+" ==============================  Header ==================================={{{
 " Description:   Table mode for vim for creating neat tables.
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
@@ -16,7 +16,7 @@
 "                of any kind, either expressed or implied. In no event will
 "                the copyright holder be liable for any damamges resulting
 "                from the use of this software.
-" =============================================================================
+" ==========================================================================}}}
 
 " Private Functions {{{1
 
@@ -54,15 +54,15 @@ function! s:Line(line) "{{{3
 endfunction
 " }}}3
 
-" s:Strlen(text) For counting multibyte characters accurately {{{3
+" function! s:Strlen(text) - Count multibyte characters accurately {{{3
 " See :h strlen() for more details
 function! s:Strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
 endfunction
 " }}}3
 
-function! s:Strip(input_string) "{{{3
-    return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
+function! s:Strip(string) "{{{3
+  return matchstr(a:string, '^\s*\zs.\{-}\ze\s*$')
 endfunction
 " }}}3
 
@@ -283,7 +283,7 @@ function! s:MoveToStartOfCell() "{{{2
 endfunction
 " }}}2
 
-" s:GetCells() - Function to get values of cells in a table {{{2
+" function! s:GetCells() - Function to get values of cells in a table {{{2
 " s:GetCells(row) - Get values of all cells in a row as a List.
 " s:GetCells(0, col) - Get values of all cells in a column as a List.
 " s:GetCells(row, col) - Get the value of table cell by given row, col.
@@ -376,9 +376,7 @@ function! s:GetColumn(col, ...) "{{{2
 endfunction
 " }}}2
 
-" Borrowed from Tabular : {{{2
-
-function! s:ParseRange(range, ...) "{{{3
+function! s:ParseRange(range, ...) "{{{2
   if a:0 < 1
     let default_col = tablemode#ColumnNr('.')
   elseif a:0 < 2
@@ -408,9 +406,9 @@ function! s:ParseRange(range, ...) "{{{3
   
   return [row1, col1, row2, col2]
 endfunction
-" }}}3
+" }}}2
 
-" function! s:GetCellRange(range, ...) {{{3
+" function! s:GetCellRange(range, ...) {{{2
 " range: A string representing range of cells.
 "        - Can be row1:row2 for values in the current columns in those rows.
 "        - Can be row1,col1:row2,col2 for range between row1,col1 till
@@ -452,6 +450,15 @@ function! s:GetCellRange(range, ...) abort
 
   return values
 endfunction
+" }}}2
+
+" Borrowed from Tabular : {{{2
+
+" function! s:StripTrailingSpaces(string) - Remove all trailing spaces {{{3
+" from a string.
+function! s:StripTrailingSpaces(string)
+  return matchstr(a:string, '^.\{-}\ze\s*$')
+endfunction
 " }}}3
 
 function! s:Padding(string, length, where) "{{{3
@@ -468,7 +475,7 @@ function! s:Padding(string, length, where) "{{{3
 endfunction
 " }}}3
 
-" Split a string into fields and delimiters                               {{{3
+" function! s:Split() - Split a string into fields and delimiters {{{3
 " Like split(), but include the delimiters as elements
 " All odd numbered elements are delimiters
 " All even numbered elements are non-delimiters (including zero)
@@ -508,8 +515,6 @@ function! s:SplitDelim(string, delim)
 
   let rv += [ strpart(a:string, beg) ]
 
-  call filter(rv, 'len(v:val) > 0')
-
   return rv
 endfunction
 " }}}3
@@ -519,9 +524,15 @@ function! s:Align(lines) "{{{3
 
   for line in lines
     if len(line) <= 1 | continue | endif
-    for i in range(len(line))
-      let line[i] = s:Strip(line[i])
-    endfor
+
+    if line[0] !~ '^\s*$'
+      let line[0] = s:StripTrailingSpaces(line[0])
+    endif
+    if len(line) >= 2
+      for i in range(1, len(line)-1)
+        let line[i] = s:Strip(line[i])
+      endfor
+    endif
   endfor
 
   let maxes = []
@@ -542,13 +553,15 @@ function! s:Align(lines) "{{{3
     if len(line) <= 1 | continue | endif
     for i in range(len(line))
       if line[i] !~# '[^0-9]'
-        let line[i] = s:Padding(line[i], maxes[i], 'r')
+        let field = s:Padding(line[i], maxes[i], 'r')
       else
-        let line[i] = s:Padding(line[i], maxes[i], 'l')
+        let field = s:Padding(line[i], maxes[i], 'l')
       endif
+
+      let line[i] = field . (i == 0 || i == len(line) ? '' : ' ')
     endfor
 
-    let lines[idx] = join(line)
+    let lines[idx] = s:StripTrailingSpaces(join(line, ''))
   endfor
 
   return lines
