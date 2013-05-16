@@ -20,6 +20,12 @@
 
 " Private Functions {{{1
 
+if exists('g:autoloaded_table_mode') "{{{2
+  finish
+endif
+let g:autoloaded_table_mode = 1
+" }}}2
+
 " Utility Functions {{{2
 
 function! s:throw(string) abort "{{{3
@@ -525,7 +531,7 @@ function! s:Align(lines) "{{{3
   for line in lines
     if len(line) <= 1 | continue | endif
 
-    if line[0] !~ '^\s*$'
+    if line[0] !~ s:StartExpr()
       let line[0] = s:StripTrailingSpaces(line[0])
     endif
     if len(line) >= 2
@@ -659,7 +665,6 @@ function! tablemode#TableRealign(line) "{{{2
     let tline = tline + s:RowGap()
   endwhile
 
-  " call tabular#TabularizeStrings(lines, g:table_mode_separator, g:table_mode_align)
   let lines = s:Align(lines)
 
   for lnum in lnums
@@ -864,3 +869,5 @@ endfunction
 " }}}2
 
 " }}}1
+
+" vim: sw=2 sts=2 fdl=0 fdm=marker
