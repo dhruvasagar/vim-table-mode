@@ -27,54 +27,52 @@ endif
 let g:autoloaded_table_mode = 1
 " }}}2
 
-" Utility Functions {{{2
-
-function! s:throw(string) abort "{{{3
+function! s:throw(string) abort "{{{2
   let v:errmsg = 'table-mode: ' . a:string
   throw v:errmsg
 endfunction
-" }}}3
+" }}}2
 
-function! s:sub(str,pat,rep) abort "{{{3
+function! s:sub(str,pat,rep) abort "{{{2
   return substitute(a:str,'\v\C'.a:pat,a:rep,'')
 endfunction
-" }}}3
+" }}}2
 
-function! s:gsub(str,pat,rep) abort "{{{3
+function! s:gsub(str,pat,rep) abort "{{{2
   return substitute(a:str,'\v\C'.a:pat,a:rep,'g')
 endfunction
-" }}}3
+" }}}2
 
-function! s:SetBufferOptDefault(opt, val) "{{{3
+function! s:SetBufferOptDefault(opt, val) "{{{2
   if !exists('b:' . a:opt)
     let b:{a:opt} = a:val
   endif
 endfunction
-" }}}3
+" }}}2
 
-function! s:Line(line) "{{{3
+function! s:Line(line) "{{{2
   if type(a:line) == type('')
     return line(a:line)
   else
     return a:line
   endif
 endfunction
-" }}}3
+" }}}2
 
-" function! s:Strlen(text) - Count multibyte characters accurately {{{3
+" function! s:Strlen(text) - Count multibyte characters accurately {{{2
 " See :h strlen() for more details
 function! s:Strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
 endfunction
-" }}}3
+" }}}2
 
-function! s:Strip(string) "{{{3
+function! s:Strip(string) "{{{2
   return matchstr(a:string, '^\s*\zs.\{-}\ze\s*$')
 endfunction
-" }}}3
+" }}}2
 
-function! s:Sum(list) "{{{3
-  let result = 0
+function! s:Sum(list) "{{{2
+  let result = 0.0
   for item in a:list
     if type(item) == type(1) || type(item) == type(1.0)
       let result = result + item
@@ -86,14 +84,14 @@ function! s:Sum(list) "{{{3
   endfor
   return result
 endfunction
-" }}}3
+" }}}2
 
-function! s:Average(list) "{{{3
+function! s:Average(list) "{{{2
   return s:Sum(a:list)/len(a:list)
 endfunction
-" }}}3
+" }}}2
 
-function! s:GetCommentStart() "{{{3
+function! s:GetCommentStart() "{{{2
   let cstring = &commentstring
   if s:Strlen(cstring) > 0
     return substitute(split(cstring, '%s')[0], '.', '\\\0', 'g')
@@ -101,9 +99,9 @@ function! s:GetCommentStart() "{{{3
     return ''
   endif
 endfunction
-" }}}3
+" }}}2
 
-function! s:StartExpr() "{{{3
+function! s:StartExpr() "{{{2
   let cstart = s:GetCommentStart()
   if s:Strlen(cstart) > 0
     return '^\s*\(' . cstart . '\)\?\s*'
@@ -111,9 +109,9 @@ function! s:StartExpr() "{{{3
     return '^\s*'
   endif
 endfunction
-" }}}3
+" }}}2
 
-function! s:StartCommentExpr() "{{{3
+function! s:StartCommentExpr() "{{{2
   let cstartexpr = s:GetCommentStart()
   if s:Strlen(cstartexpr) > 0
     return '^\s*' . cstartexpr . '\s*'
@@ -121,21 +119,19 @@ function! s:StartCommentExpr() "{{{3
     return ''
   endif
 endfunction
-" }}}3
+" }}}2
 
-function! s:IsTableModeActive() "{{{3
+function! s:IsTableModeActive() "{{{2
   if g:table_mode_always_active | return 1 | endif
 
   call s:SetBufferOptDefault('table_mode_active', 0)
   return b:table_mode_active
 endfunction
-" }}}3
+" }}}2
 
-function! s:RowGap() "{{{3
+function! s:RowGap() "{{{2
   return g:table_mode_border ? 2 : 1
 endfunction
-" }}}3
-
 " }}}2
 
 function! s:ToggleMapping() "{{{2
@@ -558,7 +554,7 @@ function! s:Align(lines) "{{{3
 
     if len(line) <= 1 | continue | endif
     for i in range(len(line))
-      if line[i] !~# '[^0-9]'
+      if line[i] !~# '[^0-9\.]'
         let field = s:Padding(line[i], maxes[i], 'r')
       else
         let field = s:Padding(line[i], maxes[i], 'l')
@@ -874,7 +870,7 @@ function! tablemode#AddFormula() "{{{2
       if len(cstring) > 0
         let cstring = split(cstring, '%s')[0]
       endif
-      let fr = cstring . 'tmf: ' . fr
+      let fr = cstring . ' tmf: ' . fr
       call append(fline-1, fr)
       call cursor(cursor_pos)
     endif
@@ -894,15 +890,15 @@ function! tablemode#EvaluateExpr(expr, line) abort "{{{2
   endif
 
   if expr =~# 'Sum(.*)'
-    let expr = substitute(expr, 'Sum(\(.*\))', 'tablemode#Sum("\1",'.line.','.colm.')', 'g')
+    let expr = substitute(expr, 'Sum(\([^)]*\))', 'tablemode#Sum("\1",'.line.','.colm.')', 'g')
   endif
 
   if expr =~# 'Average(.*)'
-    let expr = substitute(expr, 'Average(\(.*\))', 'tablemode#Average("\1",'.line.','.colm.')', 'g')
+    let expr = substitute(expr, 'Average(\([^)]*\))', 'tablemode#Average("\1",'.line.','.colm.')', 'g')
   endif
 
-  if expr =~# '[\$,]'
-    let expr = substitute(expr, '\$\(\d\+\),\(\d*\)',
+  if expr =~# '\$\d\+,\d\+'
+    let expr = substitute(expr, '\$\(\d\+\),\(\d\+\)',
           \ '\=str2float(s:GetCells(line, submatch(1), submatch(2)))', 'g')
   endif
 

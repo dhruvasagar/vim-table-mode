@@ -142,10 +142,11 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
         cell.
 
   - The `formula` can be a simple mathematical expression involving cells
-    which are also defined by the same format as that of the target cell. 
+    which are also defined by the same format as that of the target cell.
     Apart from basic mathematical expressions, table mode also provides
-    special functions `Sum` and `Average`. Both these functions take a range
-    as input. A range can be of two forms :
+    special functions `Sum` and `Average`. Although you can use all native vim
+    functions as well. Both these functions take a range as input. A range can
+    be of two forms :
 
       - `n,m`: This represents cells in the current column from row `n`
         through `m`. If `m` is negative it represents `m` row above the
@@ -156,11 +157,15 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
   - Examples :
       - `$2 = $1 * $1`
+      - `$2 = pow($1, 5)` NOTE: Remember to put space between the $1, and 5
+        here otherwise it will be treated like a table cell.
       - `$2 = $1 / $1,3`
       - `$1,2 = $1,1 * $1,1`
       - `$5,1 = Sum(1:-1)`
+      - `$5,1 = float2nr(Sum(1:-1))`
       - `$5,3 = Sum(1,2:5,2)`
       - `$5,3 = Sum(1,2:5,2)/$5,1`
+      - `$5,3 = Average(1,2:5,2)/$5,1`
 
 ### Demo
 
