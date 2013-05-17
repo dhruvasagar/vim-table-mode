@@ -126,6 +126,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
   You can evaluate the formula line using `:TableEvalFormulaLine` or the
   mapping `<Leader>tfe` defined by the option `g:table_mode_expr_calc_map`
+  from anywhere inside the table or while on the formula line.
 
 - **Formula Expressions** :
 
@@ -142,11 +143,10 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
         cell.
 
   - The `formula` can be a simple mathematical expression involving cells
-    which are also defined by the same format as that of the target cell.
-    Apart from basic mathematical expressions, table mode also provides
-    special functions `Sum` and `Average`. Although you can use all native vim
-    functions as well. Both these functions take a range as input. A range can
-    be of two forms :
+    which are also defined by the same format as that of the target cell.  You
+    can use all native vim functions within the formula. Apart from that table
+    mode also provides 2 special functions `Sum` and `Average`. Both these
+    functions take a range as input. A range can be of two forms :
 
       - `r1,r2`: This represents cells in the current column from row `r1`
         through `r2`. If `r2` is negative it represents `r2` rows above the
