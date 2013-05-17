@@ -104,7 +104,7 @@ endfunction
 function! s:GetCommentEnd() "{{{2
   let cstring = &commentstring
   if s:Strlen(cstring) > 0
-    let cst = split(cstring, '%')
+    let cst = split(cstring, '%s')
     if len(cst) == 2
       return substitute(cst[1], '.', '\\\0', 'g')
     else
@@ -149,7 +149,7 @@ endfunction
 function! s:EndCommentExpr() "{{{2
   let cendexpr = s:GetCommentEnd()
   if s:Strlen(cendexpr) > 0
-    return '.*\zs\s*' . cendexpr . '\s*$'
+    return '.*\zs\s\+' . cendexpr . '\s*$'
   else
     return ''
   endif
@@ -242,7 +242,7 @@ function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
   if delim ==# ','
     silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/g"
   endif
-  silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze.\|' . delim .  '\|$/' .
+  silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze.\|' . delim .  '\|.\zs\ze' . s:EndExpr() . '/' .
         \ g:table_mode_separator . '/g'
   if delim ==# ','
     silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/g"
