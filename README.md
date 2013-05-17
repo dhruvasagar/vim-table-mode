@@ -165,6 +165,7 @@ sure Tabular is installed and loaded into your runtime to ensure this works.
       - `$1,2 = $1,1 * $1,1`
       - `$5,1 = Sum(1:-1)`
       - `$5,3 = Sum(1,2:5,2)`
+      - `$5,3 = Sum(1,2:5,2)/$5,1`
 
 ### Demo
 
