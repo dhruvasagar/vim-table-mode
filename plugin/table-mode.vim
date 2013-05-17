@@ -26,13 +26,6 @@ endif
 let g:loaded_table_mode = 1
 "}}}1
 
-" " Finish if Tabularize plugin is not available {{{1
-" if !exists(':Tabularize')
-"   echoerr 'Table Mode depends on Tabularize, ensure that is installed first.'
-"   finish
-" endif
-" " }}}1
-
 " Avoiding side effects {{{1
 let s:save_cpo = &cpo
 set cpo&vim
@@ -50,19 +43,18 @@ call s:SetGlobalOptDefault('table_mode_border', 1)
 call s:SetGlobalOptDefault('table_mode_corner', '+')
 call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
-call s:SetGlobalOptDefault('table_mode_toggle_map', '<LocalLeader>tm')
+call s:SetGlobalOptDefault('table_mode_map_prefix', '<Leader>t')
+call s:SetGlobalOptDefault('table_mode_toggle_map', 'm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
-call s:SetGlobalOptDefault('table_mode_tableize_map', '<Leader>tt')
+call s:SetGlobalOptDefault('table_mode_tableize_map', 't')
 call s:SetGlobalOptDefault('table_mode_tableize_op_map', '<Leader>T')
-call s:SetGlobalOptDefault('table_mode_align', 'l1')
-call s:SetGlobalOptDefault('table_mode_realign_map', '<Leader>tr')
-call s:SetGlobalOptDefault('table_mode_motion_prefix', '<Leader>t')
+call s:SetGlobalOptDefault('table_mode_realign_map', 'r')
 call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
-call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
-call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
-call s:SetGlobalOptDefault('table_mode_add_formula_map', '<Leader>tfa')
-call s:SetGlobalOptDefault('table_mode_expr_calc_map', '<Leader>tfe')
+call s:SetGlobalOptDefault('table_mode_delete_row_map', 'dd')
+call s:SetGlobalOptDefault('table_mode_delete_column_map', 'dc')
+call s:SetGlobalOptDefault('table_mode_add_formula_map', 'fa')
+call s:SetGlobalOptDefault('table_mode_eval_expr_map', 'fe')
 "}}}1
 
 function! s:TableMotion() "{{{1
@@ -75,7 +67,7 @@ endfunction
 
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
-  exec "nnoremap <silent> " . g:table_mode_toggle_map .
+  exec "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_toggle_map .
        \ " <Esc>:call tablemode#TableModeToggle()<CR>"
   command! -nargs=0 TableModeToggle call tablemode#TableModeToggle()
   command! -nargs=0 TableModeEnable call tablemode#TableModeEnable()
@@ -96,25 +88,25 @@ command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q
 command! TableAddFormula call tablemode#AddFormula()
 command! TableEvalFormulaLine call tablemode#EvaluateFormulaLine()
 
-execute "xnoremap <silent> " . g:table_mode_tableize_map .
+execute "xnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_tableize_map .
       \ " :Tableize<CR>"
-execute "nnoremap <silent> " . g:table_mode_tableize_map .
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_tableize_map .
       \ " :Tableize<CR>"
 execute "xnoremap <silent> " . g:table_mode_tableize_op_map .
       \ " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
-execute "nnoremap <silent> " . g:table_mode_realign_map .
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_realign_map .
       \ " :call tablemode#TableRealign('.')<CR>"
-execute "nnoremap <silent> " . g:table_mode_motion_prefix .
+execute "nnoremap <silent> " . g:table_mode_map_prefix .
       \ " :call <SID>TableMotion()<CR>"
 execute "onoremap <silent> " . g:table_mode_cell_text_object .
       \ " :<C-U>call tablemode#CellTextObject()<CR>"
-execute "nnoremap <silent> " . g:table_mode_delete_row_map .
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_delete_row_map .
       \ " :call tablemode#DeleteRow()<CR>"
-execute "nnoremap <silent> " . g:table_mode_delete_column_map .
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_delete_column_map .
       \ " :call tablemode#DeleteColumn()<CR>"
-execute "nnoremap <silent> " . g:table_mode_add_formula_map .
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_add_formula_map .
       \ " :TableAddFormula<CR>"
-execute "nnoremap <silent> " . g:table_mode_expr_calc_map .
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_eval_expr_map .
       \ " :TableEvalFormulaLine<CR>"
 "}}}1
 

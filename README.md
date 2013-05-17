@@ -125,7 +125,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
     formulas on the line separated with a ';' eg) `# tmf: $3=$2*$1;$4=$3/3.14`
 
   You can evaluate the formula line using `:TableEvalFormulaLine` or the
-  mapping `<Leader>tfe` defined by the option `g:table_mode_expr_calc_map`
+  mapping `<Leader>tfe` defined by the option `g:table_mode_eval_expr_map`
   from anywhere inside the table or while on the formula line.
 
 - **Formula Expressions** :
