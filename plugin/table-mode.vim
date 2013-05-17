@@ -20,18 +20,18 @@
 " =============================================================================
 
 " Finish if already loaded {{{1
-if exists('g:table_mode_loaded')
+if exists('g:loaded_table_mode')
   finish
 endif
-let g:table_mode_loaded = 1
+let g:loaded_table_mode = 1
 "}}}1
-"
-" Finish if Tabularize plugin is not available {{{1
-if !exists(':Tabularize')
-  echoerr 'Table Mode depends on Tabularize, ensure that is installed first.'
-  finish
-endif
-" }}}1
+
+" " Finish if Tabularize plugin is not available {{{1
+" if !exists(':Tabularize')
+"   echoerr 'Table Mode depends on Tabularize, ensure that is installed first.'
+"   finish
+" endif
+" " }}}1
 
 " Avoiding side effects {{{1
 let s:save_cpo = &cpo
@@ -61,6 +61,8 @@ call s:SetGlobalOptDefault('table_mode_motion_prefix', '<Leader>t')
 call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
 call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
 call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
+call s:SetGlobalOptDefault('table_mode_add_formula_map', '<Leader>tfa')
+call s:SetGlobalOptDefault('table_mode_expr_calc_map', '<Leader>tfe')
 "}}}1
 
 function! s:TableMotion() "{{{1
@@ -91,17 +93,29 @@ endif
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
 
-execute "xnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
-execute "nnoremap <silent> " . g:table_mode_tableize_map . " :Tableize<CR>"
-execute "xnoremap <silent> " . g:table_mode_tableize_op_map . " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
+command! TableAddFormula call tablemode#AddFormula()
+command! TableEvalFormulaLine call tablemode#EvaluateFormulaLine()
 
-execute "nnoremap <silent> " . g:table_mode_realign_map . " :<C-U>call tablemode#TableRealign('.')<CR>"
-execute "nnoremap <silent> " . g:table_mode_motion_prefix . " :<C-U>call <SID>TableMotion()<CR>"
-
-execute "onoremap <silent> " . g:table_mode_cell_text_object . " :<C-U>call tablemode#CellTextObject()<CR>"
-
-execute "nnoremap <silent> " . g:table_mode_delete_row_map . " :<C-U>call tablemode#DeleteRow()<CR>"
-execute "nnoremap <silent> " . g:table_mode_delete_column_map . " :<C-U>call tablemode#DeleteColumn()<CR>"
+execute "xnoremap <silent> " . g:table_mode_tableize_map .
+      \ " :Tableize<CR>"
+execute "nnoremap <silent> " . g:table_mode_tableize_map .
+      \ " :Tableize<CR>"
+execute "xnoremap <silent> " . g:table_mode_tableize_op_map .
+      \ " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
+execute "nnoremap <silent> " . g:table_mode_realign_map .
+      \ " :call tablemode#TableRealign('.')<CR>"
+execute "nnoremap <silent> " . g:table_mode_motion_prefix .
+      \ " :call <SID>TableMotion()<CR>"
+execute "onoremap <silent> " . g:table_mode_cell_text_object .
+      \ " :<C-U>call tablemode#CellTextObject()<CR>"
+execute "nnoremap <silent> " . g:table_mode_delete_row_map .
+      \ " :call tablemode#DeleteRow()<CR>"
+execute "nnoremap <silent> " . g:table_mode_delete_column_map .
+      \ " :call tablemode#DeleteColumn()<CR>"
+execute "nnoremap <silent> " . g:table_mode_add_formula_map .
+      \ " :TableAddFormula<CR>"
+execute "nnoremap <silent> " . g:table_mode_expr_calc_map .
+      \ " :TableEvalFormulaLine<CR>"
 "}}}1
 
 " Avoiding side effects {{{1
@@ -109,4 +123,4 @@ let &cpo = s:save_cpo
 " }}}1
 
 " ModeLine {{{
-" vim:fdl=0 fdm=marker
+" vim: sw=2 sts=2 fdl=0 fdm=marker
