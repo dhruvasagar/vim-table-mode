@@ -101,6 +101,21 @@ function! s:GetCommentStart() "{{{2
 endfunction
 " }}}2
 
+function! s:GetCommentEnd() "{{{2
+  let cstring = &commentstring
+  if s:Strlen(cstring) > 0
+    let cst = split(cstring, '%')
+    if len(cst) == 2
+      return substitute(cst[1], '.', '\\\0', 'g')
+    else
+      return ''
+    endif
+  else
+    return ''
+  endif
+endfunction
+" }}}2
+
 function! s:StartExpr() "{{{2
   let cstart = s:GetCommentStart()
   if s:Strlen(cstart) > 0
@@ -111,10 +126,30 @@ function! s:StartExpr() "{{{2
 endfunction
 " }}}2
 
+function! s:EndExpr() "{{{2
+  let cend = s:GetCommentEnd()
+  if s:Strlen(cend) > 0
+    return '\s*\(' . cend . '\)\?\s*$'
+  else
+    return '\s*$'
+  endif
+endfunction
+" }}}2
+
 function! s:StartCommentExpr() "{{{2
   let cstartexpr = s:GetCommentStart()
   if s:Strlen(cstartexpr) > 0
     return '^\s*' . cstartexpr . '\s*'
+  else
+    return ''
+  endif
+endfunction
+" }}}2
+
+function! s:EndCommentExpr() "{{{2
+  let cendexpr = s:GetCommentEnd()
+  if s:Strlen(cendexpr) > 0
+    return '.*\zs\s*' . cendexpr . '\s*$'
   else
     return ''
   endif
@@ -155,15 +190,17 @@ endfunction
 " }}}2
 
 function! s:GenerateBorder(line) "{{{2
-  let border = substitute(getline(a:line)[stridx(getline(a:line), g:table_mode_separator):-1], g:table_mode_separator, g:table_mode_corner, 'g')
+  let line_val = getline(a:line)
+  let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
   let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
 
   let cstartexpr = s:StartCommentExpr()
   if s:Strlen(cstartexpr) > 0 && getline(a:line) =~# cstartexpr
-    let indent = matchstr(getline(a:line), s:StartCommentExpr())
-    return indent . border
+    let sce = matchstr(line_val, s:StartCommentExpr())
+    let ece = matchstr(line_val, s:EndCommentExpr())
+    return sce . border . ece
   elseif getline(a:line) =~# s:StartExpr()
-    let indent = matchstr(getline(a:line), s:StartExpr())
+    let indent = matchstr(line_val, s:StartExpr())
     return indent . border
   else
     return border
@@ -175,7 +212,7 @@ function! s:UpdateLineBorder(line) "{{{2
   let line = s:Line(a:line)
 
   let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner .
-        \  g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?\s*$'
+        \  g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?' . s:EndExpr()
 
   let rowgap = s:RowGap()
   let border = s:GenerateBorder(line)
@@ -300,7 +337,8 @@ function! s:GetCells(line, ...) abort
       let values = []
       let line = s:GetFirstRow(line)
       while tablemode#IsATableRow(line)
-        call add(values, s:Strip(split(getline(line), g:table_mode_separator)[colm>0?colm-1:colm]))
+        let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
+        call add(values, s:Strip(split(row_line, g:table_mode_separator)[colm>0?colm-1:colm]))
         let line = line + s:RowGap()
       endwhile
       return values
@@ -311,10 +349,11 @@ function! s:GetCells(line, ...) abort
         let line = line + row * s:RowGap()
       endif
 
+      let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
       if colm == 0
-        return map(split(getline(line), g:table_mode_separator), 's:Strip(v:val)')
+        return map(split(row_line, g:table_mode_separator), 's:Strip(v:val)')
       else
-        return s:Strip(split(getline(line), g:table_mode_separator)[colm>0?colm-1:colm])
+        return s:Strip(split(row_line, g:table_mode_separator)[colm>0?colm-1:colm])
       endif
     endif
   endif
@@ -343,9 +382,16 @@ function! s:SetCell(val, ...) abort "{{{2
 
   if tablemode#IsATableRow(line)
     let line = s:Line(line) + (row - tablemode#RowNr(line)) * s:RowGap()
-    let values = split(getline(line), g:table_mode_separator)
+    let line_val = getline(line)
+    let cstartexpr = s:StartCommentExpr()
+    let values = split(getline(line)[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator)
     let values[colm-1] = a:val
     let line_value = g:table_mode_separator . join(values, g:table_mode_separator) . g:table_mode_separator
+    if s:Strlen(cstartexpr) > 0 && line_val =~# cstartexpr
+      let sce = matchstr(line_val, s:StartCommentExpr())
+      let ece = matchstr(line_val, s:EndCommentExpr())
+      let line_value = sce . line_value . ece
+    endif
     call setline(line, line_value)
     call tablemode#TableRealign(line)
   endif
@@ -481,7 +527,7 @@ endfunction
 " Like split(), but include the delimiters as elements
 " All odd numbered elements are delimiters
 " All even numbered elements are non-delimiters (including zero)
-function! s:SplitDelim(string, delim)
+function! s:Split(string, delim)
   let rv = []
   let beg = 0
 
@@ -522,7 +568,7 @@ endfunction
 " }}}3
 
 function! s:Align(lines) "{{{3
-  let lines = map(a:lines, 's:SplitDelim(v:val, g:table_mode_separator)')
+  let lines = map(a:lines, 's:Split(v:val, g:table_mode_separator)')
 
   for line in lines
     if len(line) <= 1 | continue | endif
@@ -727,8 +773,8 @@ function! tablemode#ColumnNr(pos) "{{{2
   else
     return 0
   endif
-
-  return s:Strlen(substitute(getline(pos[0])[0:pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
+  let row_start = stridx(getline(pos[0]), g:table_mode_separator)
+  return s:Strlen(substitute(getline(pos[0])[(row_start):pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
 endfunction
 " }}}2
 
@@ -867,10 +913,16 @@ function! tablemode#AddFormula() "{{{2
       call setline(fline, getline(fline) . ';' . fr)
     else
       let cstring = &commentstring
+      let [cmss, cmse] = ['', '']
       if len(cstring) > 0
-        let cstring = split(cstring, '%s')[0]
+        let cms = split(cstring, '%s')
+        if len(cms) == 2
+          let [cmss, cmse] = cms
+        else
+          let [cmss, cmse] = [cms[0], '']
+        endif
       endif
-      let fr = cstring . ' tmf: ' . fr
+      let fr = cmss . ' tmf: ' . fr . ' ' . cmse
       call append(fline-1, fr)
       call cursor(cursor_pos)
     endif
@@ -907,11 +959,10 @@ function! tablemode#EvaluateExpr(expr, line) abort "{{{2
   else
     let [row, line] = [1, s:GetFirstRow(line)]
     while tablemode#IsATableRow(line)
+      let texpr = expr
       if expr =~# '\$'
-        let texpr = substitute(expr, '\$\(\d\+\)',
+        let texpr = substitute(texpr, '\$\(\d\+\)',
               \ '\=str2float(s:GetCells(line, row, submatch(1)))', 'g')
-      else
-        let texpr = expr
       endif
 
       call s:SetCell(eval(texpr), line, row, colm)
@@ -924,15 +975,27 @@ endfunction
 
 function! tablemode#EvaluateFormulaLine() "{{{2
   let exprs = []
+  let cstring = &commentstring
+  let matchexpr = ''
+  if len(cstring) > 0
+    let cms = split(cstring, '%s')
+    if len(cms) == 2
+      let matchexpr = '^\s*' . escape(cms[0], '/*') . '\s*tmf: \zs.*\ze' . escape(cms[1], '/*') . '\s*$'
+    else
+      let matchexpr = '^\s*' . escape(cms[0], '/*') . '\s*tmf: \zs.*$'
+    endif
+  else
+    let matchexpr = '^\s* tmf: \zs.*$'
+  endif
   if tablemode#IsATableRow('.') " We're inside the table
     let line = s:GetLastRow('.')
     if getline(line + s:RowGap()) =~# 'tmf: '
-      let exprs = split(matchstr(getline(line + s:RowGap()), 'tmf: \zs.*'), ';')
+      let exprs = split(matchstr(getline(line + s:RowGap()), matchexpr), ';')
     endif
   elseif getline('.') =~# 'tmf: ' " We're on the formula line
     let line = line('.') - s:RowGap()
     if tablemode#IsATableRow(line)
-      let exprs = split(matchstr(getline('.'), 'tmf: \zs.*'), ';')
+      let exprs = split(matchstr(getline('.'), matchexpr), ';')
     endif
   endif
 
