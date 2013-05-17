@@ -148,8 +148,8 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
     functions as well. Both these functions take a range as input. A range can
     be of two forms :
 
-      - `n,m`: This represents cells in the current column from row `n`
-        through `m`. If `m` is negative it represents `m` row above the
+      - `r1,r2`: This represents cells in the current column from row `r1`
+        through `r2`. If `r2` is negative it represents `r2` rows above the
         current row (of the target cell).
 
       - `r1,c1:r2,c2`: This represents cells in the table from cell r1,c1
