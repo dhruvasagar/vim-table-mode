@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v2.4.0
+*table-mode.txt*			Table Mode for easy table formatting. v3.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 2.4.0
+				 VERSION 3.0
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -9,13 +9,12 @@
 CONTENTS						*table-mode-contents*
 
 	1. Introduction .................... |table-mode-introduction|
-	2. Requirements .................... |table-mode-requirements|
-	3. Getting Started ................. |table-mode-getting-started|
-	4. Options ......................... |table-mode-options|
-	5. Mappings ........................ |table-mode-mappings|
-	6. Commands ........................ |table-mode-commands|
-	7. Contributing .................... |table-mode-contributing|
-	8. Report Issues ................... |table-mode-report-issues|
+	2. Getting Started ................. |table-mode-getting-started|
+	3. Options ......................... |table-mode-options|
+	4. Mappings ........................ |table-mode-mappings|
+	5. Commands ........................ |table-mode-commands|
+	6. Contributing .................... |table-mode-contributing|
+	7. Report Issues ................... |table-mode-report-issues|
 
 ===============================================================================
 INTRODUCTION					*table-mode-introduction*
@@ -24,12 +23,6 @@ Table Mode is simple plugin that makes building tables in vim a breeze. It is
 inspired from tpope's auto aligning script for creating tables in vim - 
 https://gist.github.com/tpope/287147, which in turn utilizes the Tabular
 Plugin.
-
-===============================================================================
-REQUIREMENTS					*table-mode-requirements*
-
-This depends on the Tabular plugin - https://github.com/godlygeek/tabular,
-make sure it is installed and loaded.
 
 ===============================================================================
 GETTING STARTED					*table-mode-getting-started*
@@ -69,6 +62,61 @@ Manipulation of tables:
 	3. Delete Row : Delete an entire table row using
 	|table-mode-delete-row-map|
 
+Table Formulas:
+	Table Mode now has support for formulas like a spreadsheet. There
+	are 2 ways of defining formulas :
+
+		You can add formulas using |:TableAddFormula| or the mapping
+		|<Leader>tfa| defined by the option
+		|table-mode-add-formula-map| from within a table cell, which
+		will ask for input on the cmd-line with a 'f=' prompt. The
+		input formula will be appended to the formula line if one
+		exists or a new one will be created with the input formula
+		taking the current cell as the target cell. The formula line
+		is evaluated immidiately to reflect the results.
+
+		You can directly also add / manipulate formula expressions in
+		the formula line. The formula line is a commented line right
+		after the table, beginning with 'tmf:' (table mode formula).
+		eg) '# tmf: $3=$2*$1'.  You can add multiple formulas on the
+		line separated with a ';' eg) '# tmf: $3=$2*$1;$4=$3/3.14'
+
+	You can evaluate the formula line using |:TableEvalFormulaLine| or the
+	mapping |<Leader>tfe| defined by the option |table-mode-expr-calc-map|
+
+Formula Expressions :
+	Expressions are of the format '$target = formula'.
+
+	The target can be of 2 forms :
+
+		'$n': This matches the table column number 'n'. So the formula
+		would be evaluated for each cell in that column and the result
+		would be placed in it.
+
+		'$n,m': This matches the table cell n,m (row, column). So in
+		this case the formula would be evaluated and the result will
+		be placed in this cell.
+
+	The formula can be a simple mathematical expression involving cells
+	which are also defined by the same format as that of the target cell.
+	Apart from basic mathematical expressions, table mode also provides
+	special functions 'Sum' and 'Average'. Both these functions take a
+	range as input. A range can be of two forms :
+
+		'n,m': This represents cells in the current column from row
+		'n' through 'm'. If 'm' is negative it represents 'm' row
+		above the current row (of the target cell).
+
+		'r1,c1:r2,c2': This represents cells in the table from cell
+		r1,c1 through cell r2,c2 (row, column).
+
+	Examples :
+		$2 = $1 * $1
+		$2 = $1 / $1,3
+		$1,2 = $1,1 * $1,1
+		$5,1 = Sum(1:-1)
+		$5,3 = Sum(1,2:5,2)
+
 ===============================================================================
 OPTIONS							*table-mode-options*
 
@@ -92,6 +140,10 @@ Overview:
 	|table-mode-delete-row-map| ..... Set mapping for deleting table row.
 	|table-mode-delete-column-map| .. Set mapping for deleting table
 					column.
+	|table-mode-add-formula-map| .... Define a new table formula for the
+					current cell.
+	|table-mode-expr-calc-map| ...... Evaluate formula line and update
+					table.
 
 g:table_mode_loaded					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -210,10 +262,22 @@ g:table_mode_delete_row_map			*table-mode-delete-row-map*
 		let g:table_mode_delete_column_map = '<Leader>tdd'
 
 g:table_mode_delete_column_map			*table-mode-delete-column-map*
-	USe this option to define the mapping for deletion of the entire table
+	Use this option to define the mapping for deletion of the entire table
 	column. You can delete multiple columns to the right by preceeding
 	this with a [count] >
 		let g:table_mode_delete_column_map = '<Leader>tdc'
+<
+
+g:table_mode_add_formula_map			*table-mode-add-formula-map*
+	Use this option to define the mapping for invoking |TableAddFormula|
+	command. >
+		let g:table_mode_add_formula_map = '<Leader>tfa'
+<
+
+g:table_mode_expr_calc_map			*table-mode-expr-calc-map*
+	Use this option to define the mapping for invoking
+	|TableEvalFormulaLine| command. >
+		let g:table_mode_expr_calc_map = '<Leader>tfe'
 <
 
 ===============================================================================
@@ -252,6 +316,16 @@ MAPPINGS						*table-mode-mappings*
 <Leader>tdc	Delete entire table column you are within. You can preceed it
 		with a [count] to delete multiple columns to the right. You
 		can change this using |table-mode-delete-column-map| option.
+
+						*table-mode-mappings-add-formula*
+<Leader>tfa	Add a fomula for the current table cell. This invokes
+		|TableAddFormula| command.
+
+				*table-mode-mappings-evaluate-formula-line*
+<Leader>tfe	Evaluate the formula line which is a commented line right
+		after the table beginning with 'tmf:'. If one exists this
+		would evaluate the formula line and update the table
+		accordingly.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*
@@ -295,6 +369,21 @@ COMMANDS						*table-mode-commands*
 
 	NOTE this is optional, by default without the expression it will
 	tableize the content using |g:table-mode-delimiter| as the delimiter.
+
+							*:TableAddFormula*
+						*table-mode-:TableAddFormula*
+:TableAddFormula
+	This command is for defining a formula for the current table cell. It
+	takes input on the cmd-line with a 'f=' prompt and appends it to the
+	formula line if it exists or adds a new formula line with the
+	expression using the current cell as the target and the input formula.
+
+							*:TableEvalFormulaLine*
+					*table-mode-:TableEvalFormulaLine*
+:TableEvalFormulaLine
+	This command when invoked from anywhere within the table or directly
+	on the formula line evaluates it and updates the table accordingly.
+
 ===============================================================================
 CONTRIBUTING						*table-mode-contributing*
 

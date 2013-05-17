@@ -1,4 +1,9 @@
 # Change Log
+## Version 3.0
+* Removed dependence on Tabular and added code borrowed from Tabular for
+  aligning the table rows.
+* Added feature to be able to define & evaluate formulas.
+
 ## Version 2.4.0
 * Added Table Cell text object.
 * Added api to delete entire table row.
