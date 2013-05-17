@@ -111,6 +111,61 @@ sure Tabular is installed and loaded into your runtime to ensure this works.
       (provided you are within a table row), this can also be preceeded with a
       [count] to delete multiple columns.
 
+- **Table Formulas** :
+
+  Table Mode now has support for formulas like a spreadsheet. There are 2 ways
+  of defining formulas :
+
+  - You can add formulas using `:TableAddFormula` or the mapping `<Leader>tfa`
+    defined by the option `g:table_mode_add_formula_map` from within a table
+    cell, which will ask for input on the cmd-line with a `f=` prompt. The
+    input formula will be appended to the formula line if one exists or a new
+    one will be created with the input formula taking the current cell as the
+    target cell. The formula line is evaluated immidiately to reflect the
+    results.
+
+  - You can directly add / manipulate formula expressions in the formula line.
+    The formula line is a commented line right after the table, beginning with
+    'tmf:' (table mode formula). eg) `# tmf: $3=$2*$1`.  You can add multiple
+    formulas on the line separated with a ';' eg) `# tmf: $3=$2*$1;$4=$3/3.14`
+
+  You can evaluate the formula line using `:TableEvalFormulaLine` or the
+  mapping `<Leader>tfe` defined by the option `g:table_mode_expr_calc_map`
+
+- **Formula Expressions** :
+
+  Expressions are of the format `$target = formula`.
+
+  - The `target` can be of 2 forms :
+
+      - `$n`: This matches the table column number `n`. So the `formula` would
+        be evaluated for each cell in that column and the result would be placed
+        in it.
+
+      - `$n,m`: This matches the table cell n,m (row, column). So in this case
+        the formula would be evaluated and the result will be placed in this
+        cell.
+
+  - The `formula` can be a simple mathematical expression involving cells
+    which are also defined by the same format as that of the target cell. 
+    Apart from basic mathematical expressions, table mode also provides
+    special functions `Sum` and `Average`. Both these functions take a range
+    as input. A range can be of two forms :
+
+      - `n,m`: This represents cells in the current column from row `n`
+        through `m`. If `m` is negative it represents `m` row above the
+        current row (of the target cell).
+
+      - `r1,c1:r2,c2`: This represents cells in the table from cell r1,c1
+        through cell r2,c2 (row, column).
+
+  - Examples :
+      - `$2 = $1 * $1`
+      - `$2 = $1 / $1,3`
+      - `$1,2 = $1,1 * $1,1`
+      - `$5,1 = Sum(1:-1)`
+      - `$5,3 = Sum(1,2:5,2)`
+
 ### Demo
 
 <a href="http://www.youtube.com/watch?v=sK2IH1hiDkw"><img
