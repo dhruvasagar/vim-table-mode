@@ -26,11 +26,6 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
    restart VIM
 
-### Requirements
-
-Depends on <a href="https://github.com/godlygeek/tabular">Tabular</a>. Make
-sure Tabular is installed and loaded into your runtime to ensure this works.
-
 ### Usage
 
 - **On the fly table creation** :
