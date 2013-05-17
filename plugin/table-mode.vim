@@ -25,13 +25,13 @@ if exists('g:loaded_table_mode')
 endif
 let g:loaded_table_mode = 1
 "}}}1
-"
-" Finish if Tabularize plugin is not available {{{1
-if !exists(':Tabularize')
-  echoerr 'Table Mode depends on Tabularize, ensure that is installed first.'
-  finish
-endif
-" }}}1
+
+" " Finish if Tabularize plugin is not available {{{1
+" if !exists(':Tabularize')
+"   echoerr 'Table Mode depends on Tabularize, ensure that is installed first.'
+"   finish
+" endif
+" " }}}1
 
 " Avoiding side effects {{{1
 let s:save_cpo = &cpo
@@ -62,43 +62,13 @@ call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
 call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
 call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
 call s:SetGlobalOptDefault('table_mode_add_formula_map', '<Leader>tfa')
-call s:SetGlobalOptDefault('table_mode_recalculate_map', '<Leader>tfr')
+call s:SetGlobalOptDefault('table_mode_expr_calc_map', '<Leader>tfe')
 "}}}1
 
 function! s:TableMotion() "{{{1
   let direction = nr2char(getchar())
   for i in range(v:count1)
     call tablemode#TableMotion(direction)
-  endfor
-endfunction
-" }}}1
-
-let s:tables = {}
-
-function! s:AddTableFormula() abort "{{{1
-  let fr = input('f=')
-
-  if fr !=# ''
-    let [formula, range] = split(fr)
-
-    let [line, colm] = [line('.'), tablemode#ColumnNr('.')]
-    let key = join([bufnr('%'), line, colm], ':')
-    let formula = 'tablemode#'.formula.'('.string(range).','.line.','.colm.')'
-
-    let row = tablemode#RowNr(line)
-    call tablemode#SetCell(eval(formula), line, row, colm)
-
-    let s:tables[key] = formula
-  endif
-endfunction
-" }}}1
-
-function! s:RecalculateFormulas() "{{{1
-  let formulas = filter(s:tables, 'split(v:key, ":")[0] == string(bufnr("%"))')
-  for [key, formula] in items(formulas)
-    let [bufnr, line, colm] = map(split(key, ':'), 'str2nr(v:val)')
-    let row = tablemode#RowNr(line)
-    call tablemode#SetCell(eval(formula), line, row, colm)
   endfor
 endfunction
 " }}}1
@@ -123,6 +93,9 @@ endif
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
 
+command! TableAddFormula call tablemode#AddFormula()
+command! TableEvalFormulaLine call tablemode#EvaluateFormulaLine()
+
 execute "xnoremap <silent> " . g:table_mode_tableize_map .
       \ " :Tableize<CR>"
 execute "nnoremap <silent> " . g:table_mode_tableize_map .
@@ -139,12 +112,10 @@ execute "nnoremap <silent> " . g:table_mode_delete_row_map .
       \ " :call tablemode#DeleteRow()<CR>"
 execute "nnoremap <silent> " . g:table_mode_delete_column_map .
       \ " :call tablemode#DeleteColumn()<CR>"
-
-command! TableFormula call s:AddTableFormula()
-command! TableRecalc  call s:RecalculateFormulas()
-
-execute "nnoremap <silent> " . g:table_mode_add_formula_map . " :TableFormula<CR>"
-execute "nnoremap <silent> " . g:table_mode_recalculate_map . " :TableRecalc<CR>"
+execute "nnoremap <silent> " . g:table_mode_add_formula_map .
+      \ " :TableAddFormula<CR>"
+execute "nnoremap <silent> " . g:table_mode_expr_calc_map .
+      \ " :TableEvalFormulaLine<CR>"
 "}}}1
 
 " Avoiding side effects {{{1

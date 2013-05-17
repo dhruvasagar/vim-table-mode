@@ -1,9 +1,10 @@
 " ==============================  Header ==================================={{{
+" File:          autoload/tablemode.vim
 " Description:   Table mode for vim for creating neat tables.
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.4.0
+" Version:       3.0
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -75,7 +76,7 @@ endfunction
 function! s:Sum(list) "{{{3
   let result = 0
   for item in a:list
-    if type(item) == type(1)
+    if type(item) == type(1) || type(item) == type(1.0)
       let result = result + item
     elseif type(item) == type('')
       let result = result + str2nr(item)
@@ -95,7 +96,7 @@ endfunction
 function! s:GetCommentStart() "{{{3
   let cstring = &commentstring
   if s:Strlen(cstring) > 0
-    return substitute(split(substitute(cstring, '%s', ' ', 'g'))[0], '.', '\\\0', 'g')
+    return substitute(split(cstring, '%s')[0], '.', '\\\0', 'g')
   else
     return ''
   endif
@@ -131,11 +132,7 @@ endfunction
 " }}}3
 
 function! s:RowGap() "{{{3
-  if g:table_mode_border
-    return 2
-  else
-    return 1
-  endif
+  return g:table_mode_border ? 2 : 1
 endfunction
 " }}}3
 
@@ -242,8 +239,7 @@ function! s:GetFirstRow(line) "{{{2
   if tablemode#IsATableRow(a:line)
     let line = s:Line(a:line)
 
-    while line > 0
-      if !tablemode#IsATableRow(line - s:RowGap()) | break | endif
+    while tablemode#IsATableRow(line - s:RowGap())
       let line = line - s:RowGap()
     endwhile
 
@@ -263,8 +259,7 @@ function! s:GetLastRow(line) "{{{2
   if tablemode#IsATableRow(a:line)
     let line = s:Line(a:line)
 
-    while line <= line('$')
-      if !tablemode#IsATableRow(line + s:RowGap()) | break | endif
+    while tablemode#IsATableRow(line+ s:RowGap())
       let line = line + s:RowGap()
     endwhile
 
@@ -305,26 +300,26 @@ function! s:GetCells(line, ...) abort
       let [row, colm] = a:000
     endif
 
-    if row > 0
-      let line =  line + (row - tablemode#RowNr(line)) * s:RowGap()
-
-      if colm > 0
-        return s:Strip(split(getline(line), g:table_mode_separator)[colm-1])
-      else
-        return map(split(getline(line), g:table_mode_separator), 's:Strip(v:val)')
-      endif
-    elseif colm > 0
+    if row == 0
       let values = []
       let line = s:GetFirstRow(line)
-      while line <= line('$')
-        if tablemode#IsATableRow(line)
-          call add(values, s:Strip(split(getline(line), g:table_mode_separator)[colm-1]))
-        else
-          break
-        endif
+      while tablemode#IsATableRow(line)
+        call add(values, s:Strip(split(getline(line), g:table_mode_separator)[colm>0?colm-1:colm]))
         let line = line + s:RowGap()
       endwhile
       return values
+    else
+      if row > 0
+        let line =  line + (row - tablemode#RowNr(line)) * s:RowGap()
+      else
+        let line = line + row * s:RowGap()
+      endif
+
+      if colm == 0
+        return map(split(getline(line), g:table_mode_separator), 's:Strip(v:val)')
+      else
+        return s:Strip(split(getline(line), g:table_mode_separator)[colm>0?colm-1:colm])
+      endif
     endif
   endif
 endfunction
@@ -362,23 +357,28 @@ endfunction
 " }}}2
 
 function! s:GetRow(row, ...) abort "{{{2
-  if a:0 < 1
-    let line = '.'
-  elseif a:0 < 2
-    let line = a:1
-  endif
-
+  let line = a:0 < 1 ? '.' : a:1
   return s:GetCells(line, a:row)
 endfunction
 " }}}2
 
-function! s:GetColumn(col, ...) "{{{2
-  if a:0 < 1
-    let line = '.'
-  elseif a:0 < 2
-    let line = a:1
-  endif
+function! s:GetRowColumn(col, ...) abort "{{{2
+  let line = a:0 < 1 ? '.' : a:1
+  let row = tablemode#RowNr('.')
+  return s:GetCells(line, row, a:col)
+endfunction
+" }}}2
+
+function! s:GetColumn(col, ...) abort "{{{2
+  let line = a:0 < 1 ? '.' : a:1
   return s:GetCells(line, 0, a:col)
+endfunction
+" }}}2
+
+function! s:GetColumnRow(row, ...) abort "{{{2
+  let line = a:0 < 1 ? '.' : a:1
+  let col = tablemode#ColumnNr('.')
+  return s:GetCells(line, a:row, col)
 endfunction
 " }}}2
 
@@ -448,7 +448,7 @@ function! s:GetCellRange(range, ...) abort
         let tcol = col1
         while tcol <= col2
           call add(values, s:GetColumn(tcol, line)[(row1-1):(row2-1)])
-          let tcol = tcol + 1
+          let tcol += 1
         endwhile
       endif
     endif
@@ -580,6 +580,16 @@ endfunction
 
 " Public API {{{1
 
+function! tablemode#GetLastRow(line) "{{{2
+  return s:GetLastRow(a:line)
+endfunction
+" }}}2
+
+function! tablemode#GetFirstRow(line) "{{{2
+  return s:GetFirstRow(a:line)
+endfunction
+" }}}2
+
 function! tablemode#TableizeInsertMode() "{{{2
   if s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator)
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
@@ -613,7 +623,7 @@ endfunction
 
 function! tablemode#TableizeRange(...) range "{{{2
   let shift = 1
-  if g:table_mode_border | let shift = shift + 1 | endif
+  if g:table_mode_border | let shift += 1 | endif
   call s:Tableizeline(a:firstline, a:1)
   undojoin
   " The first one causes 2 extra lines for top & bottom border while the
@@ -644,24 +654,16 @@ function! tablemode#TableRealign(line) "{{{2
 
   let [lnums, lines] = [[], []]
   let tline = line
-  while tline > 0
-    if tablemode#IsATableRow(tline)
-      call insert(lnums, tline)
-      call insert(lines, getline(tline))
-    else
-      break
-    endif
+  while tablemode#IsATableRow(tline)
+    call insert(lnums, tline)
+    call insert(lines, getline(tline))
     let tline = tline - s:RowGap()
   endwhile
 
   let tline = line + s:RowGap()
-  while tline <= line('$')
-    if tablemode#IsATableRow(tline)
-      call add(lnums, tline)
-      call add(lines, getline(tline))
-    else
-      break
-    endif
+  while tablemode#IsATableRow(tline)
+    call add(lnums, tline)
+    call add(lines, getline(tline))
     let tline = tline + s:RowGap()
   endwhile
 
@@ -685,22 +687,14 @@ function! tablemode#RowCount(line) "{{{2
   let line = s:Line(a:line)
 
   let [tline, totalRowCount] = [line, 0]
-  while tline > 0
-    if tablemode#IsATableRow(tline)
-      let totalRowCount = totalRowCount + 1
-    else
-      break
-    endif
+  while tablemode#IsATableRow(tline)
+    let totalRowCount += 1
     let tline = tline - s:RowGap()
   endwhile
 
   let tline = line + s:RowGap()
-  while tline <= line('$')
-    if tablemode#IsATableRow(tline)
-      let totalRowCount = totalRowCount + 1
-    else
-      break
-    endif
+  while tablemode#IsATableRow(tline)
+    let totalRowCount += 1
     let tline = tline + s:RowGap()
   endwhile
 
@@ -712,12 +706,8 @@ function! tablemode#RowNr(line) "{{{2
   let line = s:Line(a:line)
 
   let rowNr = 0
-  while line > 0
-    if tablemode#IsATableRow(line)
-      let rowNr = rowNr + 1
-    else
-      break
-    endif
+  while tablemode#IsATableRow(line)
+    let rowNr += 1
     let line = line - s:RowGap()
   endwhile
 
@@ -865,6 +855,94 @@ function! tablemode#Average(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
   return s:Average(call('s:GetCellRange', args))
+endfunction
+" }}}2
+
+function! tablemode#AddFormula() "{{{2
+  let fr = input('f=')
+  let row = tablemode#RowNr('.')
+  let colm = tablemode#ColumnNr('.')
+
+  if fr !=# ''
+    let fr = '$' . row . ',' . colm . '=' . fr
+    let fline = tablemode#GetLastRow('.') + s:RowGap()
+    let cursor_pos = [line('.'), col('.')]
+    if getline(fline) =~# 'tmf: '
+      call setline(fline, getline(fline) . ';' . fr)
+    else
+      let cstring = &commentstring
+      if len(cstring) > 0
+        let cstring = split(cstring, '%s')[0]
+      endif
+      let fr = cstring . 'tmf: ' . fr
+      call append(fline-1, fr)
+      call cursor(cursor_pos)
+    endif
+    call tablemode#EvaluateFormulaLine()
+  endif
+endfunction
+" }}}2
+
+function! tablemode#EvaluateExpr(expr, line) abort "{{{2
+  let line = s:Line(a:line)
+  let [target, expr] = split(a:expr, '=')
+  let cell = substitute(target, '\$', '', '')
+  if cell =~# ','
+    let [row, colm] = split(cell, ',')
+  else
+    let [row, colm] = [0, cell]
+  endif
+
+  if expr =~# 'Sum(.*)'
+    let expr = substitute(expr, 'Sum(\(.*\))', 'tablemode#Sum("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'Average(.*)'
+    let expr = substitute(expr, 'Average(\(.*\))', 'tablemode#Average("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# '[\$,]'
+    let expr = substitute(expr, '\$\(\d\+\),\(\d*\)',
+          \ '\=str2float(s:GetCells(line, submatch(1), submatch(2)))', 'g')
+  endif
+
+  if cell =~# ','
+    call s:SetCell(eval(expr), line, row, colm)
+  else
+    let [row, line] = [1, s:GetFirstRow(line)]
+    while tablemode#IsATableRow(line)
+      if expr =~# '\$'
+        let texpr = substitute(expr, '\$\(\d\+\)',
+              \ '\=str2float(s:GetCells(line, row, submatch(1)))', 'g')
+      else
+        let texpr = expr
+      endif
+
+      call s:SetCell(eval(texpr), line, row, colm)
+      let row += 1
+      let line += s:RowGap()
+    endwhile
+  endif
+endfunction
+" }}}2
+
+function! tablemode#EvaluateFormulaLine() "{{{2
+  let exprs = []
+  if tablemode#IsATableRow('.') " We're inside the table
+    let line = s:GetLastRow('.')
+    if getline(line + s:RowGap()) =~# 'tmf: '
+      let exprs = split(matchstr(getline(line + s:RowGap()), 'tmf: \zs.*'), ';')
+    endif
+  elseif getline('.') =~# 'tmf: ' " We're on the formula line
+    let line = line('.') - s:RowGap()
+    if tablemode#IsATableRow(line)
+      let exprs = split(matchstr(getline('.'), 'tmf: \zs.*'), ';')
+    endif
+  endif
+
+  for expr in exprs
+    call tablemode#EvaluateExpr(expr, line)
+  endfor
 endfunction
 " }}}2
 
