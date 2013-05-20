@@ -70,7 +70,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
    Now you can move between cells using table mode motions `<Leader>t[hjkl]`
    to move left | down | up | right cells respectively. You can use
-   `g:table_mode_motion_prefix` option to define the prefix mapping to be used
+   `g:table_mode_map_prefix` option to define the prefix mapping to be used
    before 'hjkl'. The left | right motions wrap around the table and move to
    the next | previous row after the last | first cell in the current row if
    one exists. 
@@ -189,5 +189,4 @@ I must thank Tim Pope for inspiration. The initial concept was created by him
 named <a href="https://gist.github.com/tpope/287147">cucumbertables.vim</a>.
 
 Also a shout out to godlygeek who developed the incredible <a
-href="http://github.com/godlygeek/tabular">Tabular</a> plugin which does most
-of the grunt work behind the scenes.
+href="http://github.com/godlygeek/tabular">Tabular</a> plugin.
