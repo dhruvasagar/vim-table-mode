@@ -129,7 +129,7 @@ endfunction
 function! s:EndExpr() "{{{2
   let cend = s:GetCommentEnd()
   if s:Strlen(cend) > 0
-    return '\s*\(' . cend . '\)\?\s*$'
+    return '\s*\(\s\+' . cend . '\)\?\s*$'
   else
     return '\s*$'
   endif
@@ -910,7 +910,12 @@ function! tablemode#AddFormula() "{{{2
     let fline = tablemode#GetLastRow('.') + s:RowGap()
     let cursor_pos = [line('.'), col('.')]
     if getline(fline) =~# 'tmf: '
-      call setline(fline, getline(fline) . ';' . fr)
+      " Comment line correctly
+      let line_val = getline(fline)
+      let line_expr = line_val[match(line_val, s:StartCommentExpr()):match(line_val, s:EndCommentExpr())]
+      let sce = matchstr(line_val, s:StartCommentExpr() . '\zs')
+      let ece = matchstr(line_val, s:EndCommentExpr())
+      call setline(fline, sce . line_expr . '; ' . fr . ece)
     else
       let cstring = &commentstring
       let [cmss, cmse] = ['', '']
@@ -933,12 +938,12 @@ endfunction
 
 function! tablemode#EvaluateExpr(expr, line) abort "{{{2
   let line = s:Line(a:line)
-  let [target, expr] = split(a:expr, '=')
+  let [target, expr] = map(split(a:expr, '='), 's:Strip(v:val)')
   let cell = substitute(target, '\$', '', '')
   if cell =~# ','
-    let [row, colm] = split(cell, ',')
+    let [row, colm] = map(split(cell, ','), 'str2nr(v:val)')
   else
-    let [row, colm] = [0, cell]
+    let [row, colm] = [0, str2nr(cell)]
   endif
 
   if expr =~# 'Sum(.*)'
