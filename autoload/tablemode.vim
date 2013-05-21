@@ -960,6 +960,10 @@ function! tablemode#EvaluateExpr(expr, line) abort "{{{2
   endif
 
   if cell =~# ','
+    if expr =~# '\$'
+      let expr = substitute(expr, '\$\(\d\+\)',
+          \ '\=str2float(s:GetCells(line, row, submatch(1)))', 'g')
+    endif
     call s:SetCell(eval(expr), line, row, colm)
   else
     let [row, line] = [1, s:GetFirstRow(line)]
