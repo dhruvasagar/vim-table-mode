@@ -77,7 +77,7 @@ function! s:Sum(list) "{{{2
     if type(item) == type(1) || type(item) == type(1.0)
       let result = result + item
     elseif type(item) == type('')
-      let result = result + str2nr(item)
+      let result = result + str2float(item)
     elseif type(item) == type([])
       let result = result + s:Sum(item)
     endif
