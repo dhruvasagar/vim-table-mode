@@ -338,7 +338,7 @@ function! s:GetCells(line, ...) abort
       let line = s:GetFirstRow(line)
       while tablemode#IsATableRow(line)
         let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
-        call add(values, s:Strip(split(row_line, g:table_mode_separator)[colm>0?colm-1:colm]))
+        call add(values, s:Strip(get(split(row_line, g:table_mode_separator), colm>0?colm-1:colm, '')))
         let line = line + s:RowGap()
       endwhile
       return values
@@ -353,7 +353,8 @@ function! s:GetCells(line, ...) abort
       if colm == 0
         return map(split(row_line, g:table_mode_separator), 's:Strip(v:val)')
       else
-        return s:Strip(split(row_line, g:table_mode_separator)[colm>0?colm-1:colm])
+        let split_line = split(row_line, g:table_mode_separator)
+        return s:Strip(get(split(row_line, g:table_mode_separator), colm>0?colm-1:colm, ''))
       endif
     endif
   endif
@@ -385,6 +386,7 @@ function! s:SetCell(val, ...) abort "{{{2
     let line_val = getline(line)
     let cstartexpr = s:StartCommentExpr()
     let values = split(getline(line)[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator)
+    if len(values) < colm | return | endif
     let values[colm-1] = a:val
     let line_value = g:table_mode_separator . join(values, g:table_mode_separator) . g:table_mode_separator
     if s:Strlen(cstartexpr) > 0 && line_val =~# cstartexpr
@@ -982,7 +984,7 @@ function! tablemode#EvaluateExpr(expr, line) abort "{{{2
 endfunction
 " }}}2
 
-function! tablemode#EvaluateFormulaLine() "{{{2
+function! tablemode#EvaluateFormulaLine() abort "{{{2
   let exprs = []
   let cstring = &commentstring
   let matchexpr = ''
