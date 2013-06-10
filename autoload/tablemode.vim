@@ -17,7 +17,7 @@
 "                of any kind, either expressed or implied. In no event will
 "                the copyright holder be liable for any damamges resulting
 "                from the use of this software.
-" ==========================================================================}}}
+" =============================================================================
 
 " Private Functions {{{1
 
@@ -25,30 +25,25 @@ if exists('g:autoloaded_table_mode') "{{{2
   finish
 endif
 let g:autoloaded_table_mode = 1
-" }}}2
 
 function! s:throw(string) abort "{{{2
   let v:errmsg = 'table-mode: ' . a:string
   throw v:errmsg
 endfunction
-" }}}2
 
 function! s:sub(str,pat,rep) abort "{{{2
   return substitute(a:str,'\v\C'.a:pat,a:rep,'')
 endfunction
-" }}}2
 
 function! s:gsub(str,pat,rep) abort "{{{2
   return substitute(a:str,'\v\C'.a:pat,a:rep,'g')
 endfunction
-" }}}2
 
 function! s:SetBufferOptDefault(opt, val) "{{{2
   if !exists('b:' . a:opt)
     let b:{a:opt} = a:val
   endif
 endfunction
-" }}}2
 
 function! s:Line(line) "{{{2
   if type(a:line) == type('')
@@ -57,19 +52,16 @@ function! s:Line(line) "{{{2
     return a:line
   endif
 endfunction
-" }}}2
 
 " function! s:Strlen(text) - Count multibyte characters accurately {{{2
 " See :h strlen() for more details
 function! s:Strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
 endfunction
-" }}}2
 
 function! s:Strip(string) "{{{2
   return matchstr(a:string, '^\s*\zs.\{-}\ze\s*$')
 endfunction
-" }}}2
 
 function! s:Sum(list) "{{{2
   let result = 0.0
@@ -84,12 +76,10 @@ function! s:Sum(list) "{{{2
   endfor
   return result
 endfunction
-" }}}2
 
 function! s:Average(list) "{{{2
   return s:Sum(a:list)/len(a:list)
 endfunction
-" }}}2
 
 function! s:GetCommentStart() "{{{2
   let cstring = &commentstring
@@ -99,7 +89,6 @@ function! s:GetCommentStart() "{{{2
     return ''
   endif
 endfunction
-" }}}2
 
 function! s:GetCommentEnd() "{{{2
   let cstring = &commentstring
@@ -114,7 +103,6 @@ function! s:GetCommentEnd() "{{{2
     return ''
   endif
 endfunction
-" }}}2
 
 function! s:StartExpr() "{{{2
   let cstart = s:GetCommentStart()
@@ -124,7 +112,6 @@ function! s:StartExpr() "{{{2
     return '^\s*'
   endif
 endfunction
-" }}}2
 
 function! s:EndExpr() "{{{2
   let cend = s:GetCommentEnd()
@@ -134,7 +121,6 @@ function! s:EndExpr() "{{{2
     return '\s*$'
   endif
 endfunction
-" }}}2
 
 function! s:StartCommentExpr() "{{{2
   let cstartexpr = s:GetCommentStart()
@@ -144,7 +130,6 @@ function! s:StartCommentExpr() "{{{2
     return ''
   endif
 endfunction
-" }}}2
 
 function! s:EndCommentExpr() "{{{2
   let cendexpr = s:GetCommentEnd()
@@ -154,7 +139,6 @@ function! s:EndCommentExpr() "{{{2
     return ''
   endif
 endfunction
-" }}}2
 
 function! s:IsTableModeActive() "{{{2
   if g:table_mode_always_active | return 1 | endif
@@ -162,12 +146,10 @@ function! s:IsTableModeActive() "{{{2
   call s:SetBufferOptDefault('table_mode_active', 0)
   return b:table_mode_active
 endfunction
-" }}}2
 
 function! s:RowGap() "{{{2
   return g:table_mode_border ? 2 : 1
 endfunction
-" }}}2
 
 function! s:ToggleMapping() "{{{2
   if exists('b:table_mode_active') && b:table_mode_active
@@ -181,13 +163,11 @@ function! s:ToggleMapping() "{{{2
     execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
   endif
 endfunction
-" }}}2
 
 function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleMapping()
 endfunction
-" }}}2
 
 function! s:GenerateBorder(line) "{{{2
   let line_val = getline(a:line)
@@ -206,7 +186,6 @@ function! s:GenerateBorder(line) "{{{2
     return border
   endif
 endfunction
-" }}}2
 
 function! s:UpdateLineBorder(line) "{{{2
   let line = s:Line(a:line)
@@ -234,7 +213,6 @@ function! s:UpdateLineBorder(line) "{{{2
     call append(line-1, border)
   endif
 endfunction
-" }}}2
 
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
   let delim = g:table_mode_delimiter
@@ -248,7 +226,6 @@ function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
     silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/g"
   endif
 endfunction
-" }}}2
 
 function! s:Tableizeline(line, ...) "{{{2
   let delim = g:table_mode_delimiter
@@ -256,17 +233,14 @@ function! s:Tableizeline(line, ...) "{{{2
   call s:ConvertDelimiterToSeparator(a:line, delim)
   if g:table_mode_border | call s:UpdateLineBorder(a:line) | endif
 endfunction
-" }}}2
 
 function! s:IsFirstCell() "{{{2
   return tablemode#ColumnNr('.') ==# 1
 endfunction
-" }}}2
 
 function! s:IsLastCell() "{{{2
   return tablemode#ColumnNr('.') ==# tablemode#ColumnCount('.')
 endfunction
-" }}}2
 
 function! s:GetFirstRow(line) "{{{2
   if tablemode#IsATableRow(a:line)
@@ -279,14 +253,12 @@ function! s:GetFirstRow(line) "{{{2
     return line
   endif
 endfunction
-" }}}2
 
 function! s:MoveToFirstRow() "{{{2
   if tablemode#IsATableRow('.')
     call cursor(s:GetFirstRow('.'), col('.'))
   endif
 endfunction
-" }}}2
 
 function! s:GetLastRow(line) "{{{2
   if tablemode#IsATableRow(a:line)
@@ -299,14 +271,12 @@ function! s:GetLastRow(line) "{{{2
     return line
   endif
 endfunction
-" }}}2
 
 function! s:MoveToLastRow() "{{{2
   if tablemode#IsATableRow('.')
     call cursor(s:GetLastRow('.'), col('.'))
   endif
 endfunction
-" }}}2
 
 function! s:MoveToStartOfCell() "{{{2
   if getline('.')[col('.')-1] ==# g:table_mode_separator && !s:IsLastCell()
@@ -315,7 +285,6 @@ function! s:MoveToStartOfCell() "{{{2
     execute 'normal! F' . g:table_mode_separator . '2l'
   endif
 endfunction
-" }}}2
 
 " function! s:GetCells() - Function to get values of cells in a table {{{2
 " s:GetCells(row) - Get values of all cells in a row as a List.
@@ -359,7 +328,6 @@ function! s:GetCells(line, ...) abort
     endif
   endif
 endfunction
-" }}}2
 
 function! s:GetCell(...) "{{{2
   if a:0 == 0
@@ -370,7 +338,6 @@ function! s:GetCell(...) "{{{2
 
   return s:GetCells('.', row, col)
 endfunction
-" }}}2
 
 function! s:SetCell(val, ...) abort "{{{2
   if a:0 == 0
@@ -398,33 +365,28 @@ function! s:SetCell(val, ...) abort "{{{2
     call tablemode#TableRealign(line)
   endif
 endfunction
-" }}}2
 
 function! s:GetRow(row, ...) abort "{{{2
   let line = a:0 < 1 ? '.' : a:1
   return s:GetCells(line, a:row)
 endfunction
-" }}}2
 
 function! s:GetRowColumn(col, ...) abort "{{{2
   let line = a:0 < 1 ? '.' : a:1
   let row = tablemode#RowNr('.')
   return s:GetCells(line, row, a:col)
 endfunction
-" }}}2
 
 function! s:GetColumn(col, ...) abort "{{{2
   let line = a:0 < 1 ? '.' : a:1
   return s:GetCells(line, 0, a:col)
 endfunction
-" }}}2
 
 function! s:GetColumnRow(row, ...) abort "{{{2
   let line = a:0 < 1 ? '.' : a:1
   let col = tablemode#ColumnNr('.')
   return s:GetCells(line, a:row, col)
 endfunction
-" }}}2
 
 function! s:ParseRange(range, ...) "{{{2
   if a:0 < 1
@@ -456,7 +418,6 @@ function! s:ParseRange(range, ...) "{{{2
   
   return [row1, col1, row2, col2]
 endfunction
-" }}}2
 
 " function! s:GetCellRange(range, ...) {{{2
 " range: A string representing range of cells.
@@ -500,7 +461,6 @@ function! s:GetCellRange(range, ...) abort
 
   return values
 endfunction
-" }}}2
 
 " Borrowed from Tabular : {{{2
 
@@ -509,7 +469,6 @@ endfunction
 function! s:StripTrailingSpaces(string)
   return matchstr(a:string, '^.\{-}\ze\s*$')
 endfunction
-" }}}3
 
 function! s:Padding(string, length, where) "{{{3
   let gap_length = a:length - s:Strlen(a:string)
@@ -523,7 +482,6 @@ function! s:Padding(string, length, where) "{{{3
     return repeat(" ", left) . a:string . repeat(" ", right)
   endif
 endfunction
-" }}}3
 
 " function! s:Split() - Split a string into fields and delimiters {{{3
 " Like split(), but include the delimiters as elements
@@ -567,7 +525,6 @@ function! s:Split(string, delim)
 
   return rv
 endfunction
-" }}}3
 
 function! s:Align(lines) "{{{3
   let lines = map(a:lines, 's:Split(v:val, g:table_mode_separator)')
@@ -616,23 +573,18 @@ function! s:Align(lines) "{{{3
 
   return lines
 endfunction
-" }}}3
 
-" }}}2
 
-" }}}1
 
 " Public API {{{1
 
 function! tablemode#GetLastRow(line) "{{{2
   return s:GetLastRow(a:line)
 endfunction
-" }}}2
 
 function! tablemode#GetFirstRow(line) "{{{2
   return s:GetFirstRow(a:line)
 endfunction
-" }}}2
 
 function! tablemode#TableizeInsertMode() "{{{2
   if s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator)
@@ -643,17 +595,14 @@ function! tablemode#TableizeInsertMode() "{{{2
     call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
   endif
 endfunction
-" }}}2
 
 function! tablemode#TableModeEnable() "{{{2
   call s:SetActive(1)
 endfunction
-" }}}2
 
 function! tablemode#TableModeDisable() "{{{2
   call s:SetActive(0)
 endfunction
-" }}}2
 
 function! tablemode#TableModeToggle() "{{{2
   if g:table_mode_always_active
@@ -663,7 +612,6 @@ function! tablemode#TableModeToggle() "{{{2
   call s:SetBufferOptDefault('table_mode_active', 0)
   call s:SetActive(!b:table_mode_active)
 endfunction
-" }}}2
 
 function! tablemode#TableizeRange(...) range "{{{2
   let shift = 1
@@ -681,7 +629,6 @@ function! tablemode#TableizeRange(...) range "{{{2
 
   if g:table_mode_border | call tablemode#TableRealign(lnum - shift) | endif
 endfunction
-" }}}2
 
 function! tablemode#TableizeByDelimiter() "{{{2
   let delim = input('/')
@@ -691,7 +638,6 @@ function! tablemode#TableizeByDelimiter() "{{{2
     exec line("'<") . ',' . line("'>") . "call tablemode#TableizeRange('/' . delim)"
   endif
 endfunction
-" }}}2
 
 function! tablemode#TableRealign(line) "{{{2
   let line = s:Line(a:line)
@@ -720,12 +666,10 @@ function! tablemode#TableRealign(line) "{{{2
     call s:UpdateLineBorder(lnum)
   endfor
 endfunction
-" }}}2
 
 function! tablemode#IsATableRow(line) "{{{2
   return getline(a:line) =~# (s:StartExpr() . g:table_mode_separator)
 endfunction
-" }}}2
 
 function! tablemode#RowCount(line) "{{{2
   let line = s:Line(a:line)
@@ -744,7 +688,6 @@ function! tablemode#RowCount(line) "{{{2
 
   return totalRowCount
 endfunction
-" }}}2
 
 function! tablemode#RowNr(line) "{{{2
   let line = s:Line(a:line)
@@ -757,14 +700,12 @@ function! tablemode#RowNr(line) "{{{2
 
   return rowNr
 endfunction
-" }}}2
 
 function! tablemode#ColumnCount(line) "{{{2
   let line = s:Line(a:line)
 
   return s:Strlen(substitute(getline(line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
 endfunction
-" }}}2
 
 function! tablemode#ColumnNr(pos) "{{{2
   let pos = []
@@ -778,7 +719,6 @@ function! tablemode#ColumnNr(pos) "{{{2
   let row_start = stridx(getline(pos[0]), g:table_mode_separator)
   return s:Strlen(substitute(getline(pos[0])[(row_start):pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
 endfunction
-" }}}2
 
 function! tablemode#TableMotion(direction) "{{{2
   if tablemode#IsATableRow('.')
@@ -815,7 +755,6 @@ function! tablemode#TableMotion(direction) "{{{2
     endif
   endif
 endfunction
-" }}}2
 
 function! tablemode#CellTextObject() "{{{2
   if tablemode#IsATableRow('.')
@@ -829,7 +768,6 @@ function! tablemode#CellTextObject() "{{{2
     endif
   endif
 endfunction
-" }}}2
 
 function! tablemode#DeleteColumn() "{{{2
   if tablemode#IsATableRow('.')
@@ -844,7 +782,6 @@ function! tablemode#DeleteColumn() "{{{2
     call tablemode#TableRealign('.')
   endif
 endfunction
-" }}}2
 
 function! tablemode#DeleteRow() "{{{2
   if tablemode#IsATableRow('.')
@@ -865,42 +802,36 @@ function! tablemode#DeleteRow() "{{{2
     call tablemode#TableRealign('.')
   endif
 endfunction
-" }}}2
 
 function! tablemode#GetCells(...) abort "{{{2
   let args = copy(a:000)
   call insert(args, '.')
   return call('s:GetCells', args)
 endfunction
-" }}}2
 
 function! tablemode#SetCell(val, ...) "{{{2
   let args = copy(a:000)
   call insert(args, a:val)
   call call('s:SetCell', args)
 endfunction
-" }}}2
 
 function! tablemode#GetCellRange(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
   return call('s:GetCellRange', args)
 endfunction
-" }}}2
 
 function! tablemode#Sum(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
   return s:Sum(call('s:GetCellRange', args))
 endfunction
-" }}}2
 
 function! tablemode#Average(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
   return s:Average(call('s:GetCellRange', args))
 endfunction
-" }}}2
 
 function! tablemode#AddFormula() "{{{2
   let fr = input('f=')
@@ -936,7 +867,6 @@ function! tablemode#AddFormula() "{{{2
     call tablemode#EvaluateFormulaLine()
   endif
 endfunction
-" }}}2
 
 function! tablemode#EvaluateExpr(expr, line) abort "{{{2
   let line = s:Line(a:line)
@@ -982,7 +912,6 @@ function! tablemode#EvaluateExpr(expr, line) abort "{{{2
     endwhile
   endif
 endfunction
-" }}}2
 
 function! tablemode#EvaluateFormulaLine() abort "{{{2
   let exprs = []
@@ -1014,8 +943,5 @@ function! tablemode#EvaluateFormulaLine() abort "{{{2
     call tablemode#EvaluateExpr(expr, line)
   endfor
 endfunction
-" }}}2
-
-" }}}1
 
 " vim: sw=2 sts=2 fdl=0 fdm=marker
