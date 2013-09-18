@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       2.4.0
+" Version:       3.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -24,22 +24,18 @@ if exists('g:loaded_table_mode')
   finish
 endif
 let g:loaded_table_mode = 1
-"}}}1
 
 " Avoiding side effects {{{1
 let s:save_cpo = &cpo
 set cpo&vim
-" }}}1
 
 function! s:SetGlobalOptDefault(opt, val) "{{{1
   if !exists('g:' . a:opt)
     let g:{a:opt} = a:val
   endif
 endfunction
-" }}}1
 
 " Set Global Defaults {{{1
-call s:SetGlobalOptDefault('table_mode_border', 1)
 call s:SetGlobalOptDefault('table_mode_corner', '+')
 call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
@@ -55,7 +51,6 @@ call s:SetGlobalOptDefault('table_mode_delete_row_map', 'dd')
 call s:SetGlobalOptDefault('table_mode_delete_column_map', 'dc')
 call s:SetGlobalOptDefault('table_mode_add_formula_map', 'fa')
 call s:SetGlobalOptDefault('table_mode_eval_expr_map', 'fe')
-"}}}1
 
 function! s:TableMotion() "{{{1
   let direction = nr2char(getchar())
@@ -63,7 +58,6 @@ function! s:TableMotion() "{{{1
     call tablemode#TableMotion(direction)
   endfor
 endfunction
-" }}}1
 
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
@@ -108,11 +102,9 @@ execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_add_formul
       \ " :TableAddFormula<CR>"
 execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_eval_expr_map .
       \ " :TableEvalFormulaLine<CR>"
-"}}}1
 
 " Avoiding side effects {{{1
 let &cpo = s:save_cpo
-" }}}1
 
 " ModeLine {{{
 " vim: sw=2 sts=2 fdl=0 fdm=marker

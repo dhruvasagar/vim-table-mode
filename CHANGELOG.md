@@ -1,4 +1,11 @@
 # Change Log
+## Version 3.1
+* Removed borders. You can now optionally create a table header by simply
+  adding a header border immidiately after the header line by using the
+  iabbrev trigger '+-'. Just type that on the line immidiately after the
+  header and press space / \<CR\> to complete the header border.
+* Some Bug Fixes
+
 ## Version 3.0
 * Removed dependence on Tabular and added code borrowed from Tabular for
   aligning the table rows.
