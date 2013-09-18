@@ -1,10 +1,10 @@
-" ==============================  Header ==================================={{{
+" ==============================  Header ======================================
 " File:          autoload/tablemode.vim
 " Description:   Table mode for vim for creating neat tables.
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.0
+" Version:       3.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -113,6 +113,10 @@ function! s:StartExpr() "{{{2
   endif
 endfunction
 
+function! s:HeaderBorderExpr() "{{{2
+  return '^\s*' . g:table_mode_corner . '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' . g:table_mode_corner . '$'
+endfunction
+
 function! s:EndExpr() "{{{2
   let cend = s:GetCommentEnd()
   if s:Strlen(cend) > 0
@@ -148,7 +152,8 @@ function! s:IsTableModeActive() "{{{2
 endfunction
 
 function! s:RowGap() "{{{2
-  return g:table_mode_border ? 2 : 1
+  " Getting rid of borders, so the row gap is now just 1
+  return 1
 endfunction
 
 function! s:ToggleMapping() "{{{2
@@ -159,8 +164,13 @@ function! s:ToggleMapping() "{{{2
 
     execute "inoremap <silent> <buffer> " . b:table_mode_separator_map . ' ' .
           \ b:table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
+
+    execute "inoreabbrev <silent> <buffer> " . g:table_mode_corner .
+          \ g:table_mode_fillchar . "<Esc>:call tablemode#AddHeaderBorder('.')<CR>A"
   else
     execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
+
+    execute "iunabbrev <silent> <buffer> " . g:table_mode_corner . g:table_mode_fillchar
   endif
 endfunction
 
@@ -169,48 +179,24 @@ function! s:SetActive(bool) "{{{2
   call s:ToggleMapping()
 endfunction
 
-function! s:GenerateBorder(line) "{{{2
-  let line_val = getline(a:line)
-  let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
-  let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
-
-  let cstartexpr = s:StartCommentExpr()
-  if s:Strlen(cstartexpr) > 0 && getline(a:line) =~# cstartexpr
-    let sce = matchstr(line_val, s:StartCommentExpr())
-    let ece = matchstr(line_val, s:EndCommentExpr())
-    return sce . border . ece
-  elseif getline(a:line) =~# s:StartExpr()
-    let indent = matchstr(line_val, s:StartExpr())
-    return indent . border
-  else
-    return border
-  endif
-endfunction
-
-function! s:UpdateLineBorder(line) "{{{2
+function! s:GenerateHeaderBorder(line) "{{{2
   let line = s:Line(a:line)
+  if tablemode#IsATableRow(line - s:RowGap())
+    let line_val = getline(line - s:RowGap())
+    let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
+    let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
 
-  let hf = s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_corner .
-        \  g:table_mode_fillchar . ']*' . g:table_mode_corner . '\?' . s:EndExpr()
-
-  let rowgap = s:RowGap()
-  let border = s:GenerateBorder(line)
-
-  let [prev_line, next_line] = [getline(line-1), getline(line+1)]
-  if next_line =~# hf
-    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line + rowgap)) || !tablemode#IsATableRow(line + rowgap)
-      call setline(line+1, border)
+    let cstartexpr = s:StartCommentExpr()
+    if s:Strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
+      let sce = matchstr(line_val, s:StartCommentExpr())
+      let ece = matchstr(line_val, s:EndCommentExpr())
+      return sce . border . ece
+    elseif getline(line) =~# s:StartExpr()
+      let indent = matchstr(line_val, s:StartExpr())
+      return indent . border
+    else
+      return border
     endif
-  else
-    call append(line, border)
-  endif
-
-  if prev_line =~# hf
-    if s:Strlen(border) > s:Strlen(s:GenerateBorder(line - rowgap)) || !tablemode#IsATableRow(line - rowgap)
-      call setline(line-1, border)
-    endif
-  else
-    call append(line-1, border)
   endif
 endfunction
 
@@ -220,8 +206,16 @@ function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
   if delim ==# ','
     silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/g"
   endif
-  silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze.\|' . delim .  '\|.\zs\ze' . s:EndExpr() . '/' .
+
+  let [cstart, cend] = [s:GetCommentStart(), s:GetCommentEnd()]
+  let [match_char_start, match_char_end] = ['.', '.']
+  if s:Strlen(cend) > 0 | let match_char_end = '[^' . cend . ']' | endif
+  if s:Strlen(cstart) > 0 | let match_char_start = '[^' . cstart . ']' | endif
+
+  silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze' . match_char_start .
+        \ '\|' . delim .  '\|' . match_char_end . '\zs\ze' . s:EndExpr() . '/' .
         \ g:table_mode_separator . '/g'
+
   if delim ==# ','
     silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/g"
   endif
@@ -231,7 +225,6 @@ function! s:Tableizeline(line, ...) "{{{2
   let delim = g:table_mode_delimiter
   if a:0 && type(a:1) == type('') && !empty(a:1) | let delim = a:1[1:-1] | endif
   call s:ConvertDelimiterToSeparator(a:line, delim)
-  if g:table_mode_border | call s:UpdateLineBorder(a:line) | endif
 endfunction
 
 function! s:IsFirstCell() "{{{2
@@ -614,20 +607,14 @@ function! tablemode#TableModeToggle() "{{{2
 endfunction
 
 function! tablemode#TableizeRange(...) range "{{{2
-  let shift = 1
-  if g:table_mode_border | let shift += 1 | endif
-  call s:Tableizeline(a:firstline, a:1)
-  undojoin
-  " The first one causes 2 extra lines for top & bottom border while the
-  " following lines cause only 1 for the bottom border.
-  let lnum = a:firstline + shift + (g:table_mode_border > 0)
-  while lnum < (a:firstline + (a:lastline - a:firstline + 1)*shift)
+  let lnum = a:firstline
+  while lnum < (a:firstline + (a:lastline - a:firstline + 1)*s:RowGap())
     call s:Tableizeline(lnum, a:1)
     undojoin
-    let lnum = lnum + shift
+    let lnum = lnum + s:RowGap()
   endwhile
 
-  if g:table_mode_border | call tablemode#TableRealign(lnum - shift) | endif
+  call tablemode#TableRealign(lnum - s:RowGap())
 endfunction
 
 function! tablemode#TableizeByDelimiter() "{{{2
@@ -639,18 +626,38 @@ function! tablemode#TableizeByDelimiter() "{{{2
   endif
 endfunction
 
+function! tablemode#AddHeaderBorder(line) "{{{2
+  call setline(a:line, s:GenerateHeaderBorder(a:line))
+endfunction
+
 function! tablemode#TableRealign(line) "{{{2
   let line = s:Line(a:line)
 
   let [lnums, lines] = [[], []]
-  let tline = line
+  let [bline, tline] = [0, line]
   while tablemode#IsATableRow(tline)
     call insert(lnums, tline)
     call insert(lines, getline(tline))
     let tline = tline - s:RowGap()
   endwhile
 
+  " If we reached header walking upwards
+  if getline(tline) =~# s:HeaderBorderExpr() && tablemode#IsATableRow(tline - s:RowGap())
+    let bline = tline
+    let tline = tline - s:RowGap()
+    " Insert the header line
+    call insert(lnums, tline)
+    call insert(lines, getline(tline))
+  endif
+
   let tline = line + s:RowGap()
+
+  " If we start at header
+  if !bline && getline(tline) =~# s:HeaderBorderExpr()
+    let bline = tline
+    let tline = tline + s:RowGap()
+  endif
+
   while tablemode#IsATableRow(tline)
     call add(lnums, tline)
     call add(lines, getline(tline))
@@ -662,9 +669,11 @@ function! tablemode#TableRealign(line) "{{{2
   for lnum in lnums
     let index = index(lnums, lnum)
     call setline(lnum, lines[index])
-    undojoin
-    call s:UpdateLineBorder(lnum)
   endfor
+
+  if bline
+    call tablemode#AddHeaderBorder(bline)
+  endif
 endfunction
 
 function! tablemode#IsATableRow(line) "{{{2
@@ -837,6 +846,8 @@ function! tablemode#AddFormula() "{{{2
   let fr = input('f=')
   let row = tablemode#RowNr('.')
   let colm = tablemode#ColumnNr('.')
+  let indent = indent('.')
+  let indent_str = repeat(' ', indent)
 
   if fr !=# ''
     let fr = '$' . row . ',' . colm . '=' . fr
@@ -860,7 +871,7 @@ function! tablemode#AddFormula() "{{{2
           let [cmss, cmse] = [cms[0], '']
         endif
       endif
-      let fr = cmss . ' tmf: ' . fr . ' ' . cmse
+      let fr = indent_str . cmss . ' tmf: ' . fr . ' ' . cmse
       call append(fline-1, fr)
       call cursor(cursor_pos)
     endif

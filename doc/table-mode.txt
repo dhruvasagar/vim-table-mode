@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v3.0
+*table-mode.txt*			Table Mode for easy table formatting. v3.1
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 3.0
+				 VERSION 3.1
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -36,7 +36,7 @@ Create Table on the fly:
 
 	The table mode is disabled by default and you can enter table mode
 	using |table-mode-toggle-map| or you can also enable it permanently
-	using |table-mode-always-active| if you wish.
+	using |table-mode-always-active| if you wish though not recommended.
 
 	Table Mode allows for creation of tables within comments, it looks at
 	the 'commentstring' setting to identify whether the current line is
@@ -130,7 +130,6 @@ OPTIONS							*table-mode-options*
 
 Overview:
 	|table-mode-loaded| ............. Disable the plugin.
-	|table-mode-border| ............. Enable border.
 	|table-mode-corner| ............. Set corner character.
 	|table-mode-separator| .......... Set separator character.
 	|table-mode-fillchar| ........... Set table fillchar character.
@@ -154,12 +153,6 @@ g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
 		let g:loaded_table_mode = 1
 <
-
-g:table_mode_border					*table-mode-border*
-	Use this option to enable / disable table border: >
-		let g:table_mode_border = 1
-<
-
 g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
 		let g:table_mode_corner = '+'
@@ -172,7 +165,7 @@ g:table_mode_separator					*table-mode-separator*
 	table row in insert mode.
 
 g:table_mode_fillchar					*table-mode-fillchar*
-	Use this option to define the table border fill character: >
+	Use this option to define the table header border fill character: >
 		let g:table_mode_fillchar = '-'
 <
 
@@ -329,6 +322,12 @@ MAPPINGS						*table-mode-mappings*
 		after the table beginning with 'tmf:'. If one exists this
 		would evaluate the formula line and update the table
 		accordingly. This invokes the |TableEvalFormulaLine| command.
+
++-              Expands to a header border, the line immidiately above this
+                will be considered as the table header. You can change this by
+                changing |table-mode-corner| and |table-mode-fillchar|
+                options. This is an iabbrev so is triggered when you press
+                space or <CR> after typing the mapping.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*
