@@ -124,7 +124,11 @@ function! s:EndExpr() "{{{2
 endfunction
 
 function! s:HeaderBorderExpr() "{{{2
-  return s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' . g:table_mode_corner . s:EndExpr()
+  return s:StartExpr() .
+        \ '[' . g:table_mode_corner . g:table_mode_separator . ']' .
+        \ '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' .
+        \ '[' . g:table_mode_corner . g:table_mode_separator . ']' .
+        \ s:EndExpr()
 endfunction
 
 function! s:StartCommentExpr() "{{{2
@@ -166,12 +170,12 @@ function! s:ToggleMapping() "{{{2
     execute "inoremap <silent> <buffer> " . b:table_mode_separator_map . ' ' .
           \ b:table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
 
-    execute "inoreabbrev <silent> <buffer> " . g:table_mode_corner .
+    execute "inoremap <silent> <buffer> " . g:table_mode_corner .
           \ g:table_mode_fillchar . " <Esc>:call tablemode#AddHeaderBorder('.')<CR>A"
   else
     execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
 
-    execute "iunabbrev <silent> <buffer> " . g:table_mode_corner . g:table_mode_fillchar
+    execute "iunmap <silent> <buffer> " . g:table_mode_corner . g:table_mode_fillchar
   endif
 endfunction
 
@@ -186,6 +190,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
     let line_val = getline(line - s:RowGap())
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
+    let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_separator . '\1' . g:table_mode_separator , '')
 
     let cstartexpr = s:StartCommentExpr()
     if s:Strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
@@ -687,9 +692,9 @@ function! tablemode#TableRealign(line) "{{{2
 endfunction
 
 function! tablemode#IsATableRow(line) "{{{2
-  return getline(a:line) =~# (s:StartExpr() . g:table_mode_separator)
+  return getline(a:line) =~# (s:StartExpr() . g:table_mode_separator . '[^' .
+        \ g:table_mode_fillchar . ']*[^' . g:table_mode_corner . ']*$')
 endfunction
-
 
 function! tablemode#LineNr(row) "{{{2
   if tablemode#IsATableRow('.')
