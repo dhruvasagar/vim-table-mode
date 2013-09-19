@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.1
+" Version:       3.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -571,6 +571,15 @@ endfunction
 
 " Public API {{{1
 
+function! tablemode#sid() "{{{2
+  return maparg('<SID>', 'n')
+endfunction
+nnoremap <SID> <SID>
+
+function! tablemode#scope() "{{{2
+  return s:
+endfunction
+
 function! tablemode#GetLastRow(line) "{{{2
   return s:GetLastRow(a:line)
 endfunction
@@ -678,6 +687,18 @@ endfunction
 
 function! tablemode#IsATableRow(line) "{{{2
   return getline(a:line) =~# (s:StartExpr() . g:table_mode_separator)
+endfunction
+
+
+function! tablemode#LineNr(row) "{{{2
+  if tablemode#IsATableRow('.')
+    let line = s:Line('.')
+    let row = tablemode#RowNr('.')
+    if a:row != row
+      let line += a:row - row
+    endif
+    return line
+  endif
 endfunction
 
 function! tablemode#RowCount(line) "{{{2
