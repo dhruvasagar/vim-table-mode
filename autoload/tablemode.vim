@@ -113,9 +113,6 @@ function! s:StartExpr() "{{{2
   endif
 endfunction
 
-function! s:HeaderBorderExpr() "{{{2
-  return '^\s*' . g:table_mode_corner . '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' . g:table_mode_corner . '$'
-endfunction
 
 function! s:EndExpr() "{{{2
   let cend = s:GetCommentEnd()
@@ -124,6 +121,10 @@ function! s:EndExpr() "{{{2
   else
     return '\s*$'
   endif
+endfunction
+
+function! s:HeaderBorderExpr() "{{{2
+  return s:StartExpr() . g:table_mode_corner . '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' . g:table_mode_corner . s:EndExpr()
 endfunction
 
 function! s:StartCommentExpr() "{{{2
