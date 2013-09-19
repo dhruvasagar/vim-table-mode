@@ -11,17 +11,21 @@ CHANGELOG.md </a>
 ## Getting Started
 ### Installation
 
-There are 2 ways to do this
+There are several ways to do this
 
 1. I recommend installing <a
-   href="https://github.com/tpope/vim-pathogen">pathogen.vim</a> and then
-   adding a git submodule for your plugin:
+   href="https://github.com/Shougo/neobundle.vim">NeoBundle</a> and then just
+   add `NeoBundle 'dhruvasagar/vim-table-mode'` to your ~/.vimrc
+
+2. If you are using <a
+   href="https://github.com/tpope/vim-pathogen">pathogen.vim</a>, then
+   add a git submodule for your plugin:
 
    ```sh
 $ cd ~/.vim
 $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-mode
    ```
-2. Copy autoload/todomode.vim, plugin/todo-mode.vim, doc/todo-mode.txt to
+3. Copy autoload/todomode.vim, plugin/todo-mode.vim, doc/todo-mode.txt to
    respective ~/.vim/autoload/, ~/.vim/plugin and ~/.vim/doc under UNIX or 
    vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
    restart VIM

@@ -1,4 +1,8 @@
 # Change Log
+## Version 3.2
+* Added tests to test various use cases.
+* Added travis integration for automated tests.
+
 ## Version 3.1
 * Removed borders. You can now optionally create a table header by simply
   adding a header border immidiately after the header line by using the
