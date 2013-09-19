@@ -166,7 +166,7 @@ function! s:ToggleMapping() "{{{2
           \ b:table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
 
     execute "inoreabbrev <silent> <buffer> " . g:table_mode_corner .
-          \ g:table_mode_fillchar . "<Esc>:call tablemode#AddHeaderBorder('.')<CR>A"
+          \ g:table_mode_fillchar . " <Esc>:call tablemode#AddHeaderBorder('.')<CR>A"
   else
     execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
 
