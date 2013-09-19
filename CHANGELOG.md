@@ -1,6 +1,7 @@
 # Change Log
 ## Version 3.2
-* Added tests to test various use cases.
+* Added tests to test various use cases using <a
+  href='https://github.com/kana/vim-vspec'>Vspec</a>..
 * Added travis integration for automated tests.
 
 ## Version 3.1
