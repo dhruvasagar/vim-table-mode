@@ -29,7 +29,7 @@ GETTING STARTED					*table-mode-getting-started*
 
 Create Table on the fly:
 	Using Table Mode is dead simple. You simply start typing on a new line
-	with the table separator - |g:table-mode-separator|, and you just type
+	with the table separator - |table-mode-separator|, and you just type
 	away! The plugin does the rest automatically for you as you type. With
 	each additional separator you add, it aligns the table properly,
 	without having to do anything else.
