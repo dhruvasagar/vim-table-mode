@@ -696,6 +696,10 @@ function! tablemode#IsATableRow(line) "{{{2
         \ g:table_mode_fillchar . ']*[^' . g:table_mode_corner . ']*$')
 endfunction
 
+function! tablemode#IsATableHeader(line) "{{{2
+  return getline(a:line) =~# s:HeaderBorderExpr()
+endfunction
+
 function! tablemode#LineNr(row) "{{{2
   if tablemode#IsATableRow('.')
     let line = s:Line('.')
@@ -760,7 +764,9 @@ function! tablemode#TableMotion(direction) "{{{2
   if tablemode#IsATableRow('.')
     if a:direction ==# 'l'
       if s:IsLastCell()
-        if !tablemode#IsATableRow(line('.') + s:RowGap()) | return | endif
+        if !tablemode#IsATableHeader(line('.') + s:RowGap()) && !tablemode#IsATableRow(line('.') + s:RowGap()) 
+          return
+        endif
         call tablemode#TableMotion('j')
         normal! 0
       endif
@@ -773,7 +779,9 @@ function! tablemode#TableMotion(direction) "{{{2
       endif
     elseif a:direction ==# 'h'
       if s:IsFirstCell()
-        if !tablemode#IsATableRow(line('.') - s:RowGap()) | return | endif
+        if !tablemode#IsATableHeader(line('.') - s:RowGap()) && !tablemode#IsATableRow(line('.') - s:RowGap())
+          return
+        endif
         call tablemode#TableMotion('k')
         normal! $
       endif
@@ -785,9 +793,17 @@ function! tablemode#TableMotion(direction) "{{{2
         execute 'normal! 2F' . g:table_mode_separator . '2l'
       endif
     elseif a:direction ==# 'j'
-      if tablemode#IsATableRow(line('.') + s:RowGap()) | execute 'normal ' . s:RowGap() . 'j' | endif
+      if tablemode#IsATableRow(line('.') + s:RowGap())
+        execute 'normal ' . s:RowGap() . 'j'
+      elseif tablemode#IsATableHeader(line('.') + s:RowGap())
+        execute 'normal ' . (s:RowGap() + 1) . 'j'
+      endif
     elseif a:direction ==# 'k'
-      if tablemode#IsATableRow(line('.') - s:RowGap()) | execute 'normal ' . s:RowGap() . 'k' | endif
+      if tablemode#IsATableRow(line('.') - s:RowGap())
+        execute 'normal ' . s:RowGap() . 'k'
+      elseif tablemode#IsATableHeader(line('.') - s:RowGap())
+        execute 'normal ' . (s:RowGap() + 1) . 'k'
+      endif
     endif
   endif
 endfunction
