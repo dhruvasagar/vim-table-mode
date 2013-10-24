@@ -186,8 +186,11 @@ endfunction
 
 function! s:GenerateHeaderBorder(line) "{{{2
   let line = s:Line(a:line)
-  if tablemode#IsATableRow(line - s:RowGap())
+  if tablemode#IsATableRow(line - s:RowGap()) || tablemode#IsATableRow(line + s:RowGap())
     let line_val = getline(line - s:RowGap())
+    if tablemode#IsATableRow(line + s:RowGap()) && !tablemode#IsATableRow(line - s:RowGap())
+      let line_val = getline(line + s:RowGap())
+    endif
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_separator . '\1' . g:table_mode_separator , '')
