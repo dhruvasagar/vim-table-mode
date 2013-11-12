@@ -187,9 +187,12 @@ endfunction
 function! s:GenerateHeaderBorder(line) "{{{2
   let line = s:Line(a:line)
   if tablemode#IsATableRow(line - s:RowGap()) || tablemode#IsATableRow(line + s:RowGap())
-    let line_val = getline(line - s:RowGap())
-    if tablemode#IsATableRow(line + s:RowGap()) && !tablemode#IsATableRow(line - s:RowGap())
+    let line_val = ''
+    if tablemode#IsATableRow(line + s:RowGap())
       let line_val = getline(line + s:RowGap())
+    endif
+    if tablemode#IsATableRow(line - s:RowGap()) && s:Strlen(line_val) < s:Strlen(getline(line - s:RowGap()))
+      let line_val = getline(line - s:RowGap())
     endif
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
@@ -417,7 +420,7 @@ function! s:ParseRange(range, ...) "{{{2
   else
     let [row2, col2] = [rcs2[0], default_col]
   endif
-  
+
   return [row1, col1, row2, col2]
 endfunction
 
@@ -652,31 +655,26 @@ function! tablemode#TableRealign(line) "{{{2
   let line = s:Line(a:line)
 
   let [lnums, lines] = [[], []]
-  let [bline, tline] = [0, line]
-  while tablemode#IsATableRow(tline)
+  let [tline, blines] = [line, []]
+  while tablemode#IsATableRow(tline) || getline(tline) =~# s:HeaderBorderExpr()
+    if getline(tline) =~# s:HeaderBorderExpr()
+      call insert(blines, tline)
+      let tline = tline - s:RowGap()
+      continue
+    endif
     call insert(lnums, tline)
     call insert(lines, getline(tline))
     let tline = tline - s:RowGap()
   endwhile
 
-  " If we reached header walking upwards
-  if getline(tline) =~# s:HeaderBorderExpr() && tablemode#IsATableRow(tline - s:RowGap())
-    let bline = tline
-    let tline = tline - s:RowGap()
-    " Insert the header line
-    call insert(lnums, tline)
-    call insert(lines, getline(tline))
-  endif
-
   let tline = line + s:RowGap()
 
-  " If we start at header
-  if !bline && getline(tline) =~# s:HeaderBorderExpr()
-    let bline = tline
-    let tline = tline + s:RowGap()
-  endif
-
-  while tablemode#IsATableRow(tline)
+  while tablemode#IsATableRow(tline) || getline(tline) =~# s:HeaderBorderExpr()
+    if getline(tline) =~# s:HeaderBorderExpr()
+      call insert(blines, tline)
+      let tline = tline + s:RowGap()
+      continue
+    endif
     call add(lnums, tline)
     call add(lines, getline(tline))
     let tline = tline + s:RowGap()
@@ -689,9 +687,9 @@ function! tablemode#TableRealign(line) "{{{2
     call setline(lnum, lines[index])
   endfor
 
-  if bline
+  for bline in blines
     call tablemode#AddHeaderBorder(bline)
-  endif
+  endfor
 endfunction
 
 function! tablemode#IsATableRow(line) "{{{2
@@ -767,7 +765,7 @@ function! tablemode#TableMotion(direction) "{{{2
   if tablemode#IsATableRow('.')
     if a:direction ==# 'l'
       if s:IsLastCell()
-        if !tablemode#IsATableHeader(line('.') + s:RowGap()) && !tablemode#IsATableRow(line('.') + s:RowGap()) 
+        if !tablemode#IsATableHeader(line('.') + s:RowGap()) && !tablemode#IsATableRow(line('.') + s:RowGap())
           return
         endif
         call tablemode#TableMotion('j')
@@ -908,6 +906,7 @@ function! tablemode#AddFormula() "{{{2
   if fr !=# ''
     let fr = '$' . row . ',' . colm . '=' . fr
     let fline = tablemode#GetLastRow('.') + s:RowGap()
+    if getline(fline) =~# s:HeaderBorderExpr() | let fline += s:RowGap() | endif
     let cursor_pos = [line('.'), col('.')]
     if getline(fline) =~# 'tmf: '
       " Comment line correctly
@@ -996,11 +995,14 @@ function! tablemode#EvaluateFormulaLine() abort "{{{2
   endif
   if tablemode#IsATableRow('.') " We're inside the table
     let line = s:GetLastRow('.')
-    if getline(line + s:RowGap()) =~# 'tmf: '
-      let exprs = split(matchstr(getline(line + s:RowGap()), matchexpr), ';')
+    let fline = line + s:RowGap()
+    if getline(fline) =~# s:HeaderBorderExpr() | let fline += s:RowGap() | endif
+    if getline(fline) =~# 'tmf: '
+      let exprs = split(matchstr(getline(fline), matchexpr), ';')
     endif
   elseif getline('.') =~# 'tmf: ' " We're on the formula line
     let line = line('.') - s:RowGap()
+    if getline(line) =~# s:HeaderBorderExpr() | let line -= s:RowGap() | endif
     if tablemode#IsATableRow(line)
       let exprs = split(matchstr(getline('.'), matchexpr), ';')
     endif
