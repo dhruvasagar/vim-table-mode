@@ -324,8 +324,8 @@ MAPPINGS						*table-mode-mappings*
 		accordingly. This invokes the |TableEvalFormulaLine| command.
 
 ||              Expands to a header border, the line immidiately above or
-		below this will be considered as the table header. You can
-		change this by changing |table-mode-separator| options.
+                below this will be considered as the table header. You can
+              	change this by changing |table-mode-separator| options.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*
@@ -397,4 +397,4 @@ REPORT ISSUES					      *table-mode-report-issues*
 If you discover any issues, please report them at
 http://github.com/dhruvasagar/table-mode/issues.
 
- vim:tw=78:ts=8:ft=help:norl:ai
+ vim:tw=78:ts=8:ft=help:norl:ai:et
