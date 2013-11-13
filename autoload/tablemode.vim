@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.2
+" Version:       3.3
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
 "                uses a small amount of code from it.
@@ -169,19 +169,22 @@ function! s:ToggleMapping() "{{{2
 
     execute "inoremap <silent> <buffer> " . b:table_mode_separator_map . ' ' .
           \ b:table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
-
-    execute "inoremap <silent> <buffer> " . g:table_mode_corner .
-          \ g:table_mode_fillchar . " <Esc>:call tablemode#AddHeaderBorder('.')<CR>A"
   else
     execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
-
-    execute "iunmap <silent> <buffer> " . g:table_mode_corner . g:table_mode_fillchar
   endif
 endfunction
 
 function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleMapping()
+endfunction
+
+function! s:DefaultHeaderBorder() "{{{2
+  if s:IsTableModeActive()
+    return g:table_mode_separator . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_separator
+  else
+    return ''
+  endif
 endfunction
 
 function! s:GenerateHeaderBorder(line) "{{{2
@@ -194,6 +197,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
     if tablemode#IsATableRow(line - s:RowGap()) && s:Strlen(line_val) < s:Strlen(getline(line - s:RowGap()))
       let line_val = getline(line - s:RowGap())
     endif
+    if s:Strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_separator . '\1' . g:table_mode_separator , '')
@@ -209,6 +213,8 @@ function! s:GenerateHeaderBorder(line) "{{{2
     else
       return border
     endif
+  else
+    return s:DefaultHeaderBorder()
   endif
 endfunction
 

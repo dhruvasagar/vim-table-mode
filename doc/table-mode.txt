@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v3.2
+*table-mode.txt*			Table Mode for easy table formatting. v3.3
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 3.2
+				 VERSION 3.3
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -323,11 +323,9 @@ MAPPINGS						*table-mode-mappings*
 		would evaluate the formula line and update the table
 		accordingly. This invokes the |TableEvalFormulaLine| command.
 
-+-              Expands to a header border, the line immidiately above this
-                will be considered as the table header. You can change this by
-                changing |table-mode-corner| and |table-mode-fillchar|
-                options. This is an iabbrev so is triggered when you press
-                space or <CR> after typing the mapping.
+||              Expands to a header border, the line immidiately above or
+		below this will be considered as the table header. You can
+		change this by changing |table-mode-separator| options.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*
