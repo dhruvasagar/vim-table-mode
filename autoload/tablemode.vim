@@ -850,21 +850,7 @@ function! tablemode#DeleteColumn() "{{{2
   if tablemode#IsATableRow('.')
     for i in range(v:count1)
       call s:MoveToStartOfCell()
-
-      if tablemode#IsATableRow(line('.') + 1)
-        call s:MoveToFirstRow()
-        " If we have a header delete it first
-        if tablemode#IsATableRow(line('.')-2)
-          call cursor(line('.')-2, col('.'))
-          silent! execute "normal! h\<C-V>f" . g:table_mode_separator
-          normal! jdjj
-        endif
-      else " We're already on the header
-        silent! execute "normal! h\<C-V>f" . g:table_mode_separator
-        normal! jdjj
-      endif
-
-      call s:MoveToStartOfCell()
+      call s:MoveToFirstRow()
       silent! execute "normal! h\<C-V>f" . g:table_mode_separator
       call s:MoveToLastRow()
       normal! d
