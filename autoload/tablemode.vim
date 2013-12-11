@@ -610,8 +610,6 @@ function! s:Align(lines) "{{{3
   return lines
 endfunction
 
-
-
 " Public API {{{1
 
 function! tablemode#sid() "{{{2
@@ -789,7 +787,7 @@ function! tablemode#TableMotion(direction) "{{{2
   if tablemode#IsATableRow('.')
     if a:direction ==# 'l'
       if s:IsLastCell()
-        if !tablemode#IsATableHeader(line('.') + s:RowGap()) && !tablemode#IsATableRow(line('.') + s:RowGap())
+        if !tablemode#IsATableRow(line('.') + s:RowGap()) || (tablemode#IsATableHeader(line('.') + s:RowGap()) && tablemode#IsATableRow(line('.') + 2 * s:RowGap()))
           return
         endif
         call tablemode#TableMotion('j')
@@ -804,7 +802,7 @@ function! tablemode#TableMotion(direction) "{{{2
       endif
     elseif a:direction ==# 'h'
       if s:IsFirstCell()
-        if !tablemode#IsATableHeader(line('.') - s:RowGap()) && !tablemode#IsATableRow(line('.') - s:RowGap())
+        if !tablemode#IsATableRow(line('.') - s:RowGap()) || (tablemode#IsATableHeader(line('.') - s:RowGap()) && tablemode#IsATableRow(line('.') - 2 * s:RowGap()))
           return
         endif
         call tablemode#TableMotion('k')
@@ -819,15 +817,15 @@ function! tablemode#TableMotion(direction) "{{{2
       endif
     elseif a:direction ==# 'j'
       if tablemode#IsATableRow(line('.') + s:RowGap())
-        execute 'normal ' . s:RowGap() . 'j'
-      elseif tablemode#IsATableHeader(line('.') + s:RowGap())
-        execute 'normal ' . (s:RowGap() + 1) . 'j'
+        execute 'normal! ' . s:RowGap() . 'j'
+      elseif tablemode#IsATableHeader(line('.') + s:RowGap()) && tablemode#IsATableRow(line('.') + 2 * s:RowGap())
+        execute 'normal! ' . (s:RowGap() + 1) . 'j'
       endif
     elseif a:direction ==# 'k'
       if tablemode#IsATableRow(line('.') - s:RowGap())
-        execute 'normal ' . s:RowGap() . 'k'
-      elseif tablemode#IsATableHeader(line('.') - s:RowGap())
-        execute 'normal ' . (s:RowGap() + 1) . 'k'
+        execute 'normal! ' . s:RowGap() . 'k'
+      elseif tablemode#IsATableHeader(line('.') - s:RowGap()) && tablemode#IsATableRow(line('.') - 2 * s:RowGap())
+        execute 'normal! ' . (s:RowGap() + 1) . 'k'
       endif
     endif
   endif
