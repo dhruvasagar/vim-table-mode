@@ -53,7 +53,7 @@ describe 'tablemode'
     before
       new
       call tablemode#TableModeEnable()
-      normal! i|test11|test12||test21|test22|
+      normal i|test11|test12||test21|test22|
     end
 
     it 'should return true when inside a table'
@@ -131,7 +131,7 @@ describe 'tablemode'
   describe 'Tableize'
     before
       new
-      normal! iasd,asd;asd,asdasd,asd;asd,asd
+      normal iasd,asd;asd,asdasd,asd;asd,asd
     end
 
     it 'should tableize with default delimiter'
@@ -154,7 +154,7 @@ describe 'tablemode'
       before
         new
         call tablemode#TableModeEnable()
-        normal! i|test11|test12||test21|test22|
+        normal i|test11|test12||test21|test22|
         call cursor(1, 3)
       end
 
@@ -194,7 +194,7 @@ describe 'tablemode'
       before
         new
         call tablemode#TableModeEnable()
-        normal! i|test11|test12||test21|test22|
+        normal i|test11|test12||test21|test22|
         call cursor(1, 3)
       end
 
@@ -229,7 +229,7 @@ describe 'tablemode'
     before
       new
       call tablemode#TableModeEnable()
-      normal! i|test11|test12||test21|test22|
+      normal i|test11|test12||test21|test22|
       call cursor(1, 3)
     end
 
