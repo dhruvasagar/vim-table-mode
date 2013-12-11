@@ -1,3 +1,4 @@
+" vim: fdm=indent
 let g:table_mode_corner = '+'
 let g:table_mode_separator = '|'
 let g:table_mode_fillchar = '-'
@@ -50,7 +51,7 @@ describe 'tablemode'
 
   describe 'API'
     before
-      normal! ggdG
+      new
       call tablemode#TableModeEnable()
       normal! i|test11|test12||test21|test22|
     end
@@ -129,7 +130,7 @@ describe 'tablemode'
 
   describe 'Tableize'
     before
-      normal! ggdG
+      new
       normal! iasd,asd;asd,asdasd,asd;asd,asd
     end
 
@@ -149,14 +150,99 @@ describe 'tablemode'
   end
 
   describe 'Motions'
-    it 'should work'
-      TODO
+    describe 'left or right'
+      before
+        new
+        call tablemode#TableModeEnable()
+        normal! i|test11|test12||test21|test22|
+        call cursor(1, 3)
+      end
+
+      it 'should move left when not on first column'
+        call cursor(1, 12)
+        Expect tablemode#ColumnNr('.') == 2
+        call tablemode#TableMotion('h')
+        Expect tablemode#ColumnNr('.') == 1
+      end
+
+      it 'should move to the previous row last column if it exists when on first column'
+        call cursor(2, 3)
+        Expect tablemode#RowNr('.') == 2
+        Expect tablemode#ColumnNr('.') == 1
+        call tablemode#TableMotion('h')
+        Expect tablemode#RowNr('.') == 1
+        Expect tablemode#ColumnNr('.') == 2
+      end
+
+      it 'should move right when not on last column'
+        Expect tablemode#ColumnNr('.') == 1
+        call tablemode#TableMotion('l')
+        Expect tablemode#ColumnNr('.') == 2
+      end
+
+      it 'should move to the next row first column if it exists when on last column'
+        call cursor(1, 12)
+        Expect tablemode#RowNr('.') == 1
+        Expect tablemode#ColumnNr('.') == 2
+        call tablemode#TableMotion('l')
+        Expect tablemode#RowNr('.') == 2
+        Expect tablemode#ColumnNr('.') == 1
+      end
+    end
+
+    describe 'up or down'
+      before
+        new
+        call tablemode#TableModeEnable()
+        normal! i|test11|test12||test21|test22|
+        call cursor(1, 3)
+      end
+
+      it 'should move a row up unless on first row'
+        call cursor(2, 3)
+        Expect tablemode#RowNr('.') == 2
+        call tablemode#TableMotion('k')
+        Expect tablemode#RowNr('.') == 1
+      end
+
+      it 'should remain on first row when trying to move up'
+        Expect tablemode#RowNr('.') == 1
+        call tablemode#TableMotion('k')
+        Expect tablemode#RowNr('.') == 1
+      end
+
+      it 'should move a row down unless on last row'
+        Expect tablemode#RowNr('.') == 1
+        call tablemode#TableMotion('j')
+        Expect tablemode#RowNr('.') == 2
+      end
+
+      it 'should remain on last row when trying to move down'
+        Expect tablemode#RowNr('.') == 1
+        call tablemode#TableMotion('k')
+        Expect tablemode#RowNr('.') == 1
+      end
     end
   end
 
   describe 'Manipulations'
-    it 'should work'
-      TODO
+    before
+      new
+      call tablemode#TableModeEnable()
+      normal! i|test11|test12||test21|test22|
+      call cursor(1, 3)
+    end
+
+    it 'should delete a row successfully'
+      Expect tablemode#RowCount('.') == 2
+      call tablemode#DeleteRow()
+      Expect tablemode#RowCount('.') == 1
+    end
+
+    it 'should successfully delete column'
+      Expect tablemode#ColumnCount('.') == 2
+      call tablemode#DeleteColumn()
+      Expect tablemode#ColumnCount('.') == 1
     end
   end
 end

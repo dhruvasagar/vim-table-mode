@@ -4,10 +4,9 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.3
+" Version:       3.3.0
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
-"                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
-"                uses a small amount of code from it.
+"                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
 "
 " Copyright Notice:
 "                Permission is hereby granted to use and distribute this code,
@@ -67,11 +66,11 @@ function! s:Sum(list) "{{{2
   let result = 0.0
   for item in a:list
     if type(item) == type(1) || type(item) == type(1.0)
-      let result = result + item
+      let result += item
     elseif type(item) == type('')
-      let result = result + str2float(item)
+      let result += str2float(item)
     elseif type(item) == type([])
-      let result = result + s:Sum(item)
+      let result += s:Sum(item)
     endif
   endfor
   return result
@@ -257,9 +256,10 @@ function! s:GetFirstRow(line) "{{{2
   if tablemode#IsATableRow(a:line)
     let line = s:Line(a:line)
 
-    while tablemode#IsATableRow(line - s:RowGap())
-      let line = line - s:RowGap()
+    while tablemode#IsATableRow(line - s:RowGap()) || tablemode#IsATableHeader(line - s:RowGap())
+      let line -= s:RowGap()
     endwhile
+    if tablemode#IsATableHeader(line) | let line += s:RowGap() | endif
 
     return line
   endif
@@ -275,9 +275,10 @@ function! s:GetLastRow(line) "{{{2
   if tablemode#IsATableRow(a:line)
     let line = s:Line(a:line)
 
-    while tablemode#IsATableRow(line+ s:RowGap())
-      let line = line + s:RowGap()
+    while tablemode#IsATableRow(line + s:RowGap()) || tablemode#IsATableHeader(line + s:RowGap())
+      let line += s:RowGap()
     endwhile
+    if tablemode#IsATableHeader(line) | let line -= s:RowGap() | endif
 
     return line
   endif
@@ -286,6 +287,23 @@ endfunction
 function! s:MoveToLastRow() "{{{2
   if tablemode#IsATableRow('.')
     call cursor(s:GetLastRow('.'), col('.'))
+  endif
+endfunction
+
+function! s:LineNr(row) "{{{2
+  if tablemode#IsATableRow('.')
+    let line = s:GetFirstRow('.')
+    let row_nr = 0
+
+    while tablemode#IsATableRow(line + s:RowGap()) || tablemode#IsATableHeader(line + s:RowGap())
+      if tablemode#IsATableRow(line)
+        let row_nr += 1
+        if row ==# row_nr | break | endif
+      endif
+      let line += s:RowGap()
+    endwhile
+
+    return line
   endif
 endfunction
 
@@ -313,21 +331,28 @@ function! s:GetCells(line, ...) abort
       let [row, colm] = a:000
     endif
 
+    let first_row = s:GetFirstRow(line)
     if row == 0
       let values = []
-      let line = s:GetFirstRow(line)
-      while tablemode#IsATableRow(line)
-        let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
-        call add(values, s:Strip(get(split(row_line, g:table_mode_separator), colm>0?colm-1:colm, '')))
-        let line = line + s:RowGap()
+      let line = first_row
+      while tablemode#IsATableRow(line) || tablemode#IsATableHeader(line)
+        if tablemode#IsATableRow(line)
+          let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
+          call add(values, s:Strip(get(split(row_line, g:table_mode_separator), colm>0?colm-1:colm, '')))
+        endif
+        let line += s:RowGap()
       endwhile
       return values
     else
-      if row > 0
-        let line =  line + (row - tablemode#RowNr(line)) * s:RowGap()
-      else
-        let line = line + row * s:RowGap()
-      endif
+      let row_nr = 0
+      let line = first_row
+      while tablemode#IsATableRow(line) || tablemode#IsATableHeader(line)
+        if tablemode#IsATableRow(line)
+          let row_nr += 1
+          if row ==# row_nr | break | endif
+        endif
+        let line += s:RowGap()
+      endwhile
 
       let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
       if colm == 0
@@ -638,7 +663,7 @@ function! tablemode#TableizeRange(...) range "{{{2
   while lnum < (a:firstline + (a:lastline - a:firstline + 1)*s:RowGap())
     call s:Tableizeline(lnum, a:1)
     undojoin
-    let lnum = lnum + s:RowGap()
+    let lnum += s:RowGap()
   endwhile
 
   call tablemode#TableRealign(lnum - s:RowGap())
@@ -662,28 +687,28 @@ function! tablemode#TableRealign(line) "{{{2
 
   let [lnums, lines] = [[], []]
   let [tline, blines] = [line, []]
-  while tablemode#IsATableRow(tline) || getline(tline) =~# s:HeaderBorderExpr()
-    if getline(tline) =~# s:HeaderBorderExpr()
+  while tablemode#IsATableRow(tline) || tablemode#IsATableHeader(tline)
+    if tablemode#IsATableHeader(tline)
       call insert(blines, tline)
-      let tline = tline - s:RowGap()
+      let tline -= s:RowGap()
       continue
     endif
     call insert(lnums, tline)
     call insert(lines, getline(tline))
-    let tline = tline - s:RowGap()
+    let tline -= s:RowGap()
   endwhile
 
   let tline = line + s:RowGap()
 
-  while tablemode#IsATableRow(tline) || getline(tline) =~# s:HeaderBorderExpr()
-    if getline(tline) =~# s:HeaderBorderExpr()
+  while tablemode#IsATableRow(tline) || tablemode#IsATableHeader(tline)
+    if tablemode#IsATableHeader(tline)
       call insert(blines, tline)
-      let tline = tline + s:RowGap()
+      let tline += s:RowGap()
       continue
     endif
     call add(lnums, tline)
     call add(lines, getline(tline))
-    let tline = tline + s:RowGap()
+    let tline += s:RowGap()
   endwhile
 
   let lines = s:Align(lines)
@@ -708,29 +733,22 @@ function! tablemode#IsATableHeader(line) "{{{2
 endfunction
 
 function! tablemode#LineNr(row) "{{{2
-  if tablemode#IsATableRow('.')
-    let line = s:Line('.')
-    let row = tablemode#RowNr('.')
-    if a:row != row
-      let line += a:row - row
-    endif
-    return line
-  endif
+  return s:LineNr(row)
 endfunction
 
 function! tablemode#RowCount(line) "{{{2
   let line = s:Line(a:line)
 
   let [tline, totalRowCount] = [line, 0]
-  while tablemode#IsATableRow(tline)
-    let totalRowCount += 1
-    let tline = tline - s:RowGap()
+  while tablemode#IsATableRow(tline) || tablemode#IsATableHeader(tline)
+    if tablemode#IsATableRow(tline) | let totalRowCount += 1 | endif
+    let tline -= s:RowGap()
   endwhile
 
   let tline = line + s:RowGap()
-  while tablemode#IsATableRow(tline)
-    let totalRowCount += 1
-    let tline = tline + s:RowGap()
+  while tablemode#IsATableRow(tline) || tablemode#IsATableHeader(tline)
+    if tablemode#IsATableRow(tline) | let totalRowCount += 1 | endif
+    let tline += s:RowGap()
   endwhile
 
   return totalRowCount
@@ -740,9 +758,9 @@ function! tablemode#RowNr(line) "{{{2
   let line = s:Line(a:line)
 
   let rowNr = 0
-  while tablemode#IsATableRow(line)
-    let rowNr += 1
-    let line = line - s:RowGap()
+  while tablemode#IsATableRow(line) || tablemode#IsATableHeader(line)
+    if tablemode#IsATableRow(line) | let rowNr += 1 | endif
+    let line -= s:RowGap()
   endwhile
 
   return rowNr
@@ -912,7 +930,7 @@ function! tablemode#AddFormula() "{{{2
   if fr !=# ''
     let fr = '$' . row . ',' . colm . '=' . fr
     let fline = tablemode#GetLastRow('.') + s:RowGap()
-    if getline(fline) =~# s:HeaderBorderExpr() | let fline += s:RowGap() | endif
+    if tablemode#IsATableHeader(fline) | let fline += s:RowGap() | endif
     let cursor_pos = [line('.'), col('.')]
     if getline(fline) =~# 'tmf: '
       " Comment line correctly
@@ -1002,13 +1020,13 @@ function! tablemode#EvaluateFormulaLine() abort "{{{2
   if tablemode#IsATableRow('.') " We're inside the table
     let line = s:GetLastRow('.')
     let fline = line + s:RowGap()
-    if getline(fline) =~# s:HeaderBorderExpr() | let fline += s:RowGap() | endif
+    if tablemode#IsATableHeader(fline) | let fline += s:RowGap() | endif
     if getline(fline) =~# 'tmf: '
       let exprs = split(matchstr(getline(fline), matchexpr), ';')
     endif
   elseif getline('.') =~# 'tmf: ' " We're on the formula line
     let line = line('.') - s:RowGap()
-    if getline(line) =~# s:HeaderBorderExpr() | let line -= s:RowGap() | endif
+    if tablemode#IsATableHeader(line) | let line -= s:RowGap() | endif
     if tablemode#IsATableRow(line)
       let exprs = split(matchstr(getline('.'), matchexpr), ';')
     endif

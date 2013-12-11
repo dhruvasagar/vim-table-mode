@@ -1,4 +1,15 @@
 # Change Log
+## Version 3.3.1
+* Improved logic to ignore table borders (add as many as you'd like), the
+  first row is not treated special, it is row # 1. Keep that in mind while
+  defining Formulas
+* Improved test coverage
+
+## Version 3.3
+* Dropped +- mapping to create table border instead now using ||
+* You can now have a top table border (before header) as well as a bottom
+  table border.
+
 ## Version 3.2
 * Added tests to test various use cases using <a
   href='https://github.com/kana/vim-vspec'>Vspec</a>..

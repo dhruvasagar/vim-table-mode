@@ -4,10 +4,9 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.3
+" Version:       3.3.1
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
-"                (https://gist.github.com/tpope/287147) plugin by Tim Pope and
-"                uses a small amount of code from it.
+"                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
 "
 " Copyright Notice:
 "                Permission is hereby granted to use and distribute this code,
