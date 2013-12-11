@@ -1,4 +1,4 @@
-# VIM Table Mode [![Build Status](https://travis-ci.org/dhruvasagar/soulmate_rails.png?branch=master)](https://travis-ci.org/dhruvasagar/soulmate_rails)
+# VIM Table Mode [![Build Status](https://travis-ci.org/dhruvasagar/vim-table-mode.png?branch=master)](https://travis-ci.org/dhruvasagar/vim-table-mode)
 
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
