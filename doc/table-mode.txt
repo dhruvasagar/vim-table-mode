@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v3.3
+*table-mode.txt*			Table Mode for easy table formatting. v3.3.2
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 3.3
+				 VERSION 3.3.2
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -272,6 +272,12 @@ g:table_mode_eval_expr_map			*table-mode-eval-expr-map*
 	NOTE you will need to use the |table-mode-map-prefix| before this to
 	get the desired effect.
 
+g:table_mode_echo_cell_map                            *table-mode-echo-cell-map*
+	Use this option to define the mapping for echoing current cells
+        representation for defining formulas. >
+        	let g:table_mode_echo_cell_map = '?'
+<
+
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
 
@@ -299,6 +305,9 @@ MAPPINGS						*table-mode-mappings*
 
 						*table-mode-mappings-realign*
 <Leader>tr	Realigns table columns
+
+<Leader>t?      Echo the current table cells representation for defining
+                formulas.
 
 						*table-mode-mappings-motions*
 <Leader>t[hjkl]	Move to previous | below | above | right cell in the table.

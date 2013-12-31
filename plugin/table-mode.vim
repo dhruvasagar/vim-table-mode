@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.3.1
+" Version:       3.3.2
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
 "
@@ -50,12 +50,19 @@ call s:SetGlobalOptDefault('table_mode_delete_row_map', 'dd')
 call s:SetGlobalOptDefault('table_mode_delete_column_map', 'dc')
 call s:SetGlobalOptDefault('table_mode_add_formula_map', 'fa')
 call s:SetGlobalOptDefault('table_mode_eval_expr_map', 'fe')
+call s:SetGlobalOptDefault('table_mode_echo_cell_map', '?')
 
 function! s:TableMotion() "{{{1
   let direction = nr2char(getchar())
   for i in range(v:count1)
     call tablemode#TableMotion(direction)
   endfor
+endfunction
+
+function! s:TableEchoCell() "{{{1
+  if tablemode#IsATableRow('.')
+    echomsg '$' . tablemode#RowNr('.') . ',' . tablemode#ColumnNr('.')
+  endif
 endfunction
 
 " Define Commands & Mappings {{{1
@@ -101,6 +108,8 @@ execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_add_formul
       \ " :TableAddFormula<CR>"
 execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_eval_expr_map .
       \ " :TableEvalFormulaLine<CR>"
+execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_echo_cell_map .
+      \ " :call <SID>TableEchoCell()<CR>"
 
 " Avoiding side effects {{{1
 let &cpo = s:save_cpo
