@@ -84,7 +84,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
   - **Cell Text Object** :
 
       Tableize provides a text object for manipulating table cells. By default
-      it's `tc`, but that can be changed if you wish to by setting the
+      it's <kbd>tc</kbd>, but that can be changed if you wish to by setting the
       `g:table_mode_cell_text_object` option.
 
       This is intelligent in the sense that if you use it to delete the
@@ -132,7 +132,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
   mapping <kbd>\<Leader\>tfe</kbd> defined by the option `g:table_mode_eval_expr_map`
   from anywhere inside the table or while on the formula line.
 
-  NOTE: You can now use the mapping <kbd><Leader>t?</kbd>
+  NOTE: You can now use the mapping <kbd>\<Leader\>t?</kbd>
 
 - **Formula Expressions** :
 
