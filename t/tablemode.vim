@@ -52,6 +52,7 @@ describe 'tablemode'
   describe 'API'
     before
       new
+      normal! ggdG
       call tablemode#TableModeEnable()
       normal i|test11|test12||test21|test22|
     end
@@ -131,6 +132,7 @@ describe 'tablemode'
   describe 'Tableize'
     before
       new
+      normal! ggdG
       normal iasd,asd;asd,asdasd,asd;asd,asd
     end
 
@@ -153,6 +155,7 @@ describe 'tablemode'
     describe 'left or right'
       before
         new
+        normal! ggdG
         call tablemode#TableModeEnable()
         normal i|test11|test12||test21|test22|
         call cursor(1, 3)
@@ -193,6 +196,7 @@ describe 'tablemode'
     describe 'up or down'
       before
         new
+        normal! ggdG
         call tablemode#TableModeEnable()
         normal i|test11|test12||test21|test22|
         call cursor(1, 3)
@@ -228,7 +232,7 @@ describe 'tablemode'
   describe 'Manipulations'
     before
       new
-      call tablemode#TableModeEnable()
+      normal! ggdG
       normal i|test11|test12||test21|test22|
       call cursor(1, 3)
     end
