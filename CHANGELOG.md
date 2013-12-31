@@ -1,4 +1,8 @@
 # Change Log
+## Version 3.3.2
+* Added new mapping \t? to echo a cells representation for use while defining
+  formulas.
+
 ## Version 3.3.1
 * Improved logic to ignore table borders (add as many as you'd like), the
   first row is not treated special, it is row # 1. Keep that in mind while
