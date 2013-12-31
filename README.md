@@ -34,7 +34,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
 - **On the fly table creation** :
 
-   By default the table column separator is `|` defined by the
+   By default the table column separator is <kbd>|</kbd> defined by the
    `g:table_mode_separator` option. As soon as you type it on a new line (ignores
    indentation) the script gets to work on creating a table around it. As you
    type and define more columns, the table is completed, formatted and aligned
@@ -42,7 +42,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
    Since this could lead to unwanted behavior I have disabled table mode by
    default. You have to use `:TableModeToggle` command or the table mode
-   toggle mapping, which is `<Leader>tm` defined by `g:table_mode_toggle_map`
+   toggle mapping, which is <kbd>\<Leader\>tm</kbd> defined by `g:table_mode_toggle_map`
    option to toggle the table mode or you can directly use `:TableModeEnable`
    and `:TableModeDisable` to enable or disable the table mode. This is on a
    per buffer basis and so it does not cause any unusual behavior unless it is
@@ -54,25 +54,25 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    existing content into a table. And it does as promised. Like table creation
    on the fly as you type, formatting existing content into a table is equally
    simple. You can visually select multiple lines and call `:Tableize` on it,
-   or alternatively use the mapping `<Leader>tt` defined by the
+   or alternatively use the mapping <kbd>\<Leader\>tt</kbd> defined by the
    `g:table_mode_tableize_map` option which would convert CSV (Comma Separated
    Value) data into a table and use `,` defined by `g:table_mode_delimiter`
    option as the delimiter.
 
    If however you wish to use a different delimiter, you can use the command
    `:Tableize/{pattern}` in a similar fashion as you use tabular (eg.
-   `:Tableize/;` uses ';' as the delimiter) or use the mapping `<Leader>T`
+   `:Tableize/;` uses ';' as the delimiter) or use the mapping <kbd>\<Leader\>T</kbd>
    defined by `g:table_mode_tableize_op_map` option which takes input in the
    cmd-line and uses the `{pattern}` input as the delimiter.
 
    `:Tableize` also accepts a range and so you can also call it by giving
    lines manually like `:line1,line2Tableize`, but this is not very intuitive.
-   You can use the mapping `<Leader>T` with a `[count]` to apply it to the
+   You can use the mapping <kbd>\<Leader\>T</kbd> with a `[count]` to apply it to the
    next `[count]` lines in standard vim style.
 
 - **Move between cells** :
 
-   Now you can move between cells using table mode motions `<Leader>t[hjkl]`
+   Now you can move between cells using table mode motions <kbd>\<Leader\>t[hjkl]</kbd>
    to move left | down | up | right cells respectively. You can use
    `g:table_mode_map_prefix` option to define the prefix mapping to be used
    before 'hjkl'. The left | right motions wrap around the table and move to
@@ -98,14 +98,14 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
   - **Delete Row** :
 
-      You can use the `<Leader>tdd` mapping defined by the option
+      You can use the <kbd>\<Leader\>tdd</kbd> mapping defined by the option
       `g:table_mode_delete_row_map` to delete the current table row (provided
       you are within a table row), this can be preceeded with a [count] to
       delete multiple rows just like you would with 'dd'.
 
   - **Delete Column** :
 
-      You can use the `<Leader>tdc` mapping defined by the option
+      You can use the <kbd>\<Leader\>tdc</kbd> mapping defined by the option
       `g:table_mode_delete_column_map` to delete the entire current column
       (provided you are within a table row), this can also be preceeded with a
       [count] to delete multiple columns.
@@ -115,7 +115,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
   Table Mode now has support for formulas like a spreadsheet. There are 2 ways
   of defining formulas :
 
-  - You can add formulas using `:TableAddFormula` or the mapping `<Leader>tfa`
+  - You can add formulas using `:TableAddFormula` or the mapping <kbd>\<Leader\>tfa</kbd>
     defined by the option `g:table_mode_add_formula_map` from within a table
     cell, which will ask for input on the cmd-line with a `f=` prompt. The
     input formula will be appended to the formula line if one exists or a new
@@ -129,8 +129,10 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
     formulas on the line separated with a ';' eg) `# tmf: $3=$2*$1;$4=$3/3.14`
 
   You can evaluate the formula line using `:TableEvalFormulaLine` or the
-  mapping `<Leader>tfe` defined by the option `g:table_mode_eval_expr_map`
+  mapping <kbd>\<Leader\>tfe</kbd> defined by the option `g:table_mode_eval_expr_map`
   from anywhere inside the table or while on the formula line.
+
+  NOTE: You can now use the mapping <kbd><Leader>t?</kbd>
 
 - **Formula Expressions** :
 
