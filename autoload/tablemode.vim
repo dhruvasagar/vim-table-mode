@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.3.2
+" Version:       3.3.3
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
 "
@@ -124,9 +124,9 @@ endfunction
 
 function! s:HeaderBorderExpr() "{{{2
   return s:StartExpr() .
-        \ '[' . g:table_mode_corner . g:table_mode_separator . ']' .
+        \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
         \ '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' .
-        \ '[' . g:table_mode_corner . g:table_mode_separator . ']' .
+        \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
         \ s:EndExpr()
 endfunction
 
@@ -180,7 +180,7 @@ endfunction
 
 function! s:DefaultHeaderBorder() "{{{2
   if s:IsTableModeActive()
-    return g:table_mode_separator . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_separator
+    return g:table_mode_corner_corner . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_corner_corner
   else
     return ''
   endif
@@ -199,7 +199,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
     if s:Strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
-    let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_separator . '\1' . g:table_mode_separator , '')
+    let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
 
     let cstartexpr = s:StartCommentExpr()
     if s:Strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
@@ -630,7 +630,10 @@ function! tablemode#GetFirstRow(line) "{{{2
 endfunction
 
 function! tablemode#TableizeInsertMode() "{{{2
-  if s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator)
+  if s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator . g:table_mode_separator)
+    call tablemode#AddHeaderBorder('.')
+    normal! A
+  elseif s:IsTableModeActive() && getline('.') =~# (s:StartExpr() . g:table_mode_separator)
     let column = s:Strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = s:Strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     call tablemode#TableRealign('.')

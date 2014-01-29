@@ -1,7 +1,7 @@
-*table-mode.txt*			Table Mode for easy table formatting. v3.3.2
+*table-mode.txt*		Table Mode for easy table formatting. v3.3.3
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 3.3.2
+				 VERSION 3.3.3
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -148,6 +148,8 @@ Overview:
 					current cell.
 	|table-mode-eval-expr-map| ...... Evaluate formula line and update
 					table.
+        |table-mode-corner-corner| ...... Set the character to be used for
+                                        extreme corners of the table border.
 
 g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -277,6 +279,11 @@ g:table_mode_echo_cell_map                            *table-mode-echo-cell-map*
         representation for defining formulas. >
         	let g:table_mode_echo_cell_map = '?'
 <
+g:table_mode_corner_corner                           *table-mode-corner-corner*
+        Use this option to define the character to be used for the extreme
+        corners of the table border. >
+                let g:table_mode_corner_corner = '|'
+<
 
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
@@ -332,9 +339,10 @@ MAPPINGS						*table-mode-mappings*
 		would evaluate the formula line and update the table
 		accordingly. This invokes the |TableEvalFormulaLine| command.
 
-||              Expands to a header border, the line immidiately above or
-                below this will be considered as the table header. You can
-              	change this by changing |table-mode-separator| options.
+||              Expands to a header border. You can change this by changing
+                |table-mode-separator| option. You can change the character to 
+                be used for te extreme corners of the border by changing
+                |table-mode-corner-corner| option.
 
 ===============================================================================
 COMMANDS						*table-mode-commands*

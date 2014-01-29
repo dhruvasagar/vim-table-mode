@@ -14,6 +14,7 @@ let g:table_mode_delete_row_map = 'dd'
 let g:table_mode_delete_column_map = 'dc'
 let g:table_mode_add_formula_map = 'fa'
 let g:table_mode_eval_expr_map = 'fe'
+let g:table_mode_corner_corner = '|'
 
 call vspec#hint({'scope': 'tablemode#scope()', 'sid': 'tablemode#sid()'})
 

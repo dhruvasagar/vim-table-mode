@@ -4,7 +4,7 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.3.2
+" Version:       3.3.3
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
 "
@@ -51,6 +51,7 @@ call s:SetGlobalOptDefault('table_mode_delete_column_map', 'dc')
 call s:SetGlobalOptDefault('table_mode_add_formula_map', 'fa')
 call s:SetGlobalOptDefault('table_mode_eval_expr_map', 'fe')
 call s:SetGlobalOptDefault('table_mode_echo_cell_map', '?')
+call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 
 function! s:TableMotion() "{{{1
   let direction = nr2char(getchar())
