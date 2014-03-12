@@ -218,10 +218,13 @@ function! s:GenerateHeaderBorder(line) "{{{2
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
+  let gflag = 'g'
+  if &gdefault | let gflag = 'gg' | endif
+
   let delim = g:table_mode_delimiter
   if a:0 | let delim = a:1 | endif
   if delim ==# ','
-    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/g"
+    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/" . gflag
   endif
 
   let [cstart, cend] = [s:GetCommentStart(), s:GetCommentEnd()]
@@ -231,10 +234,10 @@ function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
 
   silent! execute a:line . 's/' . s:StartExpr() . '\zs\ze' . match_char_start .
         \ '\|' . delim .  '\|' . match_char_end . '\zs\ze' . s:EndExpr() . '/' .
-        \ g:table_mode_separator . '/g'
+        \ g:table_mode_separator . '/' . gflag
 
   if delim ==# ','
-    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/g"
+    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/" . gflag
   endif
 endfunction
 
