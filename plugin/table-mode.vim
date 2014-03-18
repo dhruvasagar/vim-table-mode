@@ -78,8 +78,8 @@ endif
 " }}}2
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
-
 command! TableAddFormula call tablemode#AddFormula()
+command! TableModeRealign call tablemode#TableRealign()
 command! TableEvalFormulaLine call tablemode#EvaluateFormulaLine()
 
 nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
