@@ -789,51 +789,54 @@ function! tablemode#ColumnNr(pos) "{{{2
   return s:Strlen(substitute(getline(pos[0])[(row_start):pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
 endfunction
 
-function! tablemode#TableMotion(direction) "{{{2
+function! tablemode#TableMotion(direction, ...) "{{{2
+  let l:count = a:0 ? a:1 : v:count1
   if tablemode#IsATableRow('.')
-    if a:direction ==# 'l'
-      if s:IsLastCell()
-        if !tablemode#IsATableRow(line('.') + s:RowGap()) || (tablemode#IsATableHeader(line('.') + s:RowGap()) && tablemode#IsATableRow(line('.') + 2 * s:RowGap()))
-          return
+    for ii in range(l:count)
+      if a:direction ==# 'l'
+        if s:IsLastCell()
+          if !tablemode#IsATableRow(line('.') + s:RowGap()) || (tablemode#IsATableHeader(line('.') + s:RowGap()) && !tablemode#IsATableRow(line('.') + 2 * s:RowGap()))
+            return
+          endif
+          call tablemode#TableMotion('j', 1)
+          normal! 0
         endif
-        call tablemode#TableMotion('j')
-        normal! 0
-      endif
 
-      " If line starts with g:table_mode_separator
-      if getline('.')[col('.')-1] ==# g:table_mode_separator
-        normal! 2l
-      else
-        execute 'normal! f' . g:table_mode_separator . '2l'
-      endif
-    elseif a:direction ==# 'h'
-      if s:IsFirstCell()
-        if !tablemode#IsATableRow(line('.') - s:RowGap()) || (tablemode#IsATableHeader(line('.') - s:RowGap()) && tablemode#IsATableRow(line('.') - 2 * s:RowGap()))
-          return
+        " If line starts with g:table_mode_separator
+        if getline('.')[col('.')-1] ==# g:table_mode_separator
+          normal! 2l
+        else
+          execute 'normal! f' . g:table_mode_separator . '2l'
         endif
-        call tablemode#TableMotion('k')
-        normal! $
-      endif
+      elseif a:direction ==# 'h'
+        if s:IsFirstCell()
+          if !tablemode#IsATableRow(line('.') - s:RowGap()) || (tablemode#IsATableHeader(line('.') - s:RowGap()) && !tablemode#IsATableRow(line('.') - 2 * s:RowGap()))
+            return
+          endif
+          call tablemode#TableMotion('k', 1)
+          normal! $
+        endif
 
-      " If line ends with g:table_mode_separator
-      if getline('.')[col('.')-1] ==# g:table_mode_separator
-        execute 'normal! F' . g:table_mode_separator . '2l'
-      else
-        execute 'normal! 2F' . g:table_mode_separator . '2l'
+        " If line ends with g:table_mode_separator
+        if getline('.')[col('.')-1] ==# g:table_mode_separator
+          execute 'normal! F' . g:table_mode_separator . '2l'
+        else
+          execute 'normal! 2F' . g:table_mode_separator . '2l'
+        endif
+      elseif a:direction ==# 'j'
+        if tablemode#IsATableRow(line('.') + s:RowGap())
+          execute 'normal! ' . s:RowGap() . 'j'
+        elseif tablemode#IsATableHeader(line('.') + s:RowGap()) && tablemode#IsATableRow(line('.') + 2 * s:RowGap())
+          execute 'normal! ' . (s:RowGap() + 1) . 'j'
+        endif
+      elseif a:direction ==# 'k'
+        if tablemode#IsATableRow(line('.') - s:RowGap())
+          execute 'normal! ' . s:RowGap() . 'k'
+        elseif tablemode#IsATableHeader(line('.') - s:RowGap()) && tablemode#IsATableRow(line('.') - 2 * s:RowGap())
+          execute 'normal! ' . (s:RowGap() + 1) . 'k'
+        endif
       endif
-    elseif a:direction ==# 'j'
-      if tablemode#IsATableRow(line('.') + s:RowGap())
-        execute 'normal! ' . s:RowGap() . 'j'
-      elseif tablemode#IsATableHeader(line('.') + s:RowGap()) && tablemode#IsATableRow(line('.') + 2 * s:RowGap())
-        execute 'normal! ' . (s:RowGap() + 1) . 'j'
-      endif
-    elseif a:direction ==# 'k'
-      if tablemode#IsATableRow(line('.') - s:RowGap())
-        execute 'normal! ' . s:RowGap() . 'k'
-      elseif tablemode#IsATableHeader(line('.') - s:RowGap()) && tablemode#IsATableRow(line('.') - 2 * s:RowGap())
-        execute 'normal! ' . (s:RowGap() + 1) . 'k'
-      endif
-    endif
+    endfor
   endif
 endfunction
 
