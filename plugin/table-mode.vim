@@ -53,13 +53,6 @@ call s:SetGlobalOptDefault('table_mode_eval_expr_map', 'fe')
 call s:SetGlobalOptDefault('table_mode_echo_cell_map', '?')
 call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 
-function! s:TableMotion() "{{{1
-  let direction = nr2char(getchar())
-  for i in range(v:count1)
-    call tablemode#TableMotion(direction)
-  endfor
-endfunction
-
 function! s:TableEchoCell() "{{{1
   if tablemode#IsATableRow('.')
     echomsg '$' . tablemode#RowNr('.') . ',' . tablemode#ColumnNr('.')
@@ -89,28 +82,70 @@ command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q
 command! TableAddFormula call tablemode#AddFormula()
 command! TableEvalFormulaLine call tablemode#EvaluateFormulaLine()
 
-execute "xnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_tableize_map .
-      \ " :Tableize<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_tableize_map .
-      \ " :Tableize<CR>"
-execute "xnoremap <silent> " . g:table_mode_tableize_op_map .
-      \ " :<C-U>call tablemode#TableizeByDelimiter()<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_realign_map .
-      \ " :call tablemode#TableRealign('.')<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix .
-      \ " :call <SID>TableMotion()<CR>"
+nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
+xnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
+xnoremap <silent> <Plug>(table-mode-tableize-delimiter) :<C-U>call tablemode#TableizeByDelimiter()<CR>
+
+nnoremap <silent> <Plug>(table-mode-realign) :call tablemode#TableRealign()<CR>
+
+nnoremap <silent> <Plug>(table-mode-motion-up) :<C-U>call tablemode#TableMotion('k')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-down) :<C-U>call tablemode#TableMotion('j')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-left) :<C-U>call tablemode#TableMotion('h')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-right) :<C-U>call tablemode#TableMotion('l')<CR>
+
+nnoremap <silent> <Plug>(table-mode-delete-row) :call tablemode#DeleteRow()<CR>
+nnoremap <silent> <Plug>(table-mode-delete-column) :call tablemode#DeleteColumn()<CR>
+
+nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#AddFormula()<CR>
+nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#EvaluateFormulaLine()<CR>
+
+nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
+
+if !hasmapto('<Plug>(table-mode-tableize)')
+  nmap <Leader>tt <Plug>(table-mode-tableize)
+  xmap <Leader>tt <Plug>(table-mode-tableize)
+endif
+
+if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
+  xmap <Leader>T <Plug>(table-mode-tableize-delimiter)
+endif
+
+if !hasmapto('<Plug>(table-mode-realign)')
+  nmap <Leader>tr <Plug>(table-mode-realign)
+endif
+
+if !hasmapto('<Plug>(table-mode-motion-up)')
+  nmap {<Bar> <Plug>(table-mode-motion-up)
+endif
+if !hasmapto('<Plug>(table-mode-motion-down)')
+  nmap }<Bar> <Plug>(table-mode-motion-down)
+endif
+if !hasmapto('<Plug>(table-mode-motion-left)')
+  nmap [<Bar> <Plug>(table-mode-motion-left)
+endif
+if !hasmapto('<Plug>(table-mode-motion-right)')
+  nmap ]<Bar> <Plug>(table-mode-motion-right)
+endif
+
 execute "onoremap <silent> " . g:table_mode_cell_text_object .
       \ " :<C-U>call tablemode#CellTextObject()<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_delete_row_map .
-      \ " :call tablemode#DeleteRow()<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_delete_column_map .
-      \ " :call tablemode#DeleteColumn()<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_add_formula_map .
-      \ " :TableAddFormula<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_eval_expr_map .
-      \ " :TableEvalFormulaLine<CR>"
-execute "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_echo_cell_map .
-      \ " :call <SID>TableEchoCell()<CR>"
+if !hasmapto('<Plug>(table-mode-delete-row)')
+  nmap <Leader>tdd <Plug>(table-mode-delete-row)
+endif
+if !hasmapto('<Plug>(table-mode-delete-column)')
+  nmap <Leader>tdc <Plug>(table-mode-delete-column)
+endif
+
+if !hasmapto('<Plug>(table-mode-add-formula)')
+  nmap <Leader>tfa <Plug>(table-mode-add-formula)
+endif
+if !hasmapto('<Plug>(table-mode-eval-formula)')
+  nmap <Leader>tfe <Plug>(table-mode-eval-formula)
+endif
+
+if !hasmapto('<Plug>(table-mode-echo-cell)')
+  nmap <Leader>t? <Plug>(table-mode-echo-cell)
+endif
 
 " Avoiding side effects {{{1
 let &cpo = s:save_cpo
