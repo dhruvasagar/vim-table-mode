@@ -779,15 +779,14 @@ function! tablemode#table#TableMotion(direction, ...) "{{{2
   endif
 endfunction
 
-function! tablemode#table#CellTextObject() "{{{2
+function! tablemode#table#CellTextObject(inner) "{{{2
   if tablemode#table#IsATableRow('.')
     call s:MoveToStartOfCell()
-
-    if v:operator ==# 'y'
+    if a:inner
       normal! v
       call search('[^' . g:table_mode_separator . ']\ze\s*' . g:table_mode_separator)
     else
-      execute 'normal! vf' . g:table_mode_separator
+      execute 'normal! vf' . g:table_mode_separator . 'l'
     endif
   endif
 endfunction

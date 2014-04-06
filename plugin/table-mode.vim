@@ -42,15 +42,7 @@ call s:SetGlobalOptDefault('table_mode_map_prefix', '<Leader>t')
 call s:SetGlobalOptDefault('table_mode_toggle_map', 'm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
-call s:SetGlobalOptDefault('table_mode_tableize_map', 't')
-call s:SetGlobalOptDefault('table_mode_tableize_op_map', '<Leader>T')
-call s:SetGlobalOptDefault('table_mode_realign_map', 'r')
 call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
-call s:SetGlobalOptDefault('table_mode_delete_row_map', 'dd')
-call s:SetGlobalOptDefault('table_mode_delete_column_map', 'dc')
-call s:SetGlobalOptDefault('table_mode_add_formula_map', 'fa')
-call s:SetGlobalOptDefault('table_mode_eval_expr_map', 'fe')
-call s:SetGlobalOptDefault('table_mode_echo_cell_map', '?')
 call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 
 function! s:TableEchoCell() "{{{1
@@ -79,19 +71,22 @@ endif
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
 command! TableAddFormula call tablemode#table#AddFormula()
-command! TableModeRealign call tablemode#table#TableRealign()
+command! TableModeRealign call tablemode#table#TableRealign('.')
 command! TableEvalFormulaLine call tablemode#table#EvaluateFormulaLine()
 
 nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize-delimiter) :<C-U>call tablemode#TableizeByDelimiter()<CR>
 
-nnoremap <silent> <Plug>(table-mode-realign) :call tablemode#table#TableRealign()<CR>
+nnoremap <silent> <Plug>(table-mode-realign) :call tablemode#table#TableRealign('.')<CR>
 
 nnoremap <silent> <Plug>(table-mode-motion-up) :<C-U>call tablemode#table#TableMotion('k')<CR>
 nnoremap <silent> <Plug>(table-mode-motion-down) :<C-U>call tablemode#table#TableMotion('j')<CR>
 nnoremap <silent> <Plug>(table-mode-motion-left) :<C-U>call tablemode#table#TableMotion('h')<CR>
 nnoremap <silent> <Plug>(table-mode-motion-right) :<C-U>call tablemode#table#TableMotion('l')<CR>
+
+onoremap <silent> <Plug>(table-mode-cell-text-object-a) :<C-U>call tablemode#table#CellTextObject(0)<CR>
+onoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#table#CellTextObject(1)<CR>
 
 nnoremap <silent> <Plug>(table-mode-delete-row) :call tablemode#table#DeleteRow()<CR>
 nnoremap <silent> <Plug>(table-mode-delete-column) :call tablemode#table#DeleteColumn()<CR>
@@ -127,8 +122,13 @@ if !hasmapto('<Plug>(table-mode-motion-right)')
   nmap ]<Bar> <Plug>(table-mode-motion-right)
 endif
 
-execute "onoremap <silent> " . g:table_mode_cell_text_object .
-      \ " :<C-U>call tablemode#table#CellTextObject()<CR>"
+if !hasmapto('<Plug>(table-mode-cell-text-object-a)')
+  omap a<Bar> <Plug>(table-mode-cell-text-object-a)
+endif
+if !hasmapto('<Plug>(table-mode-cell-text-object-i)')
+  omap i<Bar> <Plug>(table-mode-cell-text-object-i)
+endif
+
 if !hasmapto('<Plug>(table-mode-delete-row)')
   nmap <Leader>tdd <Plug>(table-mode-delete-row)
 endif
