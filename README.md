@@ -83,7 +83,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
   - **Cell Text Object** :
 
       Tableize provides a text object for manipulating table cells. Following
-      the vim philosophy the you have <kbd>i|</kbd> & <kbd>a|<kbd> for the
+      the vim philosophy the you have <kbd>i|</kbd> & <kbd>a|</kbd> for the
       inner and around (including the immidiate right table separator) the
       table cell.
 
