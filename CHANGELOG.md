@@ -1,4 +1,8 @@
 # Change Log
+## Version 4.1.0
+* Fixed bad references within plugin
+* Added fixtures
+
 ## Version 4.0.0
 * Major refactoring of the codebase.
 * Improved modular tests.

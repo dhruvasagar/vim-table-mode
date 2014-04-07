@@ -1,7 +1,7 @@
-*table-mode.txt*		Table Mode for easy table formatting. v4.0.0
+*table-mode.txt*		Table Mode for easy table formatting. v4.1.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 4.0.0
+				 VERSION 4.1.0
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
