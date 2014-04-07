@@ -73,8 +73,8 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 - **Move between cells** :
 
    Now you can move between cells using table mode motions <kbd>[|</kbd>,
-   <kbd>]|</kbd>, <kbd>{|</kbd> & <kbd>}|</kbd> to move left | down | up |
-   right cells respectively. The left | right motions wrap around the table
+   <kbd>]|</kbd>, <kbd>{|</kbd> & <kbd>}|</kbd> to move left | right | up |
+   down cells respectively. The left | right motions wrap around the table
    and move to the next | previous row after the last | first cell in the
    current row if one exists. 
 
