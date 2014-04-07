@@ -195,7 +195,7 @@ function! tablemode#table#TableMotion(direction, ...) "{{{2
     for ii in range(l:count)
       if a:direction ==# 'l'
         if tablemode#spreadsheet#IsLastCell()
-          if !tablemode#table#IsATableRow(line('.') + 1) || (tablemode#table#IsATableHeader(line('.') + 1) && !tablemode#table#IsATableRow(line('.') + 2 * 1))
+          if !tablemode#table#IsATableRow(line('.') + 1) && (tablemode#table#IsATableHeader(line('.') + 1) && !tablemode#table#IsATableRow(line('.') + 2 * 1))
             return
           endif
           call tablemode#table#TableMotion('j', 1)
@@ -210,7 +210,7 @@ function! tablemode#table#TableMotion(direction, ...) "{{{2
         endif
       elseif a:direction ==# 'h'
         if tablemode#spreadsheet#IsFirstCell()
-          if !tablemode#table#IsATableRow(line('.') - 1) || (tablemode#table#IsATableHeader(line('.') - 1) && !tablemode#table#IsATableRow(line('.') - 2 * 1))
+          if !tablemode#table#IsATableRow(line('.') - 1) && (tablemode#table#IsATableHeader(line('.') - 1) && !tablemode#table#IsATableRow(line('.') - 2 * 1))
             return
           endif
           call tablemode#table#TableMotion('k', 1)
