@@ -1,5 +1,31 @@
 " Borrowed from Tabular
 " Private Functions {{{1
+" Return the number of bytes in a string after expanding tabs to spaces.  {{{2
+" This expansion is done based on the current value of 'tabstop'
+if exists('*strdisplaywidth')
+  " Needs vim 7.3
+  let s:Strlen = function("strdisplaywidth")
+else
+  function! s:Strlen(string)
+    " Implement the tab handling part of strdisplaywidth for vim 7.2 and
+    " earlier - not much that can be done about handling doublewidth
+    " characters.
+    let rv = 0
+    let i = 0
+
+    for char in split(a:string, '\zs')
+      if char == "\t"
+        let rv += &ts - i
+        let i = 0
+      else
+        let rv += 1
+        let i = (i + 1) % &ts
+      endif
+    endfor
+
+    return rv
+  endfunction
+endif
 " function! s:StripTrailingSpaces(string) - Remove all trailing spaces {{{2
 " from a string.
 function! s:StripTrailingSpaces(string)
@@ -7,7 +33,7 @@ function! s:StripTrailingSpaces(string)
 endfunction
 
 function! s:Padding(string, length, where) "{{{3
-  let gap_length = a:length - tablemode#utils#strlen(a:string)
+  let gap_length = a:length - s:Strlen(a:string)
   if a:where =~# 'l'
     return a:string . repeat(" ", gap_length)
   elseif a:where =~# 'r'
@@ -93,9 +119,9 @@ function! tablemode#align#Align(lines) "{{{2
     if len(line) <= 1 | continue | endif
     for i in range(len(line))
       if i == len(maxes)
-        let maxes += [ tablemode#utils#strlen(line[i]) ]
+        let maxes += [ s:Strlen(line[i]) ]
       else
-        let maxes[i] = max([ maxes[i], tablemode#utils#strlen(line[i]) ])
+        let maxes[i] = max([ maxes[i], s:Strlen(line[i]) ])
       endif
     endfor
   endfor
