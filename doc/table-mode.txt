@@ -1,7 +1,7 @@
-*table-mode.txt*		Table Mode for easy table formatting. v3.3.3
+*table-mode.txt*		Table Mode for easy table formatting. v4.0.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 3.3.3
+				 VERSION 4.0.0
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -137,17 +137,6 @@ Overview:
 	|table-mode-toggle-map| ......... Set table mode toggle mapping.
 	|table-mode-always-active| ...... Set table mode to always enabled.
 	|table-mode-delimiter| .......... Set the delimiter for Tableize.
-	|table-mode-tableize-map| ....... Set mapping for Tableize.
-	|table-mode-tableize-op-map| .... Set mapping for Tableize with input.
-	|table-mode-realign-map| ........ Set mapping for table realigning.
-	|table-mode-cell-text-object| ... Set mapping for table cell object.
-	|table-mode-delete-row-map| ..... Set mapping for deleting table row.
-	|table-mode-delete-column-map| .. Set mapping for deleting table
-					column.
-	|table-mode-add-formula-map| .... Define a new table formula for the
-					current cell.
-	|table-mode-eval-expr-map| ...... Evaluate formula line and update
-					table.
         |table-mode-corner-corner| ...... Set the character to be used for
                                         extreme corners of the table border.
 
@@ -171,13 +160,13 @@ g:table_mode_fillchar					*table-mode-fillchar*
 		let g:table_mode_fillchar = '-'
 <
 
-g:table_mode_map_prefix				*table-mode-map-prefix*
+g:table_mode_map_prefix				      *table-mode-map-prefix*
 	Use this option to define the table mode mapping prefix that will be
 	prefixed for all other table mode mappings. >
 		let g:table_mode_map_prefix = '<Leader>t'
 <
 
-g:table_mode_toggle_map					*table-mode-toggle-map*
+g:table_mode_toggle_map				     *table-mode-toggle-map*
 	Use this option to define the mapping for toggling the table mode: >
 		let g:table_mode_toggle_map = 'm'
 <
@@ -186,7 +175,7 @@ g:table_mode_toggle_map					*table-mode-toggle-map*
 	NOTE you will need to use the |table-mode-map-prefix| before this to
 	get the desired effect.
 
-g:table_mode_always_active				*table-mode-always-active*
+g:table_mode_always_active			    *table-mode-always-active*
 	Use this option to permanently enable the table mode: >
 		let g:table_mode_always_active = 0
 <
@@ -201,83 +190,6 @@ g:table_mode_delimiter					*table-mode-delimiter*
 	Use this option to define the delimiter which used by
 	|table-mode-commands-tableize| >
 		let g:table_mode_delimiter = ','
-<
-
-g:table_mode_tableize_map			*table-mode-tableize-map*
-	Use this option to define the mapping to invoke |:Tableize| with
-	default delimiter, i.e. |:Tableize| without input. >
-		let g:table_mode_tableize_map = 't'
-<
-
-g:table_mode_tableize_op_map			*table-mode-tableize-op-map*
-	Use this option to define the mapping to invoke |:Tableize| with input
-	parameter. This option will ask for command-line input {pattern} that
-	defines the delimiter. >
-		let g:table_mode_tableize_op_map = '<Leader>T'
-<
-
-g:table_mode_realign_map				*table-mode-realign-map*
-	Use this option to define the mapping for realigning table columns.
-	This is useful in case you make edits to an existing table. >
-		let g:table_mode_realign_map = 'r'
-<
-	NOTE you will need to use the |table-mode-map-prefix| before this to
-	get the desired effect.
-
-g:table_mode_cell_text_object			*table-mode-cell-text-object*
-	Use this option to define the table mode cell text object. >
-		let g:table_mode_cell_text_object = 'tc'
-<
-	This text object automatically selects different text depending on the
-	context.
-	
-	If you delete the cell using either the 'd' or the 'c'
-	operator, it will delete cell contents along with the table separator.
-	In case you do it with 'c' while you add new content for the cell, you
-	will have to re-add the |table-mode-separator|, which will trigger the
-	re-alignment of the table again and format it correctly.
-
-	If you simply want to yank the table content, this text object will
-	select only the table cell contents, without the padding (extra space
-	around the text) or the |table-mode-separator|.
-
-g:table_mode_delete_row_map			*table-mode-delete-row-map*
-	Use this option to define the mapping for deletion of the entire table
-	row. You can delete multiple rows by preceeding this with a [count]. >
-		let g:table_mode_delete_column_map = 'dd'
-<
-	NOTE you will need to use the |table-mode-map-prefix| before this to
-	get the desired effect.
-
-g:table_mode_delete_column_map			*table-mode-delete-column-map*
-	Use this option to define the mapping for deletion of the entire table
-	column. You can delete multiple columns to the right by preceeding
-	this with a [count] >
-		let g:table_mode_delete_column_map = 'dc'
-<
-	NOTE you will need to use the |table-mode-map-prefix| before this to
-	get the desired effect.
-
-g:table_mode_add_formula_map			*table-mode-add-formula-map*
-	Use this option to define the mapping for invoking |TableAddFormula|
-	command. >
-		let g:table_mode_add_formula_map = 'fa'
-<
-	NOTE you will need to use the |table-mode-map-prefix| before this to
-	get the desired effect.
-
-g:table_mode_eval_expr_map			*table-mode-eval-expr-map*
-	Use this option to define the mapping for invoking
-	|TableEvalFormulaLine| command. >
-		let g:table_mode_eval_expr_map = 'fe'
-<
-	NOTE you will need to use the |table-mode-map-prefix| before this to
-	get the desired effect.
-
-g:table_mode_echo_cell_map                            *table-mode-echo-cell-map*
-	Use this option to define the mapping for echoing current cells
-        representation for defining formulas. >
-        	let g:table_mode_echo_cell_map = '?'
 <
 g:table_mode_corner_corner                           *table-mode-corner-corner*
         Use this option to define the character to be used for the extreme
@@ -296,8 +208,8 @@ MAPPINGS						*table-mode-mappings*
 <Leader>tm	Toggle table mode for the current buffer. You can change this
 		using the |toggle-mode-options-toggle-map| option.
 		
-		NOTE This is applicable only if
-		|table-mode-always-active| is not set.
+                NOTE This is applicable only if |table-mode-always-active| is
+                not set.
 
 						*table-mode-mappings-trigger*
 |		Trigger table creation in table mode. You can change this
@@ -306,7 +218,7 @@ MAPPINGS						*table-mode-mappings*
 <Leader>tt	Triggers |table-mode-commands-tableize| on the visually
 		selected content.
 
-						*table-mode-mappings-op-trigger*
+                                              *table-mode-mappings-op-trigger*
 <Leader>T	Triggers |table-mode-commands-tableize| on the visually
 		selected asking for user to input the delimiter.
 
@@ -317,23 +229,26 @@ MAPPINGS						*table-mode-mappings*
                 formulas.
 
 						*table-mode-mappings-motions*
-<Leader>t[hjkl]	Move to previous | below | above | right cell in the table.
+[|              Move to previous cell
+]|              Move to next cell
+{|              Move to the cell above
+}|              Move to the cell below
 
-						*table-mode-mappings-delete-row*
+                                              *table-mode-mappings-delete-row*
 <Leader>tdd	Delete the entire table row you are on or multiple rows using
 		a [count]. You can change this using |table-mode-delete-row-map|
 		option.
 
-					      *table-mode-mappings-delete-column*
+                                           *table-mode-mappings-delete-column*
 <Leader>tdc	Delete entire table column you are within. You can preceed it
 		with a [count] to delete multiple columns to the right. You
 		can change this using |table-mode-delete-column-map| option.
 
-						*table-mode-mappings-add-formula*
+                                             *table-mode-mappings-add-formula*
 <Leader>tfa	Add a fomula for the current table cell. This invokes
 		|TableAddFormula| command.
 
-				*table-mode-mappings-evaluate-formula-line*
+                                   *table-mode-mappings-evaluate-formula-line*
 <Leader>tfe	Evaluate the formula line which is a commented line right
 		after the table beginning with 'tmf:'. If one exists this
 		would evaluate the formula line and update the table
@@ -347,31 +262,31 @@ MAPPINGS						*table-mode-mappings*
 ===============================================================================
 COMMANDS						*table-mode-commands*
 
-							*:TableModeToggle*
-						*table-mode-:TableModeToggle*
+                                                            *:TableModeToggle*
+                                                 *table-mode-:TableModeToggle*
 :TableModeToggle
 	Toggles the table mode. Same effect as |toggle-mode-mappings-toggle|.
 
 	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
 
-							*:TableModeEnable*
-						*table-mode-:TableModeEnable*
+                                                            *:TableModeEnable*
+                                                 *table-mode-:TableModeEnable*
 :TableModeEnable
 	Enables Table Mode.
 
 	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
 
-							*:TableModeDisable*
-						*table-mode-:TableModeDisable*
+                                                           *:TableModeDisable*
+                                                *table-mode-:TableModeDisable*
 :TableModeDisable
 	Disables Table Mode. 
 
 	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
 
-								*:Tableize*
+                                                                   *:Tableize*
 							*table-mode-:Tableize*
 :Tableize
 	This converts the current line into a table if it consists of
@@ -387,16 +302,21 @@ COMMANDS						*table-mode-commands*
 	NOTE this is optional, by default without the expression it will
 	tableize the content using |table-mode-delimiter| as the delimiter.
 
-							*:TableAddFormula*
-						*table-mode-:TableAddFormula*
+                                                           *:TableModeRealign*
+                                                *table-mode-:TableModeRealign*
+:TableModeRealign
+	This command triggers |table-mode-mappings-realign|
+
+                                                            *:TableAddFormula*
+                                                 *table-mode-:TableAddFormula*
 :TableAddFormula
 	This command is for defining a formula for the current table cell. It
 	takes input on the cmd-line with a 'f=' prompt and appends it to the
 	formula line if it exists or adds a new formula line with the
 	expression using the current cell as the target and the input formula.
 
-							*:TableEvalFormulaLine*
-					*table-mode-:TableEvalFormulaLine*
+                                                       *:TableEvalFormulaLine*
+                                            *table-mode-:TableEvalFormulaLine*
 :TableEvalFormulaLine
 	This command when invoked from anywhere within the table or directly
 	on the formula line evaluates it and updates the table accordingly.
