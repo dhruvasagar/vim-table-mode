@@ -7,9 +7,7 @@ describe 'table'
   describe 'API'
     before
       new
-      normal! ggdG
-      call tablemode#TableModeEnable()
-      normal i|test11|test12||test21|test22|
+      read t/fixtures/sample.txt
     end
 
     it 'should return true when inside a table'
@@ -24,8 +22,7 @@ describe 'table'
   describe 'Tableize'
     before
       new
-      normal! ggdG
-      normal iasd,asd;asd,asdasd,asd;asd,asd
+      read t/fixtures/tableize.txt
     end
 
     it 'should tableize with default delimiter'

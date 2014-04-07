@@ -7,9 +7,7 @@ describe 'spreadsheet'
   describe 'API'
     before
       new
-      normal! ggdG
-      call tablemode#TableModeEnable()
-      normal i|test11|test12||test21|test22|
+      read t/fixtures/sample.txt
     end
 
     it 'should return the row count'
@@ -79,7 +77,6 @@ describe 'spreadsheet'
   describe 'Manipulations'
     before
       new
-      normal! ggdG
       normal i|test11|test12||test21|test22|
       call cursor(1, 3)
     end

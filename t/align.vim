@@ -5,14 +5,10 @@ call vspec#hint({'scope': 'tablemode#align#scope()', 'sid': 'tablemode#align#sid
 
 describe 'Align'
   it 'should align table content correctly'
-    let lines = ['| This | is a | table |', '| This | is also | a table |']
-    let result = ['| This | is a    | table   |', '| This | is also | a table |']
-    Expect tablemode#align#Align(lines) == result
+    Expect tablemode#align#Align(readfile('t/fixtures/align/simple_before.txt')) == readfile('t/fixtures/align/simple_after.txt')
   end
 
   it 'should align table content with unicode characters correctly'
-    let lines = ['| This | is 測試 | table |', '| This | is also | a table |']
-    let result = ['| This | is 測試 | table   |', '| This | is also | a table |']
-    Expect tablemode#align#Align(lines) == result
+    Expect tablemode#align#Align(readfile('t/fixtures/align/unicode_before.txt')) == readfile('t/fixtures/align/unicode_after.txt')
   end
 end
