@@ -46,7 +46,7 @@ call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 
 function! s:TableEchoCell() "{{{1
   if tablemode#table#IsATableRow('.')
-    echomsg '$' . tablemode#table#RowNr('.') . ',' . tablemode#table#ColumnNr('.')
+    echomsg '$' . tablemode#spreadsheet#RowNr('.') . ',' . tablemode#spreadsheet#ColumnNr('.')
   endif
 endfunction
 
@@ -68,10 +68,10 @@ else
 endif
 " }}}2
 
-command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
-command! TableAddFormula call tablemode#table#AddFormula()
-command! TableModeRealign call tablemode#table#TableRealign('.')
-command! TableEvalFormulaLine call tablemode#table#EvaluateFormulaLine()
+command! -nargs=? -range Tableize <line1>,<line2>call tablemode#table#TableizeRange(<q-args>)
+command! TableAddFormula call tablemode#spreadsheet#AddFormula()
+command! TableModeRealign call tablemode#spreadsheet#TableRealign('.')
+command! TableEvalFormulaLine call tablemode#spreadsheet#EvaluateFormulaLine()
 
 nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
@@ -84,14 +84,14 @@ nnoremap <silent> <Plug>(table-mode-motion-down) :<C-U>call tablemode#table#Tabl
 nnoremap <silent> <Plug>(table-mode-motion-left) :<C-U>call tablemode#table#TableMotion('h')<CR>
 nnoremap <silent> <Plug>(table-mode-motion-right) :<C-U>call tablemode#table#TableMotion('l')<CR>
 
-onoremap <silent> <Plug>(table-mode-cell-text-object-a) :<C-U>call tablemode#table#CellTextObject(0)<CR>
-onoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#table#CellTextObject(1)<CR>
+onoremap <silent> <Plug>(table-mode-cell-text-object-a) :<C-U>call tablemode#spreadsheet#CellTextObject(0)<CR>
+onoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#spreadsheet#CellTextObject(1)<CR>
 
-nnoremap <silent> <Plug>(table-mode-delete-row) :call tablemode#table#DeleteRow()<CR>
-nnoremap <silent> <Plug>(table-mode-delete-column) :call tablemode#table#DeleteColumn()<CR>
+nnoremap <silent> <Plug>(table-mode-delete-row) :call tablemode#spreadsheet#DeleteRow()<CR>
+nnoremap <silent> <Plug>(table-mode-delete-column) :call tablemode#spreadsheet#DeleteColumn()<CR>
 
-nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#table#AddFormula()<CR>
-nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#table#EvaluateFormulaLine()<CR>
+nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#AddFormula()<CR>
+nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#EvaluateFormulaLine()<CR>
 
 nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 
