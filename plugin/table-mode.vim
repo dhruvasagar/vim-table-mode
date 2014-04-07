@@ -39,10 +39,8 @@ call s:SetGlobalOptDefault('table_mode_corner', '+')
 call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_map_prefix', '<Leader>t')
-call s:SetGlobalOptDefault('table_mode_toggle_map', 'm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
-call s:SetGlobalOptDefault('table_mode_cell_text_object', 'tc')
 call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 
 function! s:TableEchoCell() "{{{1
