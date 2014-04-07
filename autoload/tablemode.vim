@@ -49,7 +49,7 @@ function! s:ToggleMapping() "{{{2
     execute "inoremap <silent> <buffer> " . b:table_mode_separator_map . ' ' .
           \ b:table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
   else
-    execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
+    silent! execute "iunmap <silent> <buffer> " . b:table_mode_separator_map
   endif
 endfunction
 
