@@ -19,16 +19,6 @@
 " =============================================================================
 
 " Private Functions {{{1
-if exists('g:autoloaded_table_mode') "{{{2
-  finish
-endif
-let g:autoloaded_table_mode = 1
-
-function! s:throw(string) abort "{{{2
-  let v:errmsg = 'table-mode: ' . a:string
-  throw v:errmsg
-endfunction
-
 function! s:sub(str,pat,rep) abort "{{{2
   return substitute(a:str,'\v\C'.a:pat,a:rep,'')
 endfunction
@@ -157,4 +147,3 @@ function! tablemode#TableizeByDelimiter() "{{{2
     exec line("'<") . ',' . line("'>") . "call tablemode#TableizeRange('/' . delim)"
   endif
 endfunction
-
