@@ -233,7 +233,7 @@ endfunction
 " tablemode#spreadsheet#GetCells(row) - Get values of all cells in a row as a List.
 " tablemode#spreadsheet#GetCells(0, col) - Get values of all cells in a column as a List.
 " tablemode#spreadsheet#GetCells(row, col) - Get the value of table cell by given row, col.
-function! tablemode#spreadsheet#GetCells(line, ...) abort "{{{2
+function! tablemode#spreadsheet#GetCells(line, ...) abort
   let line = tablemode#utils#line(a:line)
 
   if tablemode#table#IsATableRow(line)
@@ -281,12 +281,12 @@ endfunction
 
 function! tablemode#spreadsheet#GetCell(...) "{{{2
   if a:0 == 0
-    let [row, colm] = [tablemode#RowNr('.'), tablemode#spreadsheet#ColumnNr('.')]
+    let [row, colm] = [tablemode#spreadsheet#RowNr('.'), tablemode#spreadsheet#ColumnNr('.')]
   elseif a:0 == 2
     let [row, colm] = [a:1, a:2]
   endif
 
-  return tablemode#spreadsheet#GetCells('.', row, col)
+  return tablemode#spreadsheet#GetCells('.', row, colm)
 endfunction
 
 function! tablemode#spreadsheet#GetRow(row, ...) abort "{{{2
@@ -418,8 +418,8 @@ function! tablemode#spreadsheet#Average(range, ...) abort "{{{2
   return s:Average(call('tablemode#spreadsheet#GetCellRange', args))
 endfunction
 
-function! tablemode#spreadsheet#AddFormula() "{{{2
-  let fr = input('f=')
+function! tablemode#spreadsheet#AddFormula(...) "{{{2
+  let fr = a:0 ? a:1 : input('f=')
   let row = tablemode#spreadsheet#RowNr('.')
   let colm = tablemode#spreadsheet#ColumnNr('.')
   let indent = indent('.')
