@@ -234,14 +234,3 @@ function! tablemode#spreadsheet#Average(range, ...) abort "{{{2
   return s:Average(call('tablemode#spreadsheet#cell#GetCellRange', args))
 endfunction
 
-function! tablemode#spreadsheet#CellTextObject(inner) "{{{2
-  if tablemode#table#IsATableRow('.')
-    call tablemode#spreadsheet#MoveToStartOfCell()
-    if a:inner
-      normal! v
-      call search('[^' . g:table_mode_separator . ']\ze\s*' . g:table_mode_separator)
-    else
-      execute 'normal! vf' . g:table_mode_separator . 'l'
-    endif
-  endif
-endfunction
