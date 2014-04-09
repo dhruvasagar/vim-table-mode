@@ -1,5 +1,5 @@
 " vim: fdm=indent
-source t/config.vim
+source t/config/options.vim
 
 call vspec#hint({'scope': 'tablemode#spreadsheet#scope()', 'sid': 'tablemode#spreadsheet#sid()'})
 
@@ -34,44 +34,6 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#GetLastRow(2) == 3
       Expect tablemode#spreadsheet#GetLastRow(3) == 3
     end
-
-    it 'should return the cells'
-      Expect tablemode#spreadsheet#GetCells(2, 1, 1) ==# 'test11'
-      " Get Rows
-      Expect tablemode#spreadsheet#GetCells(2, 1) == ['test11', 'test12']
-      Expect tablemode#spreadsheet#GetCells(2, 2) == ['test21', 'test22']
-      " Get Columns
-      Expect tablemode#spreadsheet#GetCells(2, 0, 1) == ['test11', 'test21']
-      Expect tablemode#spreadsheet#GetCells(2, 0, 2) == ['test12', 'test22']
-    end
-
-    it 'should return the cells in a range'
-      " Entire table as range
-      Expect tablemode#spreadsheet#GetCellRange('1,1:2,2', 2, 1) == [['test11', 'test21'], ['test12', 'test22']]
-
-      " Get Rows given different seed lines and columns
-      Expect tablemode#spreadsheet#GetCellRange('1,1:1,2', 2, 1) == ['test11', 'test12']
-      Expect tablemode#spreadsheet#GetCellRange('1,1:1,2', 2, 2) == ['test11', 'test12']
-      Expect tablemode#spreadsheet#GetCellRange('1,1:1,2', 3, 1) == ['test11', 'test12']
-      Expect tablemode#spreadsheet#GetCellRange('1,1:1,2', 3, 2) == ['test11', 'test12']
-      Expect tablemode#spreadsheet#GetCellRange('2,1:2,2', 2, 1) == ['test21', 'test22']
-      Expect tablemode#spreadsheet#GetCellRange('2,1:2,2', 2, 2) == ['test21', 'test22']
-      Expect tablemode#spreadsheet#GetCellRange('2,1:2,2', 3, 1) == ['test21', 'test22']
-      Expect tablemode#spreadsheet#GetCellRange('2,1:2,2', 3, 2) == ['test21', 'test22']
-
-      " Get Columns given different seed lines and column
-      Expect tablemode#spreadsheet#GetCellRange('1:2', 2, 1) == ['test11', 'test21']
-      Expect tablemode#spreadsheet#GetCellRange('1:2', 2, 2) == ['test12', 'test22']
-      Expect tablemode#spreadsheet#GetCellRange('1:2', 3, 1) == ['test11', 'test21']
-      Expect tablemode#spreadsheet#GetCellRange('1:2', 3, 2) == ['test12', 'test22']
-
-      " Get Column given negative values in range for representing rows from
-      " the end, -1 being the second last row.
-      Expect tablemode#spreadsheet#GetCellRange('1:-1', 2, 1) == ['test11']
-      Expect tablemode#spreadsheet#GetCellRange('1:-1', 3, 1) == ['test11']
-      Expect tablemode#spreadsheet#GetCellRange('1:-1', 2, 2) == ['test12']
-      Expect tablemode#spreadsheet#GetCellRange('1:-1', 3, 2) == ['test12']
-    end
   end
 
   describe 'Manipulations'
@@ -91,43 +53,6 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 2
       call tablemode#spreadsheet#DeleteColumn()
       Expect tablemode#spreadsheet#ColumnCount('.') == 1
-    end
-  end
-
-  describe 'Formulas'
-    describe 'Add Formula'
-      before
-        new
-        read t/fixtures/formula/sample.txt
-      end
-
-      it 'should add a formula successfully'
-        call cursor(6, 15)
-        call tablemode#spreadsheet#AddFormula("Sum(1:4)")
-        Expect tablemode#spreadsheet#GetCell() == '125.0'
-        call cursor(8, 15)
-        Expect getline('.') == '/* tmf: $5,2=Sum(1:4) */'
-
-        call cursor(7, 15)
-        call tablemode#spreadsheet#AddFormula("Sum(1:-1)")
-        Expect tablemode#spreadsheet#GetCell() == '250.0'
-        call cursor(8, 15)
-        Expect getline('.') == '/* tmf: $5,2=Sum(1:4) ; $6,2=Sum(1:-1) */'
-      end
-    end
-
-    describe 'Evaluate Formula'
-      before
-        new
-        read t/fixtures/formula/formula.txt
-      end
-
-      it 'should evaluate the formula successfull'
-        call cursor(6, 15)
-        call tablemode#spreadsheet#EvaluateFormulaLine()
-        Expect &modified == 1
-        Expect tablemode#spreadsheet#GetCell() == '125.0'
-      end
     end
   end
 end

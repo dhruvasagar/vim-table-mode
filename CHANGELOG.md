@@ -1,4 +1,8 @@
 # Change Log
+## Version 4.2.0
+* Refactored cells logic out to autoload/tablemode/spreadsheet/cell.vim
+* Refactored formula logic out to autoload/tablemode/spreadsheet/formula.vim
+
 ## Version 4.1.0
 * Fixed bad references within plugin
 * Added fixtures

@@ -1,5 +1,5 @@
 " vim: fdm=indent
-source t/config.vim
+source t/config/options.vim
 
 call vspec#hint({'scope': 'tablemode#utils#scope()', 'sid': 'tablemode#utils#sid()'})
 

@@ -4,7 +4,6 @@
 " Author:        Dhruva Sagar <http://dhruvasagar.com/>
 " License:       MIT (http://www.opensource.org/licenses/MIT)
 " Website:       http://github.com/dhruvasagar/vim-table-mode
-" Version:       3.3.3
 " Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
 "                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
 "
@@ -69,9 +68,9 @@ endif
 " }}}2
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#table#TableizeRange(<q-args>)
-command! TableAddFormula call tablemode#spreadsheet#AddFormula()
+command! TableAddFormula call tablemode#spreadsheet#formula#Add()
 command! TableModeRealign call tablemode#spreadsheet#TableRealign('.')
-command! TableEvalFormulaLine call tablemode#spreadsheet#EvaluateFormulaLine()
+command! TableEvalFormulaLine call tablemode#spreadsheet#formula#EvaluateFormulaLine()
 
 nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
@@ -79,19 +78,19 @@ xnoremap <silent> <Plug>(table-mode-tableize-delimiter) :<C-U>call tablemode#Tab
 
 nnoremap <silent> <Plug>(table-mode-realign) :call tablemode#table#TableRealign('.')<CR>
 
-nnoremap <silent> <Plug>(table-mode-motion-up) :<C-U>call tablemode#table#TableMotion('k')<CR>
-nnoremap <silent> <Plug>(table-mode-motion-down) :<C-U>call tablemode#table#TableMotion('j')<CR>
-nnoremap <silent> <Plug>(table-mode-motion-left) :<C-U>call tablemode#table#TableMotion('h')<CR>
-nnoremap <silent> <Plug>(table-mode-motion-right) :<C-U>call tablemode#table#TableMotion('l')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-up) :<C-U>call tablemode#spreadsheet#cell#Motion('k')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-down) :<C-U>call tablemode#spreadsheet#cell#Motion('j')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-left) :<C-U>call tablemode#spreadsheet#cell#Motion('h')<CR>
+nnoremap <silent> <Plug>(table-mode-motion-right) :<C-U>call tablemode#spreadsheet#cell#Motion('l')<CR>
 
-onoremap <silent> <Plug>(table-mode-cell-text-object-a) :<C-U>call tablemode#spreadsheet#CellTextObject(0)<CR>
-onoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#spreadsheet#CellTextObject(1)<CR>
+onoremap <silent> <Plug>(table-mode-cell-text-object-a) :<C-U>call tablemode#spreadsheet#cell#TextObject(0)<CR>
+onoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#spreadsheet#cell#TextObject(1)<CR>
 
 nnoremap <silent> <Plug>(table-mode-delete-row) :call tablemode#spreadsheet#DeleteRow()<CR>
 nnoremap <silent> <Plug>(table-mode-delete-column) :call tablemode#spreadsheet#DeleteColumn()<CR>
 
-nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#AddFormula()<CR>
-nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#EvaluateFormulaLine()<CR>
+nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#formula#Add()<CR>
+nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#formula#EvaluateFormulaLine()<CR>
 
 nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 
