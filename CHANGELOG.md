@@ -11,7 +11,7 @@
 * Major refactoring of the codebase.
 * Improved modular tests.
 * Fixed long standing unicode character alignment issue.
-* Moved to providing <Plug> mappings rather than configuration based mappings
+* Moved to providing \<Plug\> mappings rather than configuration based mappings
   which can be more easily overriden by end user.
 
 ## Version 3.3.2
