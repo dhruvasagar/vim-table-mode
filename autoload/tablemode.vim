@@ -32,13 +32,6 @@ function! s:SetBufferOptDefault(opt, val) "{{{2
   endif
 endfunction
 
-function! s:IsTableModeActive() "{{{2
-  if g:table_mode_always_active | return 1 | endif
-
-  call s:SetBufferOptDefault('table_mode_active', 0)
-  return b:table_mode_active
-endfunction
-
 function! s:ToggleMapping() "{{{2
   if exists('b:table_mode_active') && b:table_mode_active
     call s:SetBufferOptDefault('table_mode_separator_map', g:table_mode_separator)
@@ -97,11 +90,18 @@ function! tablemode#scope() "{{{2
   return s:
 endfunction
 
+function! tablemode#IsTableModeActive() "{{{2
+  if g:table_mode_always_active | return 1 | endif
+
+  call s:SetBufferOptDefault('table_mode_active', 0)
+  return b:table_mode_active
+endfunction
+
 function! tablemode#TableizeInsertMode() "{{{2
-  if s:IsTableModeActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator)
+  if tablemode#IsTableModeActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator)
     call tablemode#table#AddHeaderBorder('.')
     normal! A
-  elseif s:IsTableModeActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
+  elseif tablemode#IsTableModeActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
     let column = tablemode#utils#strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = tablemode#utils#strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
     call tablemode#table#TableRealign('.')

@@ -27,7 +27,7 @@ function! s:HeaderBorderExpr() "{{{2
 endfunction
 
 function! s:DefaultHeaderBorder() "{{{2
-  if s:IsTableModeActive()
+  if tablemode#IsTableModeActive()
     return g:table_mode_corner_corner . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_corner_corner
   else
     return ''
