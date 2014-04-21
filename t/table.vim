@@ -5,38 +5,40 @@ call vspec#hint({'scope': 'tablemode#table#scope()', 'sid': 'tablemode#table#sid
 
 describe 'table'
   describe 'API'
-    before
-      new
-      read t/fixtures/sample.txt
+    describe 'IsATableRow'
+      before
+        new
+        read t/fixtures/sample.txt
+      end
+
+      it 'should return true when inside a table'
+        Expect tablemode#table#IsATableRow(2) to_be_true
+        Expect tablemode#table#IsATableRow(3) to_be_true
+      end
+
+      it 'should return false when outside a table'
+        Expect tablemode#table#IsATableRow(1) to_be_false
+        Expect tablemode#table#IsATableRow(4) to_be_false
+      end
     end
 
-    it 'should return true when inside a table'
-      Expect tablemode#table#IsATableRow(2) to_be_true
-    end
+    describe 'IsATableHeader'
+      before
+        new
+        read t/fixtures/sample_with_header.txt
+      end
 
-    it 'should return false when outside a table'
-      Expect tablemode#table#IsATableRow(4) to_be_false
-    end
-  end
+      it 'should return true when on a table header'
+        Expect tablemode#table#IsATableHeader(3) to_be_true
+        Expect tablemode#table#IsATableHeader(6) to_be_true
+      end
 
-  describe 'Tableize'
-    before
-      new
-      read t/fixtures/tableize.txt
-    end
-
-    it 'should tableize with default delimiter'
-      :2,3call tablemode#TableizeRange('')
-      Expect tablemode#table#IsATableRow(2) to_be_true
-      Expect tablemode#spreadsheet#RowCount(2) == 2
-      Expect tablemode#spreadsheet#ColumnCount(2) == 3
-    end
-
-    it 'should tableize with given delimiter'
-      :2,3call tablemode#TableizeRange('/;')
-      Expect tablemode#table#IsATableRow(2) to_be_true
-      Expect tablemode#spreadsheet#RowCount(2) == 2
-      Expect tablemode#spreadsheet#ColumnCount(2) == 2
+      it 'should return false when not on a table header'
+        Expect tablemode#table#IsATableHeader(1) to_be_false
+        Expect tablemode#table#IsATableHeader(2) to_be_false
+        Expect tablemode#table#IsATableHeader(4) to_be_false
+        Expect tablemode#table#IsATableHeader(5) to_be_false
+      end
     end
   end
 end
