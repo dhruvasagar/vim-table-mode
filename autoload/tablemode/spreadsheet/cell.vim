@@ -207,7 +207,7 @@ function! tablemode#spreadsheet#cell#SetCell(val, ...) "{{{2
       let line_value = sce . line_value . ece
     endif
     call setline(line, line_value)
-    call tablemode#table#TableRealign(line)
+    call tablemode#table#Realign(line)
   endif
 endfunction
 function! tablemode#spreadsheet#cell#TextObject(inner) "{{{2

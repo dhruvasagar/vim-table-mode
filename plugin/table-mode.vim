@@ -67,16 +67,16 @@ else
 endif
 " }}}2
 
-command! -nargs=? -range Tableize <line1>,<line2>call tablemode#table#TableizeRange(<q-args>)
+command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
 command! TableAddFormula call tablemode#spreadsheet#formula#Add()
-command! TableModeRealign call tablemode#spreadsheet#TableRealign('.')
+command! TableModeRealign call tablemode#table#Realign('.')
 command! TableEvalFormulaLine call tablemode#spreadsheet#formula#EvaluateFormulaLine()
 
 nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize-delimiter) :<C-U>call tablemode#TableizeByDelimiter()<CR>
 
-nnoremap <silent> <Plug>(table-mode-realign) :call tablemode#table#TableRealign('.')<CR>
+nnoremap <silent> <Plug>(table-mode-realign) :call tablemode#table#Realign('.')<CR>
 
 nnoremap <silent> <Plug>(table-mode-motion-up) :<C-U>call tablemode#spreadsheet#cell#Motion('k')<CR>
 nnoremap <silent> <Plug>(table-mode-motion-down) :<C-U>call tablemode#spreadsheet#cell#Motion('j')<CR>

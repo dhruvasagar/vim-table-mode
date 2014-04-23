@@ -104,7 +104,7 @@ function! tablemode#TableizeInsertMode() "{{{2
   elseif tablemode#IsTableModeActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
     let column = tablemode#utils#strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
     let position = tablemode#utils#strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
-    call tablemode#table#TableRealign('.')
+    call tablemode#table#Realign('.')
     normal! 0
     call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
   endif
@@ -135,7 +135,7 @@ function! tablemode#TableizeRange(...) range "{{{2
     let lnum += 1
   endwhile
 
-  call tablemode#table#TableRealign(lnum - 1)
+  call tablemode#table#Realign(lnum - 1)
 endfunction
 
 function! tablemode#TableizeByDelimiter() "{{{2

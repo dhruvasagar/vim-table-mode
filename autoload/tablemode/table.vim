@@ -147,7 +147,7 @@ function! tablemode#table#AddHeaderBorder(line) "{{{2
   call setline(a:line, s:GenerateHeaderBorder(a:line))
 endfunction
 
-function! tablemode#table#TableRealign(line) "{{{2
+function! tablemode#table#Realign(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let [lnums, lines] = [[], []]

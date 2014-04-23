@@ -202,7 +202,7 @@ function! tablemode#spreadsheet#DeleteColumn() "{{{2
       normal! d
     endfor
 
-    call tablemode#table#TableRealign('.')
+    call tablemode#table#Realign('.')
   endif
 endfunction
 
@@ -218,7 +218,7 @@ function! tablemode#spreadsheet#DeleteRow() "{{{2
       endif
     endfor
 
-    call tablemode#table#TableRealign('.')
+    call tablemode#table#Realign('.')
   endif
 endfunction
 
