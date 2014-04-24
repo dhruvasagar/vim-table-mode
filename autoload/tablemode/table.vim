@@ -21,7 +21,7 @@
 function! s:HeaderBorderExpr() "{{{2
   return tablemode#table#StartExpr() .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
-        \ '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' .
+        \ '[' . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_align_char . ']*' .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
         \ tablemode#table#EndExpr()
 endfunction
@@ -147,44 +147,47 @@ function! tablemode#table#AddHeaderBorder(line) "{{{2
   call setline(a:line, s:GenerateHeaderBorder(a:line))
 endfunction
 
+function! tablemode#table#alignment(line) "{{{2
+  if a:line !~# '[^0-9\.]'
+    return 'r'
+  else
+    return 'l'
+  endif
+endfunction
+
 function! tablemode#table#Realign(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
-  let [lnums, lines] = [[], []]
-  let [tline, blines] = [line, []]
-  while tablemode#table#IsATableRow(tline) || tablemode#table#IsATableHeader(tline)
-    if tablemode#table#IsATableHeader(tline)
-      call insert(blines, tline)
-      let tline -= 1
+  let lines = []
+  let [lnum, blines] = [line, []]
+  while tablemode#table#IsATableRow(lnum) || tablemode#table#IsATableHeader(lnum)
+    if tablemode#table#IsATableHeader(lnum)
+      call insert(blines, lnum)
+      let lnum -= 1
       continue
     endif
-    call insert(lnums, tline)
-    call insert(lines, getline(tline))
-    let tline -= 1
+    call insert(lines, {'lnum': lnum, 'text': getline(lnum)})
+    let lnum -= 1
   endwhile
 
-  let tline = line + 1
-
-  while tablemode#table#IsATableRow(tline) || tablemode#table#IsATableHeader(tline)
-    if tablemode#table#IsATableHeader(tline)
-      call insert(blines, tline)
-      let tline += 1
+  let lnum = line + 1
+  while tablemode#table#IsATableRow(lnum) || tablemode#table#IsATableHeader(lnum)
+    if tablemode#table#IsATableHeader(lnum)
+      call insert(blines, lnum)
+      let lnum += 1
       continue
     endif
-    call add(lnums, tline)
-    call add(lines, getline(tline))
-    let tline += 1
+    call insert(lines, {'lnum': lnum, 'text': getline(lnum)})
+    let lnum += 1
   endwhile
 
   let lines = tablemode#align#Align(lines)
 
-  for lnum in lnums
-    let index = index(lnums, lnum)
-    call setline(lnum, lines[index])
+  for aline in lines
+    call setline(aline.lnum, aline.text)
   endfor
 
   for bline in blines
     call tablemode#table#AddHeaderBorder(bline)
   endfor
 endfunction
-
