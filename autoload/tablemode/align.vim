@@ -124,6 +124,7 @@ function! tablemode#align#alignments(lnum, ncols) "{{{2
     for idx in range(len(hcols))
       " Right align if header
       if hcols[idx] =~# g:table_mode_align_char . '$' | let alignments[idx] = 'r' | endif
+      if hcols[idx] !~# '[^0-9\.]' | let alignments[idx] = 'r' | endif
     endfor
   end
   return alignments
@@ -166,9 +167,9 @@ function! tablemode#align#Align(lines) "{{{2
     let tline = lines[idx].text
 
     if len(tline) <= 1 | continue | endif
-    for i in range(len(tline))
-      let field = s:Padding(tline[i], maxes[i], alignments[i])
-      let tline[i] = field . (i == 0 || i == len(tline) ? '' : ' ')
+    for jdx in range(len(tline))
+      let field = s:Padding(tline[jdx], maxes[jdx], alignments[jdx])
+      let tline[jdx] = field . (jdx == 0 || jdx == len(tline) ? '' : ' ')
     endfor
 
     let lines[idx].text = s:StripTrailingSpaces(join(tline, ''))
