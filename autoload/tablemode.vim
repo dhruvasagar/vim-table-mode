@@ -51,13 +51,13 @@ function! s:SetActive(bool) "{{{2
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
-  let gflag = 'g'
-  if &gdefault | let gflag = 'gg' | endif
+  let old_gdefault = &gdefault
+  set nogdefault
 
   let delim = g:table_mode_delimiter
   if a:0 | let delim = a:1 | endif
   if delim ==# ','
-    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/" . gflag
+    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs,\\ze[^\'\"]*[\'\"]/__COMMA__/g"
   endif
 
   let [cstart, cend] = [tablemode#table#GetCommentStart(), tablemode#table#GetCommentEnd()]
@@ -67,11 +67,13 @@ function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
 
   silent! execute a:line . 's/' . tablemode#table#StartExpr() . '\zs\ze' . match_char_start .
         \ '\|' . delim .  '\|' . match_char_end . '\zs\ze' . tablemode#table#EndExpr() . '/' .
-        \ g:table_mode_separator . '/' . gflag
+        \ g:table_mode_separator . '/g'
 
   if delim ==# ','
-    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/" . gflag
+    silent! execute a:line . 's/' . "[\'\"][^\'\"]*\\zs__COMMA__\\ze[^\'\"]*[\'\"]/,/g"
   endif
+
+  let &gdefault=old_gdefault
 endfunction
 
 function! s:Tableizeline(line, ...) "{{{2
