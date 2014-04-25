@@ -64,11 +64,21 @@ function! s:Padding(string, length, where) "{{{3
   endif
 endfunction
 
-" function! s:Split() - Split a string into fields and delimiters {{{2
+" Public Functions {{{1
+function! tablemode#align#sid() "{{{2
+  return maparg('<sid>', 'n')
+endfunction
+nnoremap <sid> <sid>
+
+function! tablemode#align#scope() "{{{2
+  return s:
+endfunction
+
+" function! tablemode#align#Split() - Split a string into fields and delimiters {{{2
 " Like split(), but include the delimiters as elements
 " All odd numbered elements are delimiters
 " All even numbered elements are non-delimiters (including zero)
-function! s:Split(string, delim)
+function! tablemode#align#Split(string, delim)
   let rv = []
   let beg = 0
 
@@ -107,18 +117,20 @@ function! s:Split(string, delim)
   return rv
 endfunction
 
-" Public Functions {{{1
-function! tablemode#align#sid() "{{{2
-  return maparg('<sid>', 'n')
-endfunction
-nnoremap <sid> <sid>
-
-function! tablemode#align#scope() "{{{2
-  return s:
+function! tablemode#align#alignments(lnum, ncols) "{{{2
+  let alignments = repeat(['l'], a:ncols) " For each column
+  if tablemode#table#IsHeader(a:lnum+1)
+    let hcols = tablemode#align#Split(getline(a:lnum+1), '[' . g:table_mode_corner . g:table_mode_corner_corner . ']')
+    for idx in range(len(hcols))
+      " Right align if header
+      if hcols[idx] =~# g:table_mode_align_char . '$' | let alignments[idx] = 'r' | endif
+    endfor
+  end
+  return alignments
 endfunction
 
 function! tablemode#align#Align(lines) "{{{2
-  let lines = map(a:lines, 'map(v:val, "v:key =~# \"text\" ? s:Split(v:val, g:table_mode_separator) : v:val")')
+  let lines = map(a:lines, 'map(v:val, "v:key =~# \"text\" ? tablemode#align#Split(v:val, g:table_mode_separator) : v:val")')
 
   for line in lines
     let stext = line.text
@@ -147,13 +159,15 @@ function! tablemode#align#Align(lines) "{{{2
     endfor
   endfor
 
+  let alignments = tablemode#align#alignments(lines[0].lnum, len(lines[0].text))
+
   for idx in range(len(lines))
     let tlnum = lines[idx].lnum
     let tline = lines[idx].text
 
     if len(tline) <= 1 | continue | endif
     for i in range(len(tline))
-      let field = s:Padding(tline[i], maxes[i], tablemode#table#alignment(tline[i]))
+      let field = s:Padding(tline[i], maxes[i], alignments[i])
       let tline[i] = field . (i == 0 || i == len(tline) ? '' : ' ')
     endfor
 

@@ -50,6 +50,24 @@ function! s:GenerateHeaderBorder(line) "{{{2
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
 
+    " Incorporate header alignment chars
+    if getline(line) =~# g:table_mode_align_char
+      let pat = '[' . g:table_mode_corner_corner . g:table_mode_corner . ']'
+      let hcols = tablemode#align#Split(getline(line), pat)
+      let gcols = tablemode#align#Split(border, pat)
+
+      for idx in range(len(hcols))
+        if hcols[idx] =~# g:table_mode_align_char
+          if hcols[idx] =~# g:table_mode_align_char . '$'
+            let gcols[idx] = gcols[idx][:-2] . g:table_mode_align_char
+          else
+            let gcols[idx] = g:table_mode_align_char . gcols[idx][1:]
+          endif
+        endif
+      endfor
+      let border = join(gcols, '')
+    endif
+
     let cstartexpr = tablemode#table#StartCommentExpr()
     if tablemode#utils#strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
       let sce = matchstr(line_val, tablemode#table#StartCommentExpr())
