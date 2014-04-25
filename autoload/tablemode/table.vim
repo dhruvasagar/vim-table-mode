@@ -153,13 +153,12 @@ function! tablemode#table#EndExpr() "{{{2
   endif
 endfunction
 
-function! tablemode#table#IsRow(line) "{{{2
-  return getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator . '[^' .
-        \ g:table_mode_fillchar . ']*[^' . g:table_mode_corner . ']*$')
-endfunction
-
 function! tablemode#table#IsHeader(line) "{{{2
   return getline(a:line) =~# s:HeaderBorderExpr()
+endfunction
+
+function! tablemode#table#IsRow(line) "{{{2
+  return !tablemode#table#IsHeader(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
 endfunction
 
 function! tablemode#table#AddHeaderBorder(line) "{{{2
