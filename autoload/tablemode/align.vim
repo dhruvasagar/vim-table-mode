@@ -168,6 +168,8 @@ function! tablemode#align#Align(lines) "{{{2
 
     if len(tline) <= 1 | continue | endif
     for jdx in range(len(tline))
+      " Dealing with the header being the first line
+      if jdx >= len(alignments) | call add(alignments, 'l') | endif
       let field = s:Padding(tline[jdx], maxes[jdx], alignments[jdx])
       let tline[jdx] = field . (jdx == 0 || jdx == len(tline) ? '' : ' ')
     endfor
