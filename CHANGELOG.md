@@ -1,4 +1,9 @@
 # Change Log
+## Version 4.3.0
+* Refactored some more
+* Fixed issue #19, hiphens in the table broke alignment
+* Added feature #26, you can now define column alignments in the table header
+
 ## Version 4.2.0
 * Refactored cells logic out to autoload/tablemode/spreadsheet/cell.vim
 * Refactored formula logic out to autoload/tablemode/spreadsheet/formula.vim
