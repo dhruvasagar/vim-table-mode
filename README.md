@@ -48,6 +48,10 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    per buffer basis and so it does not cause any unusual behavior unless it is
    enabled explicitly. Please read `:h table-mode` for further information.
 
+   You can also define in a table header border how it's content should be
+   aligned, whether right or left by using a `:` character defined by
+   `g:table_mode_align_char` option.
+
 - **Format existing content into a table** :
 
    Table Mode wouldn't justify it's name if it didn't allow formatting
