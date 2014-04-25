@@ -39,7 +39,7 @@ function! tablemode#spreadsheet#formula#Add(...) "{{{2
   if fr !=# ''
     let fr = '$' . row . ',' . colm . '=' . fr
     let fline = tablemode#spreadsheet#GetLastRow('.') + 1
-    if tablemode#table#IsATableHeader(fline) | let fline += 1 | endif
+    if tablemode#table#IsHeader(fline) | let fline += 1 | endif
     let cursor_pos = [line('.'), col('.')]
     if getline(fline) =~# 'tmf: '
       " Comment line correctly
@@ -98,7 +98,7 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
     call tablemode#spreadsheet#cell#SetCell(eval(expr), line, row, colm)
   else
     let [row, line] = [1, tablemode#spreadsheet#GetFirstRow(line)]
-    while tablemode#table#IsATableRow(line)
+    while tablemode#table#IsRow(line)
       let texpr = expr
       if expr =~# '\$'
         let texpr = substitute(texpr, '\$\(\d\+\)',
@@ -126,17 +126,17 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
   else
     let matchexpr = '^\s* tmf: \zs.*$'
   endif
-  if tablemode#table#IsATableRow('.') " We're inside the table
+  if tablemode#table#IsRow('.') " We're inside the table
     let line = tablemode#spreadsheet#GetLastRow('.')
     let fline = line + 1
-    if tablemode#table#IsATableHeader(fline) | let fline += 1 | endif
+    if tablemode#table#IsHeader(fline) | let fline += 1 | endif
     if getline(fline) =~# 'tmf: '
       let exprs = split(matchstr(getline(fline), matchexpr), ';')
     endif
   elseif getline('.') =~# 'tmf: ' " We're on the formula line
     let line = line('.') - 1
-    if tablemode#table#IsATableHeader(line) | let line -= 1 | endif
-    if tablemode#table#IsATableRow(line)
+    if tablemode#table#IsHeader(line) | let line -= 1 | endif
+    if tablemode#table#IsRow(line)
       let exprs = split(matchstr(getline('.'), matchexpr), ';')
     endif
   endif

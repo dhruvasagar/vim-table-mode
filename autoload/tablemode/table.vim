@@ -27,7 +27,7 @@ function! s:HeaderBorderExpr() "{{{2
 endfunction
 
 function! s:DefaultHeaderBorder() "{{{2
-  if tablemode#IsTableModeActive()
+  if tablemode#IsActive()
     return g:table_mode_corner_corner . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_corner_corner
   else
     return ''
@@ -36,15 +36,16 @@ endfunction
 
 function! s:GenerateHeaderBorder(line) "{{{2
   let line = tablemode#utils#line(a:line)
-  if tablemode#table#IsATableRow(line - 1) || tablemode#table#IsATableRow(line + 1)
+  if tablemode#table#IsRow(line - 1) || tablemode#table#IsRow(line + 1)
     let line_val = ''
-    if tablemode#table#IsATableRow(line + 1)
+    if tablemode#table#IsRow(line + 1)
       let line_val = getline(line + 1)
     endif
-    if tablemode#table#IsATableRow(line - 1) && tablemode#utils#strlen(line_val) < tablemode#utils#strlen(getline(line - 1))
+    if tablemode#table#IsRow(line - 1) && tablemode#utils#strlen(line_val) < tablemode#utils#strlen(getline(line - 1))
       let line_val = getline(line - 1)
     endif
     if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
+
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
@@ -134,12 +135,12 @@ function! tablemode#table#EndExpr() "{{{2
   endif
 endfunction
 
-function! tablemode#table#IsATableRow(line) "{{{2
+function! tablemode#table#IsRow(line) "{{{2
   return getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator . '[^' .
         \ g:table_mode_fillchar . ']*[^' . g:table_mode_corner . ']*$')
 endfunction
 
-function! tablemode#table#IsATableHeader(line) "{{{2
+function! tablemode#table#IsHeader(line) "{{{2
   return getline(a:line) =~# s:HeaderBorderExpr()
 endfunction
 
@@ -147,21 +148,13 @@ function! tablemode#table#AddHeaderBorder(line) "{{{2
   call setline(a:line, s:GenerateHeaderBorder(a:line))
 endfunction
 
-function! tablemode#table#alignment(line) "{{{2
-  if a:line !~# '[^0-9\.]'
-    return 'r'
-  else
-    return 'l'
-  endif
-endfunction
-
 function! tablemode#table#Realign(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let lines = []
   let [lnum, blines] = [line, []]
-  while tablemode#table#IsATableRow(lnum) || tablemode#table#IsATableHeader(lnum)
-    if tablemode#table#IsATableHeader(lnum)
+  while tablemode#table#IsRow(lnum) || tablemode#table#IsHeader(lnum)
+    if tablemode#table#IsHeader(lnum)
       call insert(blines, lnum)
       let lnum -= 1
       continue
@@ -171,13 +164,13 @@ function! tablemode#table#Realign(line) "{{{2
   endwhile
 
   let lnum = line + 1
-  while tablemode#table#IsATableRow(lnum) || tablemode#table#IsATableHeader(lnum)
-    if tablemode#table#IsATableHeader(lnum)
-      call insert(blines, lnum)
+  while tablemode#table#IsRow(lnum) || tablemode#table#IsHeader(lnum)
+    if tablemode#table#IsHeader(lnum)
+      call add(blines, lnum)
       let lnum += 1
       continue
     endif
-    call insert(lines, {'lnum': lnum, 'text': getline(lnum)})
+    call add(lines, {'lnum': lnum, 'text': getline(lnum)})
     let lnum += 1
   endwhile
 

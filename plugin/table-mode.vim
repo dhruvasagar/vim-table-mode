@@ -45,7 +45,7 @@ call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 call s:SetGlobalOptDefault('table_mode_align_char', ':')
 
 function! s:TableEchoCell() "{{{1
-  if tablemode#table#IsATableRow('.')
+  if tablemode#table#IsRow('.')
     echomsg '$' . tablemode#spreadsheet#RowNr('.') . ',' . tablemode#spreadsheet#ColumnNr('.')
   endif
 endfunction
@@ -53,10 +53,10 @@ endfunction
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_toggle_map .
-       \ " <Esc>:call tablemode#TableModeToggle()<CR>"
-  command! -nargs=0 TableModeToggle call tablemode#TableModeToggle()
-  command! -nargs=0 TableModeEnable call tablemode#TableModeEnable()
-  command! -nargs=0 TableModeDisable call tablemode#TableModeDisable()
+       \ " <Esc>:call tablemode#Toggle()<CR>"
+  command! -nargs=0 TableModeToggle call tablemode#Toggle()
+  command! -nargs=0 TableModeEnable call tablemode#Enable()
+  command! -nargs=0 TableModeDisable call tablemode#Disable()
 else
   let table_mode_separator_map = g:table_mode_separator
   " '|' is a special character, we need to map <Bar> instead
