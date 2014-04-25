@@ -47,50 +47,50 @@ function! tablemode#spreadsheet#scope() "{{{2
 endfunction
 
 function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
-  if tablemode#table#IsATableRow(a:line)
+  if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
 
-    while tablemode#table#IsATableRow(line - 1) || tablemode#table#IsATableHeader(line - 1)
+    while tablemode#table#IsRow(line - 1) || tablemode#table#IsHeader(line - 1)
       let line -= 1
     endwhile
-    if tablemode#table#IsATableHeader(line) | let line += 1 | endif
+    if tablemode#table#IsHeader(line) | let line += 1 | endif
 
     return line
   endif
 endfunction
 
 function! tablemode#spreadsheet#MoveToFirstRow() "{{{2
-  if tablemode#table#IsATableRow('.')
+  if tablemode#table#IsRow('.')
     call cursor(tablemode#spreadsheet#GetFirstRow('.'), col('.'))
   endif
 endfunction
 
 function! tablemode#spreadsheet#GetLastRow(line) "{{{2
-  if tablemode#table#IsATableRow(a:line)
+  if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
 
-    while tablemode#table#IsATableRow(line + 1) || tablemode#table#IsATableHeader(line + 1)
+    while tablemode#table#IsRow(line + 1) || tablemode#table#IsHeader(line + 1)
       let line += 1
     endwhile
-    if tablemode#table#IsATableHeader(line) | let line -= 1 | endif
+    if tablemode#table#IsHeader(line) | let line -= 1 | endif
 
     return line
   endif
 endfunction
 
 function! tablemode#spreadsheet#MoveToLastRow() "{{{2
-  if tablemode#table#IsATableRow('.')
+  if tablemode#table#IsRow('.')
     call cursor(tablemode#spreadsheet#GetLastRow('.'), col('.'))
   endif
 endfunction
 
 function! tablemode#spreadsheet#LineNr(row) "{{{2
-  if tablemode#table#IsATableRow('.')
+  if tablemode#table#IsRow('.')
     let line = tablemode#spreadsheet#GetFirstRow('.')
     let row_nr = 0
 
-    while tablemode#table#IsATableRow(line + 1) || tablemode#table#IsATableHeader(line + 1)
-      if tablemode#table#IsATableRow(line)
+    while tablemode#table#IsRow(line + 1) || tablemode#table#IsHeader(line + 1)
+      if tablemode#table#IsRow(line)
         let row_nr += 1
         if row ==# row_nr | break | endif
       endif
@@ -105,8 +105,8 @@ function! tablemode#spreadsheet#RowNr(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let rowNr = 0
-  while tablemode#table#IsATableRow(line) || tablemode#table#IsATableHeader(line)
-    if tablemode#table#IsATableRow(line) | let rowNr += 1 | endif
+  while tablemode#table#IsRow(line) || tablemode#table#IsHeader(line)
+    if tablemode#table#IsRow(line) | let rowNr += 1 | endif
     let line -= 1
   endwhile
 
@@ -117,14 +117,14 @@ function! tablemode#spreadsheet#RowCount(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let [tline, totalRowCount] = [line, 0]
-  while tablemode#table#IsATableRow(tline) || tablemode#table#IsATableHeader(tline)
-    if tablemode#table#IsATableRow(tline) | let totalRowCount += 1 | endif
+  while tablemode#table#IsRow(tline) || tablemode#table#IsHeader(tline)
+    if tablemode#table#IsRow(tline) | let totalRowCount += 1 | endif
     let tline -= 1
   endwhile
 
   let tline = line + 1
-  while tablemode#table#IsATableRow(tline) || tablemode#table#IsATableHeader(tline)
-    if tablemode#table#IsATableRow(tline) | let totalRowCount += 1 | endif
+  while tablemode#table#IsRow(tline) || tablemode#table#IsHeader(tline)
+    if tablemode#table#IsRow(tline) | let totalRowCount += 1 | endif
     let tline += 1
   endwhile
 
@@ -167,33 +167,33 @@ function! tablemode#spreadsheet#MoveToStartOfCell() "{{{2
 endfunction
 
 function! tablemode#spreadsheet#GetLastRow(line) "{{{2
-  if tablemode#table#IsATableRow(a:line)
+  if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
 
-    while tablemode#table#IsATableRow(line + 1) || tablemode#table#IsATableHeader(line + 1)
+    while tablemode#table#IsRow(line + 1) || tablemode#table#IsHeader(line + 1)
       let line += 1
     endwhile
-    if tablemode#table#IsATableHeader(line) | let line -= 1 | endif
+    if tablemode#table#IsHeader(line) | let line -= 1 | endif
 
     return line
   endif
 endfunction
 
 function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
-  if tablemode#table#IsATableRow(a:line)
+  if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
 
-    while tablemode#table#IsATableRow(line - 1) || tablemode#table#IsATableHeader(line - 1)
+    while tablemode#table#IsRow(line - 1) || tablemode#table#IsHeader(line - 1)
       let line -= 1
     endwhile
-    if tablemode#table#IsATableHeader(line) | let line += 1 | endif
+    if tablemode#table#IsHeader(line) | let line += 1 | endif
 
     return line
   endif
 endfunction
 
 function! tablemode#spreadsheet#DeleteColumn() "{{{2
-  if tablemode#table#IsATableRow('.')
+  if tablemode#table#IsRow('.')
     for i in range(v:count1)
       call tablemode#spreadsheet#MoveToStartOfCell()
       call tablemode#spreadsheet#MoveToFirstRow()
@@ -207,13 +207,13 @@ function! tablemode#spreadsheet#DeleteColumn() "{{{2
 endfunction
 
 function! tablemode#spreadsheet#DeleteRow() "{{{2
-  if tablemode#table#IsATableRow('.')
+  if tablemode#table#IsRow('.')
     for i in range(v:count1)
-      if tablemode#table#IsATableRow('.')
+      if tablemode#table#IsRow('.')
         normal! dd
       endif
 
-      if !tablemode#table#IsATableRow('.')
+      if !tablemode#table#IsRow('.')
         normal! k
       endif
     endfor

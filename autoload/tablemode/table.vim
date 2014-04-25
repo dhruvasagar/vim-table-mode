@@ -27,7 +27,7 @@ function! s:HeaderBorderExpr() "{{{2
 endfunction
 
 function! s:DefaultHeaderBorder() "{{{2
-  if tablemode#IsTableModeActive()
+  if tablemode#IsActive()
     return g:table_mode_corner_corner . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_corner_corner
   else
     return ''
@@ -36,12 +36,12 @@ endfunction
 
 function! s:GenerateHeaderBorder(line) "{{{2
   let line = tablemode#utils#line(a:line)
-  if tablemode#table#IsATableRow(line - 1) || tablemode#table#IsATableRow(line + 1)
+  if tablemode#table#IsRow(line - 1) || tablemode#table#IsRow(line + 1)
     let line_val = ''
-    if tablemode#table#IsATableRow(line + 1)
+    if tablemode#table#IsRow(line + 1)
       let line_val = getline(line + 1)
     endif
-    if tablemode#table#IsATableRow(line - 1) && tablemode#utils#strlen(line_val) < tablemode#utils#strlen(getline(line - 1))
+    if tablemode#table#IsRow(line - 1) && tablemode#utils#strlen(line_val) < tablemode#utils#strlen(getline(line - 1))
       let line_val = getline(line - 1)
     endif
     if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
@@ -134,12 +134,12 @@ function! tablemode#table#EndExpr() "{{{2
   endif
 endfunction
 
-function! tablemode#table#IsATableRow(line) "{{{2
+function! tablemode#table#IsRow(line) "{{{2
   return getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator . '[^' .
         \ g:table_mode_fillchar . ']*[^' . g:table_mode_corner . ']*$')
 endfunction
 
-function! tablemode#table#IsATableHeader(line) "{{{2
+function! tablemode#table#IsHeader(line) "{{{2
   return getline(a:line) =~# s:HeaderBorderExpr()
 endfunction
 
@@ -152,8 +152,8 @@ function! tablemode#table#Realign(line) "{{{2
 
   let [lnums, lines] = [[], []]
   let [tline, blines] = [line, []]
-  while tablemode#table#IsATableRow(tline) || tablemode#table#IsATableHeader(tline)
-    if tablemode#table#IsATableHeader(tline)
+  while tablemode#table#IsRow(tline) || tablemode#table#IsHeader(tline)
+    if tablemode#table#IsHeader(tline)
       call insert(blines, tline)
       let tline -= 1
       continue
@@ -165,8 +165,8 @@ function! tablemode#table#Realign(line) "{{{2
 
   let tline = line + 1
 
-  while tablemode#table#IsATableRow(tline) || tablemode#table#IsATableHeader(tline)
-    if tablemode#table#IsATableHeader(tline)
+  while tablemode#table#IsRow(tline) || tablemode#table#IsHeader(tline)
+    if tablemode#table#IsHeader(tline)
       call insert(blines, tline)
       let tline += 1
       continue
