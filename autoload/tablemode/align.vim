@@ -64,11 +64,21 @@ function! s:Padding(string, length, where) "{{{3
   endif
 endfunction
 
-" function! s:Split() - Split a string into fields and delimiters {{{2
+" Public Functions {{{1
+function! tablemode#align#sid() "{{{2
+  return maparg('<sid>', 'n')
+endfunction
+nnoremap <sid> <sid>
+
+function! tablemode#align#scope() "{{{2
+  return s:
+endfunction
+
+" function! tablemode#align#Split() - Split a string into fields and delimiters {{{2
 " Like split(), but include the delimiters as elements
 " All odd numbered elements are delimiters
 " All even numbered elements are non-delimiters (including zero)
-function! s:Split(string, delim)
+function! tablemode#align#Split(string, delim)
   let rv = []
   let beg = 0
 
@@ -107,59 +117,61 @@ function! s:Split(string, delim)
   return rv
 endfunction
 
-" Public Functions {{{1
-function! tablemode#align#sid() "{{{2
-  return maparg('<sid>', 'n')
-endfunction
-nnoremap <sid> <sid>
-
-function! tablemode#align#scope() "{{{2
-  return s:
+function! tablemode#align#alignments(lnum, ncols) "{{{2
+  let alignments = repeat(['l'], a:ncols) " For each column
+  if tablemode#table#IsHeader(a:lnum+1)
+    let hcols = tablemode#align#Split(getline(a:lnum+1), '[' . g:table_mode_corner . g:table_mode_corner_corner . ']')
+    for idx in range(len(hcols))
+      " Right align if header
+      if hcols[idx] =~# g:table_mode_align_char . '$' | let alignments[idx] = 'r' | endif
+    endfor
+  end
+  return alignments
 endfunction
 
 function! tablemode#align#Align(lines) "{{{2
-  let lines = map(a:lines, 's:Split(v:val, g:table_mode_separator)')
+  let lines = map(a:lines, 'map(v:val, "v:key =~# \"text\" ? tablemode#align#Split(v:val, g:table_mode_separator) : v:val")')
 
   for line in lines
-    if len(line) <= 1 | continue | endif
+    let stext = line.text
+    if len(stext) <= 1 | continue | endif
 
-    if line[0] !~ tablemode#table#StartExpr()
-      let line[0] = s:StripTrailingSpaces(line[0])
+    if stext[0] !~ tablemode#table#StartExpr()
+      let stext[0] = s:StripTrailingSpaces(stext[0])
     endif
-    if len(line) >= 2
-      for i in range(1, len(line)-1)
-        let line[i] = tablemode#utils#strip(line[i])
+    if len(stext) >= 2
+      for i in range(1, len(stext)-1)
+        let stext[i] = tablemode#utils#strip(stext[i])
       endfor
     endif
   endfor
 
   let maxes = []
   for line in lines
-    if len(line) <= 1 | continue | endif
-    for i in range(len(line))
+    let stext = line.text
+    if len(stext) <= 1 | continue | endif
+    for i in range(len(stext))
       if i == len(maxes)
-        let maxes += [ s:Strlen(line[i]) ]
+        let maxes += [ s:Strlen(stext[i]) ]
       else
-        let maxes[i] = max([ maxes[i], s:Strlen(line[i]) ])
+        let maxes[i] = max([ maxes[i], s:Strlen(stext[i]) ])
       endif
     endfor
   endfor
 
+  let alignments = tablemode#align#alignments(lines[0].lnum, len(lines[0].text))
+
   for idx in range(len(lines))
-    let line = lines[idx]
+    let tlnum = lines[idx].lnum
+    let tline = lines[idx].text
 
-    if len(line) <= 1 | continue | endif
-    for i in range(len(line))
-      if line[i] !~# '[^0-9\.]'
-        let field = s:Padding(line[i], maxes[i], 'r')
-      else
-        let field = s:Padding(line[i], maxes[i], 'l')
-      endif
-
-      let line[i] = field . (i == 0 || i == len(line) ? '' : ' ')
+    if len(tline) <= 1 | continue | endif
+    for i in range(len(tline))
+      let field = s:Padding(tline[i], maxes[i], alignments[i])
+      let tline[i] = field . (i == 0 || i == len(tline) ? '' : ' ')
     endfor
 
-    let lines[idx] = s:StripTrailingSpaces(join(line, ''))
+    let lines[idx].text = s:StripTrailingSpaces(join(tline, ''))
   endfor
 
   return lines

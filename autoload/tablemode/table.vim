@@ -21,7 +21,7 @@
 function! s:HeaderBorderExpr() "{{{2
   return tablemode#table#StartExpr() .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
-        \ '[' . g:table_mode_fillchar . g:table_mode_corner . ']*' .
+        \ '[' . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_align_char . ']*' .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
         \ tablemode#table#EndExpr()
 endfunction
@@ -45,9 +45,28 @@ function! s:GenerateHeaderBorder(line) "{{{2
       let line_val = getline(line - 1)
     endif
     if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
+
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
+
+    " Incorporate header alignment chars
+    if getline(line) =~# g:table_mode_align_char
+      let pat = '[' . g:table_mode_corner_corner . g:table_mode_corner . ']'
+      let hcols = tablemode#align#Split(getline(line), pat)
+      let gcols = tablemode#align#Split(border, pat)
+
+      for idx in range(len(hcols))
+        if hcols[idx] =~# g:table_mode_align_char
+          if hcols[idx] =~# g:table_mode_align_char . '$'
+            let gcols[idx] = gcols[idx][:-2] . g:table_mode_align_char
+          else
+            let gcols[idx] = g:table_mode_align_char . gcols[idx][1:]
+          endif
+        endif
+      endfor
+      let border = join(gcols, '')
+    endif
 
     let cstartexpr = tablemode#table#StartCommentExpr()
     if tablemode#utils#strlen(cstartexpr) > 0 && getline(line) =~# cstartexpr
@@ -134,13 +153,12 @@ function! tablemode#table#EndExpr() "{{{2
   endif
 endfunction
 
-function! tablemode#table#IsRow(line) "{{{2
-  return getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator . '[^' .
-        \ g:table_mode_fillchar . ']*[^' . g:table_mode_corner . ']*$')
-endfunction
-
 function! tablemode#table#IsHeader(line) "{{{2
   return getline(a:line) =~# s:HeaderBorderExpr()
+endfunction
+
+function! tablemode#table#IsRow(line) "{{{2
+  return !tablemode#table#IsHeader(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
 endfunction
 
 function! tablemode#table#AddHeaderBorder(line) "{{{2
@@ -150,41 +168,36 @@ endfunction
 function! tablemode#table#Realign(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
-  let [lnums, lines] = [[], []]
-  let [tline, blines] = [line, []]
-  while tablemode#table#IsRow(tline) || tablemode#table#IsHeader(tline)
-    if tablemode#table#IsHeader(tline)
-      call insert(blines, tline)
-      let tline -= 1
+  let lines = []
+  let [lnum, blines] = [line, []]
+  while tablemode#table#IsRow(lnum) || tablemode#table#IsHeader(lnum)
+    if tablemode#table#IsHeader(lnum)
+      call insert(blines, lnum)
+      let lnum -= 1
       continue
     endif
-    call insert(lnums, tline)
-    call insert(lines, getline(tline))
-    let tline -= 1
+    call insert(lines, {'lnum': lnum, 'text': getline(lnum)})
+    let lnum -= 1
   endwhile
 
-  let tline = line + 1
-
-  while tablemode#table#IsRow(tline) || tablemode#table#IsHeader(tline)
-    if tablemode#table#IsHeader(tline)
-      call insert(blines, tline)
-      let tline += 1
+  let lnum = line + 1
+  while tablemode#table#IsRow(lnum) || tablemode#table#IsHeader(lnum)
+    if tablemode#table#IsHeader(lnum)
+      call add(blines, lnum)
+      let lnum += 1
       continue
     endif
-    call add(lnums, tline)
-    call add(lines, getline(tline))
-    let tline += 1
+    call add(lines, {'lnum': lnum, 'text': getline(lnum)})
+    let lnum += 1
   endwhile
 
   let lines = tablemode#align#Align(lines)
 
-  for lnum in lnums
-    let index = index(lnums, lnum)
-    call setline(lnum, lines[index])
+  for aline in lines
+    call setline(aline.lnum, aline.text)
   endfor
 
   for bline in blines
     call tablemode#table#AddHeaderBorder(bline)
   endfor
 endfunction
-

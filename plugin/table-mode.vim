@@ -42,6 +42,7 @@ call s:SetGlobalOptDefault('table_mode_toggle_map', 'm')
 call s:SetGlobalOptDefault('table_mode_always_active', 0)
 call s:SetGlobalOptDefault('table_mode_delimiter', ',')
 call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
+call s:SetGlobalOptDefault('table_mode_align_char', ':')
 
 function! s:TableEchoCell() "{{{1
   if tablemode#table#IsRow('.')
