@@ -118,11 +118,12 @@ function! tablemode#align#Split(string, delim)
 endfunction
 
 function! tablemode#align#alignments(lnum, ncols) "{{{2
-  let alignments = repeat(['l'], a:ncols) " For each column
+  let alignments = []
   if tablemode#table#IsHeader(a:lnum+1)
     let hcols = tablemode#align#Split(getline(a:lnum+1), '[' . g:table_mode_corner . g:table_mode_corner_corner . ']')
     for idx in range(len(hcols))
       " Right align if header
+      call add(alignments, 'l')
       if hcols[idx] =~# g:table_mode_align_char . '$' | let alignments[idx] = 'r' | endif
       if hcols[idx] !~# '[^0-9\.]' | let alignments[idx] = 'r' | endif
     endfor
