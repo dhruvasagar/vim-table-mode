@@ -151,7 +151,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
     mode also provides 2 special functions `Sum` and `Average`. Both these
     functions take a range as input. A range can be of two forms :
 
-      - `r1,r2`: This represents cells in the current column from row `r1`
+      - `r1:r2`: This represents cells in the current column from row `r1`
         through `r2`. If `r2` is negative it represents `r2` rows above the
         current row (of the target cell).
 

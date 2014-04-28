@@ -119,7 +119,7 @@ Formula Expressions :
 	special functions 'Sum' and 'Average'. Both these functions take a
 	range as input. A range can be of two forms :
 
-		'n,m': This represents cells in the current column from row
+		'n:m': This represents cells in the current column from row
 		'n' through 'm'. If 'm' is negative it represents 'm' row
 		above the current row (of the target cell).
 
