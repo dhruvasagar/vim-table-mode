@@ -1,7 +1,7 @@
-*table-mode.txt*		Table Mode for easy table formatting. v4.3.0
+*table-mode.txt*		Table Mode for easy table formatting. v4.4.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 4.3.0
+				 VERSION 4.4.0
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -104,11 +104,14 @@ Formula Expressions :
 
 		'$n': This matches the table column number 'n'. So the formula
 		would be evaluated for each cell in that column and the result
-		would be placed in it.
+		would be placed in it. You can use negative indice to
+                represent column relative to the last, -1 being the last.
 
 		'$n,m': This matches the table cell n,m (row, column). So in
 		this case the formula would be evaluated and the result will
-		be placed in this cell.
+		be placed in this cell. You can also use negative values to
+                refer to cells relative to the size, -1 being the last (row or
+                column).
 
 	The formula can be a simple mathematical expression involving cells
 	which are also defined by the same format as that of the target cell.

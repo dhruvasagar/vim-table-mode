@@ -1,4 +1,4 @@
-# VIM Table Mode v4.3.0 [![Build Status](https://travis-ci.org/dhruvasagar/vim-table-mode.png?branch=master)](https://travis-ci.org/dhruvasagar/vim-table-mode)
+# VIM Table Mode v4.4.0 [![Build Status](https://travis-ci.org/dhruvasagar/vim-table-mode.png?branch=master)](https://travis-ci.org/dhruvasagar/vim-table-mode)
 
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
@@ -137,11 +137,13 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
       - `$n`: This matches the table column number `n`. So the `formula` would
         be evaluated for each cell in that column and the result would be placed
-        in it.
+        in it. You can use negative indice to represent column relative to the
+        last, -1 being the last.
 
       - `$n,m`: This matches the table cell n,m (row, column). So in this case
         the formula would be evaluated and the result will be placed in this
-        cell.
+        cell. You can also use negative values to refer to cells relative to
+        the size, -1 being the last (row or column).
 
   - The `formula` can be a simple mathematical expression involving cells
     which are also defined by the same format as that of the target cell.  You

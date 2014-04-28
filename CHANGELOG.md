@@ -1,4 +1,9 @@
 # Change Log
+## Version 4.4.0
+* Minor bug fixes
+* Added feature to allow using negative indices within formulas to access rows,
+  columns relative to the last, -1 being the last.
+
 ## Version 4.3.0
 * Refactored some more
 * Fixed issue #19, hiphens in the table broke alignment
