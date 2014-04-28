@@ -81,6 +81,7 @@ function! tablemode#spreadsheet#cell#GetCells(line, ...) abort
     endif
 
     let first_row = tablemode#spreadsheet#GetFirstRow(line)
+    let last_row = tablemode#spreadsheet#GetLastRow(line)
     if row == 0
       let values = []
       let line = first_row
@@ -94,13 +95,14 @@ function! tablemode#spreadsheet#cell#GetCells(line, ...) abort
       return values
     else
       let row_nr = 0
-      let line = first_row
+      let row_diff = row > 0 ? 1 : -1
+      let line = row > 0 ? first_row : last_row
       while tablemode#table#IsRow(line) || tablemode#table#IsHeader(line)
         if tablemode#table#IsRow(line)
-          let row_nr += 1
+          let row_nr += row_diff
           if row ==# row_nr | break | endif
         endif
-        let line += 1
+        let line += row_diff
       endwhile
 
       let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
@@ -192,6 +194,10 @@ function! tablemode#spreadsheet#cell#SetCell(val, ...) "{{{2
   elseif a:0 == 3
     let [line, row, colm] = a:000
   endif
+
+  " Account for negative values to reference from relatively from the last
+  if row < 0 | let row = tablemode#spreadsheet#RowCount(line) + row + 1 | endif
+  if colm < 0 | let colm = tablemode#spreadsheet#ColumnCount(line) + colm + 1 | endif
 
   if tablemode#table#IsRow(line)
     let line = tablemode#utils#line(line) + (row - tablemode#spreadsheet#RowNr(line)) * 1
