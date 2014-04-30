@@ -51,3 +51,30 @@ endfunction
 function! tablemode#utils#strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
 endfunction
+
+" Return the number of bytes in a string after expanding tabs to spaces.  {{{2
+" This expansion is done based on the current value of 'tabstop'
+function! tablemode#utils#StrDisplayWidth(string)
+  if exists('*strdisplaywidth')
+    return strdisplaywidth(a:string)
+  else
+    " Implement the tab handling part of strdisplaywidth for vim 7.2 and
+    " earlier - not much that can be done about handling doublewidth
+    " characters.
+    let rv = 0
+    let i = 0
+
+    for char in split(a:string, '\zs')
+      if char == "\t"
+        let rv += &ts - i
+        let i = 0
+      else
+        let rv += 1
+        let i = (i + 1) % &ts
+      endif
+    endfor
+
+    return rv
+  endif
+endfunction
+

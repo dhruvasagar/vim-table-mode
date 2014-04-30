@@ -47,7 +47,9 @@ function! s:GenerateHeaderBorder(line) "{{{2
     if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
 
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
-    let border = substitute(border, '[^' . g:table_mode_corner . ']', g:table_mode_fillchar, 'g')
+    " To accurately deal with unicode double width characters
+    let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
+    let border = g:table_mode_corner . join(fill_columns, g:table_mode_corner) . g:table_mode_corner
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
 
     " Incorporate header alignment chars
