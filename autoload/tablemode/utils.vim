@@ -52,9 +52,7 @@ function! tablemode#utils#strlen(text)
   return strlen(substitute(a:text, '.', 'x', 'g'))
 endfunction
 
-" Return the number of bytes in a string after expanding tabs to spaces.  {{{2
-" This expansion is done based on the current value of 'tabstop'
-function! tablemode#utils#StrDisplayWidth(string)
+function! tablemode#utils#StrDisplayWidth(string) "{{{2
   if exists('*strdisplaywidth')
     return strdisplaywidth(a:string)
   else
@@ -77,4 +75,3 @@ function! tablemode#utils#StrDisplayWidth(string)
     return rv
   endif
 endfunction
-
