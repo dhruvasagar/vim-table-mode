@@ -105,7 +105,7 @@ describe 'cell'
       before
         new
         normal! ggdG
-        call tablemode#TableModeEnable()
+        call tablemode#Enable()
         normal i|test11|test12||test21|test22|
         call cursor(1, 3)
       end
