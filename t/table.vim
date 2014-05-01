@@ -100,14 +100,16 @@ describe 'table'
 
   describe 'Realign'
     describe 'without header alignments'
-      before
-        new
-        read t/fixtures/table/sample_realign_before.txt
-      end
+      describe 'for simple'
+        before
+          new
+          read t/fixtures/table/sample_realign_before.txt
+        end
 
-      it 'should be aligned properly'
-        call tablemode#table#Realign(1)
-        Expect getline(1,'$') == readfile('t/fixtures/table/sample_realign_after.txt')
+        it 'should be aligned properly'
+          call tablemode#table#Realign(1)
+          Expect getline(1,'$') == readfile('t/fixtures/table/sample_realign_after.txt')
+        end
       end
 
       describe 'for unicode'
@@ -125,14 +127,16 @@ describe 'table'
     end
 
     describe 'with header alignments'
-      before
-        new
-        read t/fixtures/table/sample_header_realign_before.txt
-      end
+      describe 'for simple'
+        before
+          new
+          read t/fixtures/table/sample_header_realign_before.txt
+        end
 
-      it 'should be aligned properly'
-        call tablemode#table#Realign(1)
-        Expect getline(1,'$') == readfile('t/fixtures/table/sample_header_realign_after.txt')
+        it 'should be aligned properly'
+          call tablemode#table#Realign(1)
+          Expect getline(1,'$') == readfile('t/fixtures/table/sample_header_realign_after.txt')
+        end
       end
 
       describe 'for unicode'
