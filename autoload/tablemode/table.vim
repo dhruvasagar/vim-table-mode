@@ -96,28 +96,19 @@ function! tablemode#table#scope() "{{{2
   return s:
 endfunction
 
-function! tablemode#table#StartCommentExpr() "{{{2
-  let cstartexpr = tablemode#table#GetCommentStart()
-  if tablemode#utils#strlen(cstartexpr) > 0
-    return '^\s*' . cstartexpr . '\s*'
-  else
-    return ''
-  endif
-endfunction
-
-function! tablemode#table#EndCommentExpr() "{{{2
-  let cendexpr = tablemode#table#GetCommentEnd()
-  if tablemode#utils#strlen(cendexpr) > 0
-    return '.*\zs\s\+' . cendexpr . '\s*$'
-  else
-    return ''
-  endif
-endfunction
-
 function! tablemode#table#GetCommentStart() "{{{2
   let cstring = &commentstring
   if tablemode#utils#strlen(cstring) > 0
     return substitute(split(cstring, '%s')[0], '.', '\\\0', 'g')
+  else
+    return ''
+  endif
+endfunction
+
+function! tablemode#table#StartCommentExpr() "{{{2
+  let cstartexpr = tablemode#table#GetCommentStart()
+  if tablemode#utils#strlen(cstartexpr) > 0
+    return '^\s*' . cstartexpr . '\s*'
   else
     return ''
   endif
@@ -132,6 +123,15 @@ function! tablemode#table#GetCommentEnd() "{{{2
     else
       return ''
     endif
+  else
+    return ''
+  endif
+endfunction
+
+function! tablemode#table#EndCommentExpr() "{{{2
+  let cendexpr = tablemode#table#GetCommentEnd()
+  if tablemode#utils#strlen(cendexpr) > 0
+    return '.*\zs\s\+' . cendexpr . '\s*$'
   else
     return ''
   endif
@@ -155,15 +155,20 @@ function! tablemode#table#EndExpr() "{{{2
   endif
 endfunction
 
-function! tablemode#table#IsHeader(line) "{{{2
+function! tablemode#table#IsBorder(line) "{{{2
   return getline(a:line) =~# s:HeaderBorderExpr()
 endfunction
 
-function! tablemode#table#IsRow(line) "{{{2
-  return !tablemode#table#IsHeader(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
+function! tablemode#table#IsHeader(line) "{{{2
+  let line = tablemode#utils#line(a:line)
+  return tablemode#table#IsBorder(line+1) && !tablemode#table#IsRow(line-1) && !tablemode#table#IsRow(line-2)
 endfunction
 
-function! tablemode#table#AddHeaderBorder(line) "{{{2
+function! tablemode#table#IsRow(line) "{{{2
+  return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
+endfunction
+
+function! tablemode#table#AddBorder(line) "{{{2
   call setline(a:line, s:GenerateHeaderBorder(a:line))
 endfunction
 
@@ -172,8 +177,8 @@ function! tablemode#table#Realign(line) "{{{2
 
   let lines = []
   let [lnum, blines] = [line, []]
-  while tablemode#table#IsRow(lnum) || tablemode#table#IsHeader(lnum)
-    if tablemode#table#IsHeader(lnum)
+  while tablemode#table#IsRow(lnum) || tablemode#table#IsBorder(lnum)
+    if tablemode#table#IsBorder(lnum)
       call insert(blines, lnum)
       let lnum -= 1
       continue
@@ -183,8 +188,8 @@ function! tablemode#table#Realign(line) "{{{2
   endwhile
 
   let lnum = line + 1
-  while tablemode#table#IsRow(lnum) || tablemode#table#IsHeader(lnum)
-    if tablemode#table#IsHeader(lnum)
+  while tablemode#table#IsRow(lnum) || tablemode#table#IsBorder(lnum)
+    if tablemode#table#IsBorder(lnum)
       call add(blines, lnum)
       let lnum += 1
       continue
@@ -200,6 +205,6 @@ function! tablemode#table#Realign(line) "{{{2
   endfor
 
   for bline in blines
-    call tablemode#table#AddHeaderBorder(bline)
+    call tablemode#table#AddBorder(bline)
   endfor
 endfunction

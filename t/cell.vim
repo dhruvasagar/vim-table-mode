@@ -10,7 +10,7 @@ describe 'cell'
       read t/fixtures/sample.txt
     end
 
-    it 'should return the cells'
+    it 'should return the cells with GetCells'
       Expect tablemode#spreadsheet#cell#GetCells(2, 1, 1) ==# 'test11'
       " Get Rows
       Expect tablemode#spreadsheet#cell#GetCells(2, 1) == ['test11', 'test12']
@@ -20,7 +20,17 @@ describe 'cell'
       Expect tablemode#spreadsheet#cell#GetCells(2, 0, 2) == ['test12', 'test22']
     end
 
-    it 'should return the cells in a range'
+    it 'should return the row with GetRow'
+      Expect tablemode#spreadsheet#cell#GetRow(1, 2) == ['test11', 'test12']
+      Expect tablemode#spreadsheet#cell#GetRow(2, 2) == ['test21', 'test22']
+    end
+
+    it 'should return the column with GetColumn'
+      Expect tablemode#spreadsheet#cell#GetColumn(1, 2) == ['test11', 'test21']
+      Expect tablemode#spreadsheet#cell#GetColumn(2, 2) == ['test12', 'test22']
+    end
+
+    it 'should return the cells in a range with GetCellRange'
       " Entire table as range
       Expect tablemode#spreadsheet#cell#GetCellRange('1,1:2,2', 2, 1) == [['test11', 'test21'], ['test12', 'test22']]
 
@@ -95,7 +105,7 @@ describe 'cell'
       before
         new
         normal! ggdG
-        call tablemode#Enable()
+        call tablemode#TableModeEnable()
         normal i|test11|test12||test21|test22|
         call cursor(1, 3)
       end

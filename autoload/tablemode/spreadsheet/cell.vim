@@ -85,7 +85,7 @@ function! tablemode#spreadsheet#cell#GetCells(line, ...) abort
     if row == 0
       let values = []
       let line = first_row
-      while tablemode#table#IsRow(line) || tablemode#table#IsHeader(line)
+      while tablemode#table#IsRow(line) || tablemode#table#IsBorder(line)
         if tablemode#table#IsRow(line)
           let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
           call add(values, tablemode#utils#strip(get(split(row_line, g:table_mode_separator), colm>0?colm-1:colm, '')))
@@ -97,7 +97,7 @@ function! tablemode#spreadsheet#cell#GetCells(line, ...) abort
       let row_nr = 0
       let row_diff = row > 0 ? 1 : -1
       let line = row > 0 ? first_row : last_row
-      while tablemode#table#IsRow(line) || tablemode#table#IsHeader(line)
+      while tablemode#table#IsRow(line) || tablemode#table#IsBorder(line)
         if tablemode#table#IsRow(line)
           let row_nr += row_diff
           if row ==# row_nr | break | endif
@@ -127,8 +127,25 @@ function! tablemode#spreadsheet#cell#GetCell(...) "{{{2
 endfunction
 
 function! tablemode#spreadsheet#cell#GetRow(row, ...) abort "{{{2
-  let line = a:0 < 1 ? '.' : a:1
+  let line = a:0 ? a:1 : '.'
   return tablemode#spreadsheet#cell#GetCells(line, a:row)
+endfunction
+
+function! tablemode#spreadsheet#cell#GetRowColumn(col, ...) abort "{{{2
+  let line = a:0 ? a:1 : '.'
+  let row = tablemode#spreadsheet#RowNr('.')
+  return tablemode#spreadsheet#cell#GetCells(line, row, a:col)
+endfunction
+
+function! tablemode#spreadsheet#cell#GetColumn(col, ...) abort "{{{2
+  let line = a:0 ? a:1 : '.'
+  return tablemode#spreadsheet#cell#GetCells(line, 0, a:col)
+endfunction
+
+function! tablemode#spreadsheet#cell#GetColumnRow(row, ...) abort "{{{2
+  let line = a:0 ? a:1 : '.'
+  let col = tablemode#spreadsheet#ColumnNr('.')
+  return tablemode#spreadsheet#cell#GetCells(line, a:row, col)
 endfunction
 
 function! tablemode#spreadsheet#cell#GetCellRange(range, ...) abort "{{{2
@@ -167,23 +184,6 @@ function! tablemode#spreadsheet#cell#GetCellRange(range, ...) abort "{{{2
   endif
 
   return values
-endfunction
-
-function! tablemode#spreadsheet#cell#GetRowColumn(col, ...) abort "{{{2
-  let line = a:0 < 1 ? '.' : a:1
-  let row = tablemode#spreadsheet#RowNr('.')
-  return tablemode#spreadsheet#cell#GetCells(line, row, a:col)
-endfunction
-
-function! tablemode#spreadsheet#cell#GetColumn(col, ...) abort "{{{2
-  let line = a:0 < 1 ? '.' : a:1
-  return tablemode#spreadsheet#cell#GetCells(line, 0, a:col)
-endfunction
-
-function! tablemode#spreadsheet#cell#GetColumnRow(row, ...) abort "{{{2
-  let line = a:0 < 1 ? '.' : a:1
-  let col = tablemode#spreadsheet#ColumnNr('.')
-  return tablemode#spreadsheet#cell#GetCells(line, a:row, col)
 endfunction
 
 function! tablemode#spreadsheet#cell#SetCell(val, ...) "{{{2
@@ -233,7 +233,7 @@ function! tablemode#spreadsheet#cell#Motion(direction, ...) "{{{2
     for ii in range(l:count)
       if a:direction ==# 'l'
         if tablemode#spreadsheet#IsLastCell()
-          if !tablemode#table#IsRow(line('.') + 1) && (tablemode#table#IsHeader(line('.') + 1) && !tablemode#table#IsRow(line('.') + 2))
+          if !tablemode#table#IsRow(line('.') + 1) && (tablemode#table#IsBorder(line('.') + 1) && !tablemode#table#IsRow(line('.') + 2))
             return
           endif
           call tablemode#spreadsheet#cell#Motion('j', 1)
@@ -248,7 +248,7 @@ function! tablemode#spreadsheet#cell#Motion(direction, ...) "{{{2
         endif
       elseif a:direction ==# 'h'
         if tablemode#spreadsheet#IsFirstCell()
-          if !tablemode#table#IsRow(line('.') - 1) && (tablemode#table#IsHeader(line('.') - 1) && !tablemode#table#IsRow(line('.') - 2))
+          if !tablemode#table#IsRow(line('.') - 1) && (tablemode#table#IsBorder(line('.') - 1) && !tablemode#table#IsRow(line('.') - 2))
             return
           endif
           call tablemode#spreadsheet#cell#Motion('k', 1)
@@ -265,7 +265,7 @@ function! tablemode#spreadsheet#cell#Motion(direction, ...) "{{{2
         if tablemode#table#IsRow(line('.') + 1)
           " execute 'normal! ' . 1 . 'j'
           normal! j
-        elseif tablemode#table#IsHeader(line('.') + 1) && tablemode#table#IsRow(line('.') + 2)
+        elseif tablemode#table#IsBorder(line('.') + 1) && tablemode#table#IsRow(line('.') + 2)
           " execute 'normal! ' . 2 . 'j'
           normal! 2j
         endif
@@ -273,7 +273,7 @@ function! tablemode#spreadsheet#cell#Motion(direction, ...) "{{{2
         if tablemode#table#IsRow(line('.') - 1)
           " execute 'normal! ' . 1 . 'k'
           normal! k
-        elseif tablemode#table#IsHeader(line('.') - 1) && tablemode#table#IsRow(line('.') - 2)
+        elseif tablemode#table#IsBorder(line('.') - 1) && tablemode#table#IsRow(line('.') - 2)
           " execute 'normal! ' . (1 + 1) . 'k'
           normal! 2k
         endif
