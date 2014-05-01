@@ -7,6 +7,7 @@ describe 'table'
   describe 'IsRow'
     before
       new
+      normal! ggdG
       read t/fixtures/table/sample.txt
     end
 
@@ -24,6 +25,7 @@ describe 'table'
   describe 'IsBorder'
     before
       new
+      normal! ggdG
       read t/fixtures/table/sample_with_header.txt
     end
 
@@ -43,6 +45,7 @@ describe 'table'
   describe 'IsHeader'
     before
       new
+      normal! ggdG
       read t/fixtures/table/sample_with_header.txt
     end
 
@@ -62,6 +65,7 @@ describe 'table'
   describe 'AddBorder'
     before
       new
+      normal! ggdG
       read t/fixtures/table/sample_for_header.txt
     end
 
@@ -74,6 +78,7 @@ describe 'table'
     describe 'for unicode'
       before
         new
+        normal! ggdG
         read t/fixtures/table/sample_for_header_unicode.txt
       end
 
@@ -103,6 +108,7 @@ describe 'table'
       describe 'for simple'
         before
           new
+          normal! ggdG
           read t/fixtures/table/sample_realign_before.txt
         end
 
@@ -130,6 +136,7 @@ describe 'table'
       describe 'for simple'
         before
           new
+          normal! ggdG
           read t/fixtures/table/sample_header_realign_before.txt
         end
 
