@@ -70,6 +70,32 @@ describe 'table'
       Expect tablemode#table#IsHeader(1) to_be_true
       Expect tablemode#table#IsBorder(2) to_be_true
     end
+
+    describe 'for unicode'
+      before
+        new
+        read t/fixtures/table/sample_for_header_unicode.txt
+      end
+
+      it 'should add border to line'
+        call tablemode#table#AddBorder(1)
+        call tablemode#table#AddBorder(3)
+        call tablemode#table#AddBorder(5)
+        call tablemode#table#AddBorder(7)
+        call tablemode#table#AddBorder(9)
+
+        Expect tablemode#table#IsBorder(1) to_be_true
+        Expect tablemode#utils#StrDisplayWidth(getline(1)) == tablemode#utils#StrDisplayWidth(getline(2))
+        Expect tablemode#table#IsBorder(3) to_be_true
+        Expect tablemode#utils#StrDisplayWidth(getline(3)) == tablemode#utils#StrDisplayWidth(getline(4))
+        Expect tablemode#table#IsBorder(5) to_be_true
+        Expect tablemode#utils#StrDisplayWidth(getline(5)) == tablemode#utils#StrDisplayWidth(getline(6))
+        Expect tablemode#table#IsBorder(7) to_be_true
+        Expect tablemode#utils#StrDisplayWidth(getline(7)) == tablemode#utils#StrDisplayWidth(getline(8))
+        Expect tablemode#table#IsBorder(9) to_be_true
+        Expect tablemode#utils#StrDisplayWidth(getline(9)) == tablemode#utils#StrDisplayWidth(getline(8))
+      end
+    end
   end
 
   describe 'Realign'
@@ -83,6 +109,19 @@ describe 'table'
         call tablemode#table#Realign(1)
         Expect getline(1,'$') == readfile('t/fixtures/table/sample_realign_after.txt')
       end
+
+      describe 'for unicode'
+        before
+          new
+          normal! ggdG
+          read t/fixtures/table/sample_realign_unicode_before.txt
+        end
+
+        it 'should be aligned properly'
+          call tablemode#table#Realign(1)
+          Expect getline(1,'$') == readfile('t/fixtures/table/sample_realign_unicode_after.txt')
+        end
+      end
     end
 
     describe 'with header alignments'
@@ -94,6 +133,19 @@ describe 'table'
       it 'should be aligned properly'
         call tablemode#table#Realign(1)
         Expect getline(1,'$') == readfile('t/fixtures/table/sample_header_realign_after.txt')
+      end
+
+      describe 'for unicode'
+        before
+          new
+          normal! ggdG
+          read t/fixtures/table/sample_header_realign_unicode_before.txt
+        end
+
+        it 'should be aligned properly'
+          call tablemode#table#Realign(1)
+          Expect getline(1,'$') == readfile('t/fixtures/table/sample_header_realign_unicode_after.txt')
+        end
       end
     end
   end
