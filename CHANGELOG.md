@@ -1,4 +1,7 @@
 # Change Log
+## Version 4.4.1
+* Added syntax for matching tables
+
 ## Version 4.4.0
 * Minor bug fixes
 * Added feature to allow using negative indices within formulas to access rows,

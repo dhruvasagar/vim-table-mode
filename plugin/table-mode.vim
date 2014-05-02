@@ -50,6 +50,23 @@ function! s:TableEchoCell() "{{{1
   endif
 endfunction
 
+function! s:EnableTableSyntax() "{{{1
+  syntax match Table /^\s*|.\+|\s*$/ contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL
+  syntax match TableSeparator /|/ contained
+  syntax match TableColumnAlign /:/ contained
+  syntax match TableBorder /[\-+]\+/ contained
+endfunction
+
+augroup TableMode
+  au!
+
+  autocmd Syntax * call <SID>EnableTableSyntax()
+augroup END
+
+hi! link TableBorder Delimiter
+hi! link TableSeparator Delimiter
+hi! link TableColumnAlign Type
+
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_toggle_map .
