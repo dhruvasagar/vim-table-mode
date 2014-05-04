@@ -51,7 +51,9 @@ function! s:TableEchoCell() "{{{1
 endfunction
 
 function! s:EnableTableSyntax() "{{{1
-  syntax match Table /^\s*|.\+|\s*$/ contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL
+  exec 'syntax match Table'
+        \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
+        \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
   syntax match TableSeparator /|/ contained
   syntax match TableColumnAlign /:/ contained
   syntax match TableBorder /[\-+]\+/ contained
