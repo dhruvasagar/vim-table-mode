@@ -106,6 +106,7 @@ function! tablemode#align#alignments(lnum, ncols) "{{{2
 endfunction
 
 function! tablemode#align#Align(lines) "{{{2
+  if empty(a:lines) | return [] | endif
   let lines = map(a:lines, 'map(v:val, "v:key =~# \"text\" ? tablemode#align#Split(v:val, g:table_mode_separator) : v:val")')
 
   for line in lines
