@@ -111,3 +111,7 @@
 
 ## Version 1.0 :
 * First stable release, create tables as you type.
+
+<!--
+  vim: ft=markdown
+-->
