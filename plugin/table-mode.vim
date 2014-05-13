@@ -123,48 +123,6 @@ if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
   xmap <Leader>T <Plug>(table-mode-tableize-delimiter)
 endif
 
-if !hasmapto('<Plug>(table-mode-realign)')
-  nmap <Leader>tr <Plug>(table-mode-realign)
-endif
-
-if !hasmapto('<Plug>(table-mode-motion-up)')
-  nmap {<Bar> <Plug>(table-mode-motion-up)
-endif
-if !hasmapto('<Plug>(table-mode-motion-down)')
-  nmap }<Bar> <Plug>(table-mode-motion-down)
-endif
-if !hasmapto('<Plug>(table-mode-motion-left)')
-  nmap [<Bar> <Plug>(table-mode-motion-left)
-endif
-if !hasmapto('<Plug>(table-mode-motion-right)')
-  nmap ]<Bar> <Plug>(table-mode-motion-right)
-endif
-
-if !hasmapto('<Plug>(table-mode-cell-text-object-a)')
-  omap a<Bar> <Plug>(table-mode-cell-text-object-a)
-endif
-if !hasmapto('<Plug>(table-mode-cell-text-object-i)')
-  omap i<Bar> <Plug>(table-mode-cell-text-object-i)
-endif
-
-if !hasmapto('<Plug>(table-mode-delete-row)')
-  nmap <Leader>tdd <Plug>(table-mode-delete-row)
-endif
-if !hasmapto('<Plug>(table-mode-delete-column)')
-  nmap <Leader>tdc <Plug>(table-mode-delete-column)
-endif
-
-if !hasmapto('<Plug>(table-mode-add-formula)')
-  nmap <Leader>tfa <Plug>(table-mode-add-formula)
-endif
-if !hasmapto('<Plug>(table-mode-eval-formula)')
-  nmap <Leader>tfe <Plug>(table-mode-eval-formula)
-endif
-
-if !hasmapto('<Plug>(table-mode-echo-cell)')
-  nmap <Leader>t? <Plug>(table-mode-echo-cell)
-endif
-
 " Avoiding side effects {{{1
 let &cpo = s:save_cpo
 

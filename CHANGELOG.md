@@ -1,4 +1,9 @@
 # Change Log
+
+## Version 4.4.2
+* Updated mappings to be buffer local.
+* Updated mappings to toggle and function only when table mode is active.
+
 ## Version 4.4.1
 * Added syntax for matching tables
 
