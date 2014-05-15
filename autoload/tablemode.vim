@@ -55,9 +55,11 @@ function! s:ToggleMapping() "{{{2
     endif
     if !hasmapto('<Plug>(table-mode-cell-text-object-a)', 'o')
       omap <buffer> a<Bar> <Plug>(table-mode-cell-text-object-a)
+      xmap <buffer> a<Bar> <Plug>(table-mode-cell-text-object-a)
     endif
     if !hasmapto('<Plug>(table-mode-cell-text-object-i)', 'o')
       omap <buffer> i<Bar> <Plug>(table-mode-cell-text-object-i)
+      xmap <buffer> i<Bar> <Plug>(table-mode-cell-text-object-i)
     endif
     if !hasmapto('<Plug>(table-mode-realign)', 'n')
       nmap <buffer> <Leader>tr <Plug>(table-mode-realign)
