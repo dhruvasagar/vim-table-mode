@@ -85,8 +85,37 @@ function! s:ToggleMapping() "{{{2
   endif
 endfunction
 
+function! tablemode#SyntaxEnable()
+  exec 'syntax match Table'
+        \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
+        \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
+  syntax match TableSeparator /|/ contained
+  syntax match TableColumnAlign /:/ contained
+  syntax match TableBorder /[\-+]\+/ contained
+
+  hi! link TableBorder Delimiter
+  hi! link TableSeparator Delimiter
+  hi! link TableColumnAlign Type
+endfunction
+
+function! s:ToggleSyntax()
+  if tablemode#IsActive()
+    call tablemode#SyntaxEnable()
+  else
+    syntax clear Table
+    syntax clear TableBorder
+    syntax clear TableSeparator
+    syntax clear TableColumnAlign
+
+    hi! link TableBorder NONE
+    hi! link TableSeparator NONE
+    hi! link TableColumnAlign NONE
+  endif
+endfunction
+
 function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
+  call s:ToggleSyntax()
   call s:ToggleMapping()
 endfunction
 

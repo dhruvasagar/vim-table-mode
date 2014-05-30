@@ -50,24 +50,11 @@ function! s:TableEchoCell() "{{{1
   endif
 endfunction
 
-function! s:EnableTableSyntax() "{{{1
-  exec 'syntax match Table'
-        \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
-        \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
-  syntax match TableSeparator /|/ contained
-  syntax match TableColumnAlign /:/ contained
-  syntax match TableBorder /[\-+]\+/ contained
-endfunction
-
 augroup TableMode
   au!
 
-  autocmd Syntax * call <SID>EnableTableSyntax()
+  autocmd Syntax * if tablemode#IsActive() | call tablemode#SyntaxEnable() | endif
 augroup END
-
-hi! link TableBorder Delimiter
-hi! link TableSeparator Delimiter
-hi! link TableColumnAlign Type
 
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
