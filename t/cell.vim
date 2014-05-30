@@ -64,20 +64,19 @@ describe 'cell'
       before
         new
         normal! ggdG
-        call tablemode#Enable()
-        normal i|test11|test12||test21|test22|
-        call cursor(1, 3)
+        read t/fixtures/sample.txt
+        call cursor(2, 3)
       end
 
       it 'should move left when not on first column'
-        call cursor(1, 12)
+        call cursor(2, 12)
         Expect tablemode#spreadsheet#ColumnNr('.') == 2
         call tablemode#spreadsheet#cell#Motion('h')
         Expect tablemode#spreadsheet#ColumnNr('.') == 1
       end
 
       it 'should move to the previous row last column if it exists when on first column'
-        call cursor(2, 3)
+        call cursor(3, 3)
         Expect tablemode#spreadsheet#RowNr('.') == 2
         Expect tablemode#spreadsheet#ColumnNr('.') == 1
         call tablemode#spreadsheet#cell#Motion('h')
@@ -92,7 +91,7 @@ describe 'cell'
       end
 
       it 'should move to the next row first column if it exists when on last column'
-        call cursor(1, 12)
+        call cursor(2, 12)
         Expect tablemode#spreadsheet#RowNr('.') == 1
         Expect tablemode#spreadsheet#ColumnNr('.') == 2
         call tablemode#spreadsheet#cell#Motion('l')
@@ -105,13 +104,12 @@ describe 'cell'
       before
         new
         normal! ggdG
-        call tablemode#Enable()
-        normal i|test11|test12||test21|test22|
-        call cursor(1, 3)
+        read t/fixtures/sample.txt
+        call cursor(2, 3)
       end
 
       it 'should move a row up unless on first row'
-        call cursor(2, 3)
+        call cursor(3, 3)
         Expect tablemode#spreadsheet#RowNr('.') == 2
         call tablemode#spreadsheet#cell#Motion('k')
         Expect tablemode#spreadsheet#RowNr('.') == 1

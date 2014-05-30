@@ -88,9 +88,8 @@ describe 'spreadsheet'
     before
       new
       normal! ggdG
-      call tablemode#Enable()
-      normal i|test11|test12||test21|test22|
-      call cursor(1, 3)
+      read t/fixtures/sample.txt
+      call cursor(2, 3)
     end
 
     it 'should delete a row successfully'
