@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 4.5.0
+* Refactored toggled mappings
+* Table Syntax now gets toggled with Table Mode
+
 ## Version 4.4.2
 * Updated mappings to be buffer local.
 * Updated mappings to toggle and function only when table mode is active.
