@@ -97,7 +97,7 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
     endif
     call tablemode#spreadsheet#cell#SetCell(eval(expr), line, row, colm)
   else
-    let [row, line] = [1, tablemode#spreadsheet#GetFirstRow(line)]
+    let [row, line] = [tablemode#spreadsheet#RowCount(line), tablemode#spreadsheet#GetLastRow(line)]
     while tablemode#table#IsRow(line)
       let texpr = expr
       if expr =~# '\$'
@@ -106,8 +106,8 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
       endif
 
       call tablemode#spreadsheet#cell#SetCell(eval(texpr), line, row, colm)
-      let row += 1
-      let line += 1
+      let row -= 1
+      let line -= 1
     endwhile
   endif
 endfunction
