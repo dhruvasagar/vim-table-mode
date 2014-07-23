@@ -20,7 +20,7 @@ CONTENTS						*table-mode-contents*
 INTRODUCTION					*table-mode-introduction*
 
 Table Mode is simple plugin that makes building tables in vim a breeze. It is
-inspired from tpope's auto aligning script for creating tables in vim - 
+inspired from tpope's auto aligning script for creating tables in vim -
 https://gist.github.com/tpope/287147, which in turn utilizes the Tabular
 Plugin.
 
@@ -57,7 +57,7 @@ Move between cells :
 	You can use |table-mode-map-prefix| option to define the prefix
 	mapping to be used before 'hjkl'. The left | right motions wrap around
 	the table and move to the next | previous row after the last | first
-	cell in the current row if one exists. 
+	cell in the current row if one exists.
 
 Manipulation of tables:
 	Tableize provides 3 easy ways to quickly manipulate tables.
@@ -213,6 +213,9 @@ g:table_mode_align_char                                  *table-mode-align-char*
         alignments for columns in the table header border. >
                 let g:table_mode_align_char = ':'
 <
+g:table_mode_disable_mappings                     table-mode-disable-mappings
+        Set this to true to disable all mappings.
+                let g:table_mode_disable_mappings = 1
 
 ===============================================================================
 MAPPINGS						*table-mode-mappings*
@@ -224,7 +227,7 @@ MAPPINGS						*table-mode-mappings*
 						*table-mode-mappings-toggle*
 <Leader>tm	Toggle table mode for the current buffer. You can change this
 		using the |toggle-mode-options-toggle-map| option.
-		
+
                 NOTE This is applicable only if |table-mode-always-active| is
                 not set.
 
@@ -272,7 +275,7 @@ MAPPINGS						*table-mode-mappings*
 		accordingly. This invokes the |TableEvalFormulaLine| command.
 
 ||              Expands to a header border. You can change this by changing
-                |table-mode-separator| option. You can change the character to 
+                |table-mode-separator| option. You can change the character to
                 be used for te extreme corners of the border by changing
                 |table-mode-corner-corner| option.
 
@@ -298,7 +301,7 @@ COMMANDS						*table-mode-commands*
                                                            *:TableModeDisable*
                                                 *table-mode-:TableModeDisable*
 :TableModeDisable
-	Disables Table Mode. 
+	Disables Table Mode.
 
 	NOTE this is applicable only if |table-mode-always-active| is
 	not set.
