@@ -53,7 +53,7 @@ function! s:ToggleMapping() "{{{2
   " '|' is a special character, we need to map <Bar> instead
   if g:table_mode_separator ==# '|' | let separator_map = '<Bar>' | endif
 
-  if !exists('g:table_mode_disable_mappings')
+  if g:table_mode_disable_mappings == 0
     if tablemode#IsActive()
       call s:Map('<Plug>(table-mode-tableize)', separator_map, 'i')
       call s:Map('<Plug>(table-mode-motion-up)', '{<Bar>', 'n')
