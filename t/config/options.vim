@@ -7,3 +7,4 @@ let g:table_mode_always_active = 0
 let g:table_mode_delimiter = ','
 let g:table_mode_corner_corner = '|'
 let g:table_mode_align_char = ':'
+let g:table_mode_disable_mappings = 0
