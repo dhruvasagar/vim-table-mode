@@ -53,35 +53,37 @@ function! s:ToggleMapping() "{{{2
   " '|' is a special character, we need to map <Bar> instead
   if g:table_mode_separator ==# '|' | let separator_map = '<Bar>' | endif
 
-  if tablemode#IsActive()
-    call s:Map('<Plug>(table-mode-tableize)', separator_map, 'i')
-    call s:Map('<Plug>(table-mode-motion-up)', '{<Bar>', 'n')
-    call s:Map('<Plug>(table-mode-motion-down)', '}<Bar>', 'n')
-    call s:Map('<Plug>(table-mode-motion-left)', '[<Bar>', 'n')
-    call s:Map('<Plug>(table-mode-motion-right)', ']<Bar>', 'n')
+  if !g:table_mode_disable_mappings
+    if tablemode#IsActive()
+      call s:Map('<Plug>(table-mode-tableize)', separator_map, 'i')
+      call s:Map('<Plug>(table-mode-motion-up)', '{<Bar>', 'n')
+      call s:Map('<Plug>(table-mode-motion-down)', '}<Bar>', 'n')
+      call s:Map('<Plug>(table-mode-motion-left)', '[<Bar>', 'n')
+      call s:Map('<Plug>(table-mode-motion-right)', ']<Bar>', 'n')
 
-    call s:Map('<Plug>(table-mode-cell-text-object-a)', 'a<Bar>', 'ox')
-    call s:Map('<Plug>(table-mode-cell-text-object-i)', 'i<Bar>', 'ox')
+      call s:Map('<Plug>(table-mode-cell-text-object-a)', 'a<Bar>', 'ox')
+      call s:Map('<Plug>(table-mode-cell-text-object-i)', 'i<Bar>', 'ox')
 
-    call s:Map('<Plug>(table-mode-realign)', '<Leader>tr', 'n')
-    call s:Map('<Plug>(table-mode-delete-row)', '<Leader>tdd', 'n')
-    call s:Map('<Plug>(table-mode-delete-column)', '<Leader>tdc', 'n')
-    call s:Map('<Plug>(table-mode-add-formula)', '<Leader>tfa', 'n')
-    call s:Map('<Plug>(table-mode-eval-formula)', '<Leader>tfe', 'n')
-    call s:Map('<Plug>(table-mode-echo-cell)', '<Leader>t?', 'n')
-  else
-    call s:UnMap(separator_map, 'i')
-    call s:UnMap('{<Bar>', 'n')
-    call s:UnMap('}<Bar>', 'n')
-    call s:UnMap('[<Bar>', 'n')
-    call s:UnMap(']<Bar>', 'n')
-    call s:UnMap('a<Bar>', 'o')
-    call s:UnMap('i<Bar>', 'o')
-    call s:UnMap('<Leader>tdd', 'n')
-    call s:UnMap('<Leader>tdc', 'n')
-    call s:UnMap('<Leader>tfa', 'n')
-    call s:UnMap('<Leader>tfe', 'n')
-    call s:UnMap('<Leader>t?', 'n')
+      call s:Map('<Plug>(table-mode-realign)', '<Leader>tr', 'n')
+      call s:Map('<Plug>(table-mode-delete-row)', '<Leader>tdd', 'n')
+      call s:Map('<Plug>(table-mode-delete-column)', '<Leader>tdc', 'n')
+      call s:Map('<Plug>(table-mode-add-formula)', '<Leader>tfa', 'n')
+      call s:Map('<Plug>(table-mode-eval-formula)', '<Leader>tfe', 'n')
+      call s:Map('<Plug>(table-mode-echo-cell)', '<Leader>t?', 'n')
+    else
+      call s:UnMap(separator_map, 'i')
+      call s:UnMap('{<Bar>', 'n')
+      call s:UnMap('}<Bar>', 'n')
+      call s:UnMap('[<Bar>', 'n')
+      call s:UnMap(']<Bar>', 'n')
+      call s:UnMap('a<Bar>', 'o')
+      call s:UnMap('i<Bar>', 'o')
+      call s:UnMap('<Leader>tdd', 'n')
+      call s:UnMap('<Leader>tdc', 'n')
+      call s:UnMap('<Leader>tfa', 'n')
+      call s:UnMap('<Leader>tfe', 'n')
+      call s:UnMap('<Leader>t?', 'n')
+    endif
   endif
 endfunction
 
