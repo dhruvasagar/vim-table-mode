@@ -1,8 +1,6 @@
 " vim: fdm=indent
 source t/config/options.vim
 
-call vspec#hint({'scope': 'tablemode#table#scope()', 'sid': 'tablemode#table#sid()'})
-
 describe 'table'
   describe 'IsRow'
     before

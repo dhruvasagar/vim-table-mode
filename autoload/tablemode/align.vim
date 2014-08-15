@@ -1,22 +1,3 @@
-" ==============================  Header ======================================
-" File:          autoload/tablemode/align.vim
-" Description:   Table mode for vim for creating neat tables.
-" Author:        Dhruva Sagar <http://dhruvasagar.com/>
-" License:       MIT (http://www.opensource.org/licenses/MIT)
-" Website:       https://github.com/dhruvasagar/vim-table-mode
-" Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
-"                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
-"
-" Copyright Notice:
-"                Permission is hereby granted to use and distribute this code,
-"                with or without modifications, provided that this copyright
-"                notice is copied with it. Like anything else that's free,
-"                table-mode.vim is provided *as is* and comes with no warranty
-"                of any kind, either expressed or implied. In no event will
-"                the copyright holder be liable for any damamges resulting
-"                from the use of this software.
-" =============================================================================
-
 " Borrowed from Tabular
 " Private Functions {{{1
 " function! s:StripTrailingSpaces(string) - Remove all trailing spaces {{{2
@@ -39,15 +20,6 @@ function! s:Padding(string, length, where) "{{{3
 endfunction
 
 " Public Functions {{{1
-function! tablemode#align#sid() "{{{2
-  return maparg('<sid>', 'n')
-endfunction
-nnoremap <sid> <sid>
-
-function! tablemode#align#scope() "{{{2
-  return s:
-endfunction
-
 " function! tablemode#align#Split() - Split a string into fields and delimiters {{{2
 " Like split(), but include the delimiters as elements
 " All odd numbered elements are delimiters

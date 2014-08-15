@@ -1,8 +1,6 @@
 " vim: fdm=indent
 source t/config/options.vim
 
-call vspec#hint({'scope': 'tablemode#scope()', 'sid': 'tablemode#sid()'})
-
 describe 'tablemode'
   describe 'Activation'
     describe 'tablemode#Enable()'

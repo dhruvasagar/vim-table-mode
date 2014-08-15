@@ -1,8 +1,6 @@
 " vim: fdm=indent
 source t/config/options.vim
 
-call vspec#hint({'scope': 'tablemode#utils#scope()', 'sid': 'tablemode#utils#sid()'})
-
 describe 'utils'
   describe 'line'
     it 'should return the current line number'

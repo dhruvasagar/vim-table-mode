@@ -1,8 +1,6 @@
 " vim: fdm=indent
 source t/config/options.vim
 
-call vspec#hint({'scope': 'tablemode#spreadsheet#scope()', 'sid': 'tablemode#spreadsheet#sid()'})
-
 describe 'spreadsheet'
   describe 'API'
     before

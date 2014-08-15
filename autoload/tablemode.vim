@@ -1,31 +1,4 @@
-" ==============================  Header ======================================
-" File:          autoload/tablemode.vim
-" Description:   Table mode for vim for creating neat tables.
-" Author:        Dhruva Sagar <http://dhruvasagar.com/>
-" License:       MIT (http://www.opensource.org/licenses/MIT)
-" Website:       https://github.com/dhruvasagar/vim-table-mode
-" Note:          This plugin was heavily inspired by the 'CucumberTables.vim'
-"                (https://gist.github.com/tpope/287147) plugin by Tim Pope.
-"
-" Copyright Notice:
-"                Permission is hereby granted to use and distribute this code,
-"                with or without modifications, provided that this copyright
-"                notice is copied with it. Like anything else that's free,
-"                table-mode.vim is provided *as is* and comes with no warranty
-"                of any kind, either expressed or implied. In no event will
-"                the copyright holder be liable for any damamges resulting
-"                from the use of this software.
-" =============================================================================
-
 " Private Functions {{{1
-function! s:sub(str,pat,rep) abort "{{{2
-  return substitute(a:str,'\v\C'.a:pat,a:rep,'')
-endfunction
-
-function! s:gsub(str,pat,rep) abort "{{{2
-  return substitute(a:str,'\v\C'.a:pat,a:rep,'g')
-endfunction
-
 function! s:SetBufferOptDefault(opt, val) "{{{2
   if !exists('b:' . a:opt)
     let b:{a:opt} = a:val
@@ -154,15 +127,6 @@ function! s:Tableizeline(line, ...) "{{{2
 endfunction
 
 " Public API {{{1
-function! tablemode#sid() "{{{2
-  return maparg('<SID>', 'n')
-endfunction
-nnoremap <SID> <SID>
-
-function! tablemode#scope() "{{{2
-  return s:
-endfunction
-
 function! tablemode#IsActive() "{{{2
   if g:table_mode_always_active | return 1 | endif
 

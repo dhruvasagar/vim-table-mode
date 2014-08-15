@@ -1,8 +1,6 @@
 " vim: fdm=indent
 source t/config/options.vim
 
-call vspec#hint({'scope': 'tablemode#align#scope()', 'sid': 'tablemode#align#sid()'})
-
 function! ConvertLines2Dict(lines)
   let lines = []
   for idx in range(len(a:lines))

@@ -1,8 +1,6 @@
 " vim: fdm=indent
 source t/config/options.vim
 
-call vspec#hint({'scope': 'tablemode#spreadsheet#formula#scope()', 'sid': 'tablemode#spreadsheet#formula#sid()'})
-
 describe 'Formulas'
   describe 'Add Formula'
     before
