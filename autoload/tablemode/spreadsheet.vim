@@ -22,7 +22,7 @@ function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
   if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
 
-    while tablemode#table#IsRow(line - 1) || tablemode#table#IsBorder(line - 1)
+    while !tablemode#table#IsHeader(line - 1) && (tablemode#table#IsRow(line - 1) || tablemode#table#IsBorder(line - 1))
       let line -= 1
     endwhile
     if tablemode#table#IsBorder(line) | let line += 1 | endif
@@ -77,7 +77,7 @@ function! tablemode#spreadsheet#RowNr(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let rowNr = 0
-  while tablemode#table#IsRow(line) || tablemode#table#IsBorder(line)
+  while !tablemode#table#IsHeader(line) && (tablemode#table#IsRow(line) || tablemode#table#IsBorder(line))
     if tablemode#table#IsRow(line) | let rowNr += 1 | endif
     let line -= 1
   endwhile
@@ -89,13 +89,13 @@ function! tablemode#spreadsheet#RowCount(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let [tline, totalRowCount] = [line, 0]
-  while tablemode#table#IsRow(tline) || tablemode#table#IsBorder(tline)
+  while !tablemode#table#IsHeader(tline) && (tablemode#table#IsRow(tline) || tablemode#table#IsBorder(tline))
     if tablemode#table#IsRow(tline) | let totalRowCount += 1 | endif
     let tline -= 1
   endwhile
 
   let tline = line + 1
-  while tablemode#table#IsRow(tline) || tablemode#table#IsBorder(tline)
+  while !tablemode#table#IsHeader(tline) && (tablemode#table#IsRow(tline) || tablemode#table#IsBorder(tline))
     if tablemode#table#IsRow(tline) | let totalRowCount += 1 | endif
     let tline += 1
   endwhile
@@ -135,32 +135,6 @@ function! tablemode#spreadsheet#MoveToStartOfCell() "{{{2
     normal! 2l
   else
     execute 'normal! F' . g:table_mode_separator . '2l'
-  endif
-endfunction
-
-function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
-  if tablemode#table#IsRow(a:line)
-    let line = tablemode#utils#line(a:line)
-
-    while tablemode#table#IsRow(line - 1) || tablemode#table#IsBorder(line - 1)
-      let line -= 1
-    endwhile
-    if tablemode#table#IsBorder(line) | let line += 1 | endif
-
-    return line
-  endif
-endfunction
-
-function! tablemode#spreadsheet#GetLastRow(line) "{{{2
-  if tablemode#table#IsRow(a:line)
-    let line = tablemode#utils#line(a:line)
-
-    while tablemode#table#IsRow(line + 1) || tablemode#table#IsBorder(line + 1)
-      let line += 1
-    endwhile
-    if tablemode#table#IsBorder(line) | let line -= 1 | endif
-
-    return line
   endif
 endfunction
 
@@ -205,4 +179,3 @@ function! tablemode#spreadsheet#Average(range, ...) abort "{{{2
   call insert(args, a:range)
   return s:Average(call('tablemode#spreadsheet#cell#GetCellRange', args))
 endfunction
-

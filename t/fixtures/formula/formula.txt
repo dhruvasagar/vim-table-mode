@@ -4,4 +4,4 @@
 | Tomatoes |     5 |
 | Pasta    |   100 |
 | Total    |     0 |
-/* tmf: $5,2=Sum(1:-1) */
+/* tmf: $4,2=Sum(1:-1) */
