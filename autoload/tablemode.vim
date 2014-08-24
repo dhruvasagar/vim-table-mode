@@ -92,6 +92,7 @@ function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleSyntax()
   call s:ToggleMapping()
+  if b:table_mode_active | echo "table-mode enabled" | else | echo "table-mode disabled" | endif
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
