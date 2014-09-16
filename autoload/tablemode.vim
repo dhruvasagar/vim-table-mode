@@ -43,6 +43,7 @@ function! s:ToggleMapping() "{{{2
       call s:Map('<Plug>(table-mode-add-formula)', '<Leader>tfa', 'n')
       call s:Map('<Plug>(table-mode-eval-formula)', '<Leader>tfe', 'n')
       call s:Map('<Plug>(table-mode-echo-cell)', '<Leader>t?', 'n')
+      call s:Map('<Plug>(table-mode-sort)', '<Leader>ts', 'n')
     else
       call s:UnMap(separator_map, 'i')
       call s:UnMap('{<Bar>', 'n')
@@ -56,6 +57,7 @@ function! s:ToggleMapping() "{{{2
       call s:UnMap('<Leader>tfa', 'n')
       call s:UnMap('<Leader>tfe', 'n')
       call s:UnMap('<Leader>t?', 'n')
+      call s:UnMap('<Leader>ts', 'n')
     endif
   endif
 endfunction

@@ -57,6 +57,7 @@ endif
 " }}}2
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
+command! -nargs=? -bang TableSort call tablemode#spreadsheet#Sort(<bang>0, <q-args>)
 command! TableAddFormula call tablemode#spreadsheet#formula#Add()
 command! TableModeRealign call tablemode#table#Realign('.')
 command! TableEvalFormulaLine call tablemode#spreadsheet#formula#EvaluateFormulaLine()
@@ -88,6 +89,8 @@ nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#for
 nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#formula#EvaluateFormulaLine()<CR>
 
 nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
+
+nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort()<CR>
 
 if !hasmapto('<Plug>(table-mode-tableize)')
   nmap <Leader>tt <Plug>(table-mode-tableize)
