@@ -5,7 +5,7 @@ function! s:SetBufferOptDefault(opt, val) "{{{2
   endif
 endfunction
 
-function! s:Map(map, to, mode)
+function! s:Map(map, to, mode) "{{{2
   if !hasmapto(a:map, a:mode)
     for l:mode in split(a:mode, '.\zs')
       execute l:mode . 'map <buffer>' a:to a:map
@@ -13,7 +13,7 @@ function! s:Map(map, to, mode)
   endif
 endfunction
 
-function! s:UnMap(map, mode)
+function! s:UnMap(map, mode) "{{{2
   if !empty(maparg(a:map, a:mode))
     for mode in split(a:mode, '.\zs')
       execute l:mode . 'unmap <buffer>' a:map
