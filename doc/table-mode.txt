@@ -1,7 +1,7 @@
 *table-mode.txt*		Table Mode for easy table formatting. v4.5.0
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-				 VERSION 4.6.0
+				 VERSION 4.6.1
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -151,6 +151,23 @@ Overview:
                                         can be added to the table header
                                         border to control alignment of that
                                         column.
+        |table-mode-motion-up-map| ...... Set the table motion up mapping
+        |table-mode-motion-down-map| .... Set the table motion down mapping
+        |table-mode-motion-left-map| .... Set the table motion left mapping
+        |table-mode-motion-right-map| ... Set the table motion right mapping
+        |table-mode-cell-text-object-a-map|
+                                        Set the 'a' cell text object
+                                        mapping
+        |table-mode-cell-text-object-i-map|
+                                        Set the 'i' cell text object
+                                        mapping
+        |table-mode-realign-map| ........ Set the realign mapping
+        |table-mode-delete-row-map| ..... Set the delete row mapping
+        |table-mode-delete-column-map| .. Set the delete column mapping
+        |table-mode-add-formula-map| .... Set the add formula mapping
+        |table-mode-eval-formula-map| ... Set the eval formula mapping
+        |table-mode-echo-cell-map| ...... Set the echo cell mapping
+        |table-mode-sort-map| ........... Set the table sort mapping
 
 g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -213,9 +230,67 @@ g:table_mode_align_char                                  *table-mode-align-char*
         alignments for columns in the table header border. >
                 let g:table_mode_align_char = ':'
 <
-g:table_mode_disable_mappings                     table-mode-disable-mappings
-        Set this to true to disable all mappings.
+g:table_mode_disable_mappings                      *table-mode-disable-mappings*
+        Set this to true to disable all mappings. >
                 let g:table_mode_disable_mappings = 1
+<
+g:table_mode_motion_up_map                            *table-mode-motion-up-map*
+        Set this to configure the mapping to move up a cell vertically. >
+                let g:table_mode_motion_up_map = '{<Bar>'
+<
+g:table_mode_motion_down_map                        *table-mode-motion-down-map*
+        Set this to configure the mapping to move down a cell vertically. >
+                let g:table_mode_motion_down_map = '}<Bar>'
+>
+g:table_mode_motion_left_map                        *table-mode-motion-left-map*
+        Set this to configure the mapping to move to the left cell. >
+                let g:table_mode_motion_left_map = '[<Bar>'
+>
+g:table_mode_motion_right_map                      *table-mode-motion-right-map*
+        Set this to configure the mapping to move to the right cell. >
+                let g:table_mode_motion_right_map = ']<Bar>'
+>
+g:table_mode_cell_text_object_a_map          *table-mode-cell-text-object-a-map*
+        Set this to configure the mapping to define the text object for around
+        cell object. >
+                let g:table_mode_cell_text_object_a_map = 'a<Bar>'
+>
+g:table_mode_cell_text_object_i_map           *table-mode-cell-text-object-i-map*
+        Set this to configure the mapping to define the text object for inner
+        cell object. >
+                let g:table_mode_cell_text_object_i_map = 'i<Bar>'
+>
+g:table_mode_realign_map                                *table-mode-realign-map*
+        Set this to configure the mapping for table realign. >
+                let g:table_mode_realign_map = '<Leader>tr'
+>
+g:table_mode_delete_row_map                          *table-mode-delete-row-map*
+        Set this to configure the mapping for deleting a table row. >
+                let g:table_mode_delete_row_map = '<Leader>tdd'
+>
+g:table_mode_delete_column_map                    *table-mode-delete-column-map*
+        Set this to configure the mapping for deleting a table column. >
+                let g:table_mode_delete_column_map = '<Leader>tdc'
+>
+g:table_mode_add_formula_map                        *table-mode-add-formula-map*
+        Set this to configure the mapping for adding a formula for a table
+        cell. >
+                let g:table_mode_add_formula_map = '<Leader>tfa'
+>
+g:table_mode_eval_formula_map                      *table-mode-eval-formula-map*
+        Set this to configure the mapping for evaluating the formula line. >
+                let g:table_mode_eval_formula_map = '<Leader>tfe'
+>
+g:table_mode_echo_cell_map                            *table-mode-echo-cell-map*
+        Set this to configure the mapping for echoing the tablemode
+        representation of the current cell. >
+                let g:table_mode_echo_cell_map = '<Leader>t?'
+>
+g:table_mode_sort_map                                      *table-mode-sort-map*
+        Set this to configure the mapping for sorting the table mode by
+        current column. >
+                let g:table_mode_sort_map = '<Leader>ts'
+>
 
 ===============================================================================
 MAPPINGS						*table-mode-mappings*

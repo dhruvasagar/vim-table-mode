@@ -26,6 +26,22 @@ call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 call s:SetGlobalOptDefault('table_mode_align_char', ':')
 call s:SetGlobalOptDefault('table_mode_disable_mappings', 0)
 
+call s:SetGlobalOptDefault('table_mode_motion_up_map', '{<Bar>')
+call s:SetGlobalOptDefault('table_mode_motion_down_map', '}<Bar>')
+call s:SetGlobalOptDefault('table_mode_motion_left_map', '[<Bar>')
+call s:SetGlobalOptDefault('table_mode_motion_right_map', ']<Bar>')
+
+call s:SetGlobalOptDefault('table_mode_cell_text_object_a_map', 'a<Bar>')
+call s:SetGlobalOptDefault('table_mode_cell_text_object_i_map', 'i<Bar>')
+
+call s:SetGlobalOptDefault('table_mode_realign_map', '<Leader>tr')
+call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
+call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
+call s:SetGlobalOptDefault('table_mode_add_formula_map', '<Leader>tfa')
+call s:SetGlobalOptDefault('table_mode_eval_formula_map', '<Leader>tfe')
+call s:SetGlobalOptDefault('table_mode_echo_cell_map', '<Leader>t?')
+call s:SetGlobalOptDefault('table_mode_sort_map', '<Leader>ts')
+
 function! s:TableEchoCell() "{{{1
   if tablemode#table#IsRow('.')
     echomsg '$' . tablemode#spreadsheet#RowNr('.') . ',' . tablemode#spreadsheet#ColumnNr('.')
