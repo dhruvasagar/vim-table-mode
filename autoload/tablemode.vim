@@ -97,7 +97,17 @@ function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleSyntax()
   call s:ToggleMapping()
-  if b:table_mode_active | echo "table-mode enabled" | else | echo "table-mode disabled" | endif
+  if b:table_mode_active
+    augroup table_mode_enabled
+      au! User table-mode-enabled echo "table-mode enabled"
+    augroup END
+    doautocmd <nomodeline> User table-mode-enabled
+  else
+    augroup table_mode_disabled
+      au! User table-mode-disabled echo "table-mode disabled"
+    augroup END
+    doautocmd <nomodeline> User table-mode-disabled
+  endif
 endfunction
 
 function! s:ConvertDelimiterToSeparator(line, ...) "{{{2
