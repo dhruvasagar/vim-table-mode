@@ -117,6 +117,12 @@ if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
   xmap <Leader>T <Plug>(table-mode-tableize-delimiter)
 endif
 
+augroup TableMode "{{{1
+  au!
+
+  autocmd User TableModeEnabled echo 'Table Mode Enabled'
+  autocmd User TableModeDisabled echo 'Table Mode Disabled'
+augroup END
 " Avoiding side effects {{{1
 let &cpo = s:save_cpo
 
