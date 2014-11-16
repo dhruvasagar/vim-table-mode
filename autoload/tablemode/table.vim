@@ -1,13 +1,13 @@
 " Private Functions {{{1
-function! s:HeaderBorderExpr() "{{{2
+function! s:BorderExpr() "{{{2
   return tablemode#table#StartExpr() .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
-        \ '[' . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_align_char . ']*' .
+        \ '[' . escape(g:table_mode_fillchar . g:table_mode_header_fillchar . g:table_mode_corner . g:table_mode_align_char, '-') . ']\+' .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
         \ tablemode#table#EndExpr()
 endfunction
 
-function! s:DefaultHeaderBorder() "{{{2
+function! s:DefaultBorder() "{{{2
   if tablemode#IsActive()
     return g:table_mode_corner_corner . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_corner_corner
   else
@@ -25,11 +25,15 @@ function! s:GenerateHeaderBorder(line) "{{{2
     if tablemode#table#IsRow(line - 1) && tablemode#utils#strlen(line_val) < tablemode#utils#strlen(getline(line - 1))
       let line_val = getline(line - 1)
     endif
-    if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultHeaderBorder() | endif
+    if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultBorder() | endif
 
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     " To accurately deal with unicode double width characters
-    let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
+    if tablemode#table#IsHeader(line - 1) || tablemode#spreadsheet#RowNr(line - 1) == 1
+      let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_header_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
+    else
+      let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
+    endif
     let border = g:table_mode_corner . join(fill_columns, g:table_mode_corner) . g:table_mode_corner
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
 
@@ -63,7 +67,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
       return border
     endif
   else
-    return s:DefaultHeaderBorder()
+    return s:DefaultBorder()
   endif
 endfunction
 
@@ -128,11 +132,12 @@ function! tablemode#table#EndExpr() "{{{2
 endfunction
 
 function! tablemode#table#IsBorder(line) "{{{2
-  return getline(a:line) =~# s:HeaderBorderExpr()
+  return !empty(getline(a:line)) && getline(a:line) =~# s:BorderExpr()
 endfunction
 
 function! tablemode#table#IsHeader(line) "{{{2
   let line = tablemode#utils#line(a:line)
+  if line <= 0 || line > line('$') | return 0 | endif
   return tablemode#table#IsBorder(line+1) && !tablemode#table#IsRow(line-1) && !tablemode#table#IsRow(line-2)
 endfunction
 
