@@ -29,7 +29,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
 
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     " To accurately deal with unicode double width characters
-    if tablemode#table#IsHeader(line - 1) || tablemode#spreadsheet#RowNr(line - 1) == 1
+    if tablemode#table#IsHeader(line - 1)
       let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_header_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
     else
       let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
@@ -137,8 +137,12 @@ endfunction
 
 function! tablemode#table#IsHeader(line) "{{{2
   let line = tablemode#utils#line(a:line)
-  if line <= 0 || line > line('$') | return 0 | endif
-  return tablemode#table#IsBorder(line+1) && !tablemode#table#IsRow(line-1) && !tablemode#table#IsRow(line-2)
+  " if line <= 0 || line > line('$') | return 0 | endif
+  return tablemode#table#IsRow(line)
+        \ && !tablemode#table#IsRow(line-1)
+        \ && !tablemode#table#IsRow(line-2)
+        \ && !tablemode#table#IsBorder(line-2)
+        \ && tablemode#table#IsBorder(line+1)
 endfunction
 
 function! tablemode#table#IsRow(line) "{{{2
