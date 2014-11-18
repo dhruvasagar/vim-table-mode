@@ -1,5 +1,21 @@
 # Change Log
 
+## Version 4.6.2
+* Added custom User autocmd event for tablemode activation (enabled /
+  disabled)
+* Adding better header support for pandoc, headers can now have a different
+  fillchar configured with `g:table_mode_header_fillchar`
+
+## Version 4.6.1
+* Minor bug fixes
+
+## Version 4.6.0
+* Added better table header support. The first line of the table if separated
+  by a table border will be considered as the header. This also means that it
+  will not be considered / included when evaluating table formulas and that
+  the first line after the header would be considered the first line of the
+  table.
+
 ## Version 4.5.0
 * Refactored toggled mappings
 * Table Syntax now gets toggled with Table Mode
