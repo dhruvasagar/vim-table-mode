@@ -16,6 +16,7 @@ endfunction
 
 " Set Global Defaults {{{1
 call s:SetGlobalOptDefault('table_mode_corner', '+')
+call s:SetGlobalOptDefault('table_mode_verbose', 0)
 call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_header_fillchar', '-')
@@ -121,8 +122,8 @@ endif
 augroup TableMode "{{{1
   au!
 
-  autocmd User TableModeEnabled echo 'Table Mode Enabled'
-  autocmd User TableModeDisabled echo 'Table Mode Disabled'
+  autocmd User TableModeEnabled call tablemode#logger#log('Table Mode Enabled')
+  autocmd User TableModeDisabled call tablemode#logger#log('Table Mode Disabled')
 augroup END
 " Avoiding side effects {{{1
 let &cpo = s:save_cpo
