@@ -6,7 +6,7 @@ function! s:SetBufferOptDefault(opt, val) "{{{2
 endfunction
 
 function! s:Map(map, to, mode) "{{{2
-  if !hasmapto(a:map, a:mode)
+  if !empty(map) && !hasmapto(a:map, a:mode)
     for l:mode in split(a:mode, '.\zs')
       execute l:mode . 'map <buffer>' a:to a:map
     endfor
