@@ -146,7 +146,7 @@ endfunction
 
 function! tablemode#TableizeInsertMode() "{{{2
   if tablemode#IsActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator)
-    call tablemode#table#AddBorder('.')
+    call tablemode#table#AddBorder('.',0)
     normal! A
   elseif tablemode#IsActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
     let column = tablemode#utils#strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))

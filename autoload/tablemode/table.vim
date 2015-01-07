@@ -15,7 +15,7 @@ function! s:DefaultBorder() "{{{2
   endif
 endfunction
 
-function! s:GenerateHeaderBorder(line) "{{{2
+function! s:GenerateHeaderBorder(line, isHeader) "{{{2
   let line = tablemode#utils#line(a:line)
   if tablemode#table#IsRow(line - 1) || tablemode#table#IsRow(line + 1)
     let line_val = ''
@@ -29,7 +29,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
 
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     " To accurately deal with unicode double width characters
-    if tablemode#table#IsHeader(line - 1)
+    if a:isHeader
       let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_header_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
     else
       let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
@@ -149,8 +149,8 @@ function! tablemode#table#IsRow(line) "{{{2
   return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
 endfunction
 
-function! tablemode#table#AddBorder(line) "{{{2
-  call setline(a:line, s:GenerateHeaderBorder(a:line))
+function! tablemode#table#AddBorder(line,isHeader) "{{{2
+  call setline(a:line, s:GenerateHeaderBorder(a:line,a:isHeader))
 endfunction
 
 function! tablemode#table#Realign(line) "{{{2
@@ -186,6 +186,9 @@ function! tablemode#table#Realign(line) "{{{2
   endfor
 
   for bline in blines
-    call tablemode#table#AddBorder(bline)
+    call tablemode#table#AddBorder(bline,0)
   endfor
+  if exists("blines[1]")
+    call tablemode#table#AddBorder(blines[1],1)
+  endif
 endfunction
