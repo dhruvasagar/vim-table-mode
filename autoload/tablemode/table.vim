@@ -153,7 +153,7 @@ function! tablemode#table#IsRow(line) "{{{2
 endfunction
 
 function! tablemode#table#AddBorder(line,...) "{{{2
-  "If 1 or more ooptional args, first optional arg is isHeader
+  "If 1 or more optional args, first optional arg is isHeader
   let l:isHeader = a:0 >= 1 ? a:1 : 0
   call setline(a:line, s:GenerateHeaderBorder(a:line,l:isHeader))
 endfunction
