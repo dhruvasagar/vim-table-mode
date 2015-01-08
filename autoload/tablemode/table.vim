@@ -15,8 +15,10 @@ function! s:DefaultBorder() "{{{2
   endif
 endfunction
 
-function! s:GenerateHeaderBorder(line) "{{{2
+function! s:GenerateHeaderBorder(line,...) "{{{2
   let line = tablemode#utils#line(a:line)
+  "If 1 or more optional args, first optional arg is isHeader
+  let l:isHeader = a:0 >= 1 ? a:1 : 0
   if tablemode#table#IsRow(line - 1) || tablemode#table#IsRow(line + 1)
     let line_val = ''
     if tablemode#table#IsRow(line + 1)
@@ -29,7 +31,7 @@ function! s:GenerateHeaderBorder(line) "{{{2
 
     let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
     " To accurately deal with unicode double width characters
-    if tablemode#table#IsHeader(line - 1)
+    if l:isHeader
       let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_header_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
     else
       let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
@@ -136,6 +138,7 @@ function! tablemode#table#IsBorder(line) "{{{2
 endfunction
 
 function! tablemode#table#IsHeader(line) "{{{2
+  " probably this function is obsolete after enabling multiline headers
   let line = tablemode#utils#line(a:line)
   " if line <= 0 || line > line('$') | return 0 | endif
   return tablemode#table#IsRow(line)
@@ -149,8 +152,10 @@ function! tablemode#table#IsRow(line) "{{{2
   return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
 endfunction
 
-function! tablemode#table#AddBorder(line) "{{{2
-  call setline(a:line, s:GenerateHeaderBorder(a:line))
+function! tablemode#table#AddBorder(line,...) "{{{2
+  "If 1 or more ooptional args, first optional arg is isHeader
+  let l:isHeader = a:0 >= 1 ? a:1 : 0
+  call setline(a:line, s:GenerateHeaderBorder(a:line,l:isHeader))
 endfunction
 
 function! tablemode#table#Realign(line) "{{{2
@@ -188,4 +193,13 @@ function! tablemode#table#Realign(line) "{{{2
   for bline in blines
     call tablemode#table#AddBorder(bline)
   endfor
+  
+  if len(blines) >= 1
+    let l:isHeader = 1
+    if blines[0] > lines[0].lnum && blines[0] < lines[-1].lnum
+      call tablemode#table#AddBorder(blines[0],l:isHeader)
+    elseif len(blines) > 1
+      call tablemode#table#AddBorder(blines[1],l:isHeader)
+    endif
+  endif
 endfunction
