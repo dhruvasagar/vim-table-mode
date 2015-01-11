@@ -25,7 +25,7 @@ There are several ways to do this
 $ cd ~/.vim
 $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-mode
    ```
-3. Copy autoload/todomode.vim, plugin/todo-mode.vim, doc/todo-mode.txt to
+3. Copy autoload/tablemode.vim, plugin/table-mode.vim, doc/table-mode.txt to
    respective ~/.vim/autoload/, ~/.vim/plugin and ~/.vim/doc under UNIX or 
    vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
    restart VIM
