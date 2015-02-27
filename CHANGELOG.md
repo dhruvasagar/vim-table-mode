@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 4.6.3
+* Fixed tablemode#spreadsheet#LineNr()
+* Fixed tablemode#spreadsheet#cell#SetCell()
+
 ## Version 4.6.2
 * Added custom User autocmd event for tablemode activation (enabled /
   disabled)
