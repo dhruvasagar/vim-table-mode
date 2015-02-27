@@ -56,15 +56,15 @@ function! tablemode#spreadsheet#MoveToLastRow() "{{{2
   endif
 endfunction
 
-function! tablemode#spreadsheet#LineNr(row) "{{{2
-  if tablemode#table#IsRow('.')
-    let line = tablemode#spreadsheet#GetFirstRow('.')
+function! tablemode#spreadsheet#LineNr(line, row) "{{{2
+  if tablemode#table#IsRow(a:line)
+    let line = tablemode#spreadsheet#GetFirstRow(a:line)
     let row_nr = 0
 
     while tablemode#table#IsRow(line + 1) || tablemode#table#IsBorder(line + 1)
       if tablemode#table#IsRow(line)
         let row_nr += 1
-        if row ==# row_nr | break | endif
+        if a:row ==# row_nr | break | endif
       endif
       let line += 1
     endwhile

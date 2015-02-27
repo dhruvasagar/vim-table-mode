@@ -173,7 +173,7 @@ function! tablemode#spreadsheet#cell#SetCell(val, ...) "{{{2
   if colm < 0 | let colm = tablemode#spreadsheet#ColumnCount(line) + colm + 1 | endif
 
   if tablemode#table#IsRow(line)
-    let line = tablemode#utils#line(line) + (row - tablemode#spreadsheet#RowNr(line)) * 1
+    let line = tablemode#spreadsheet#LineNr(line, row)
     let line_val = getline(line)
     let cstartexpr = tablemode#table#StartCommentExpr()
     let values = split(getline(line)[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator)
