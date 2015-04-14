@@ -13,7 +13,7 @@ function! s:Padding(string, length, where) "{{{3
   elseif a:where =~# 'r'
     return repeat(" ", gap_length) . a:string
   elseif a:where =~# 'c'
-    let right = spaces / 2
+    let right = gap_length / 2
     let left = right + (right * 2 != gap_length)
     return repeat(" ", left) . a:string . repeat(" ", right)
   endif
@@ -64,14 +64,19 @@ function! tablemode#align#Split(string, delim)
 endfunction
 
 function! tablemode#align#alignments(lnum, ncols) "{{{2
+  let achr = g:table_mode_align_char
   let alignments = []
   if tablemode#table#IsBorder(a:lnum+1)
     let hcols = tablemode#align#Split(getline(a:lnum+1), '[' . g:table_mode_corner . g:table_mode_corner_corner . ']')
     for idx in range(len(hcols))
       " Right align if header
       call add(alignments, 'l')
-      if hcols[idx] =~# g:table_mode_align_char . '$' | let alignments[idx] = 'r' | endif
-      if hcols[idx] !~# '[^0-9\.]' | let alignments[idx] = 'r' | endif
+      if hcols[idx] =~# achr . '[^'.achr.']\+' . achr
+        let alignments[idx] = 'c'
+      elseif hcols[idx] =~# achr . '$'
+        let alignments[idx] = 'r'
+      endif
+      " if hcols[idx] !~# '[^0-9\.]' | let alignments[idx] = 'r' | endif
     endfor
   end
   return alignments

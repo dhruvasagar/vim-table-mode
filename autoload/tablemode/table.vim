@@ -45,7 +45,10 @@ function! s:GenerateHeaderBorder(line) "{{{2
 
       for idx in range(len(hcols))
         if hcols[idx] =~# g:table_mode_align_char
-          if hcols[idx] =~# g:table_mode_align_char . '$'
+          " center align
+          if hcols[idx] =~# g:table_mode_align_char . '[^'.g:table_mode_align_char.']\+' . g:table_mode_align_char
+            let gcols[idx] = g:table_mode_align_char . gcols[idx][1:-2] . g:table_mode_align_char
+          elseif hcols[idx] =~# g:table_mode_align_char . '$'
             let gcols[idx] = gcols[idx][:-2] . g:table_mode_align_char
           else
             let gcols[idx] = g:table_mode_align_char . gcols[idx][1:]

@@ -1,4 +1,4 @@
-| Title | Message |
-|------:+--------:|
-| t1    | msg1    |
-| t2    | msg2    |
+|S. No|Title|Message|
+|-----+:----+:-----:|
+|1|t1|msg1|
+|2|t2|msg2|
