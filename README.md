@@ -1,4 +1,4 @@
-# VIM Table Mode v4.6.3 [![Build Status](https://travis-ci.org/dhruvasagar/vim-table-mode.png?branch=master)](https://travis-ci.org/dhruvasagar/vim-table-mode)
+# VIM Table Mode v4.6.4 [![Build Status](https://travis-ci.org/dhruvasagar/vim-table-mode.png?branch=master)](https://travis-ci.org/dhruvasagar/vim-table-mode)
 
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
@@ -49,7 +49,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    enabled explicitly. Please read `:h table-mode` for further information.
 
    You can also define in a table header border how it's content should be
-   aligned, whether right or left by using a `:` character defined by
+   aligned, whether center, right or left by using a `:` character defined by
    `g:table_mode_align_char` option.
 
 - **Format existing content into a table** :
