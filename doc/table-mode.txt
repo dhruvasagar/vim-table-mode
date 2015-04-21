@@ -86,7 +86,7 @@ Table Formulas:
 		input formula will be appended to the formula line if one
 		exists or a new one will be created with the input formula
 		taking the current cell as the target cell. The formula line
-		is evaluated immidiately to reflect the results.
+		is evaluated immediately to reflect the results.
 
 		You can directly also add / manipulate formula expressions in
 		the formula line. The formula line is a commented line right
