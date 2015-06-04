@@ -219,8 +219,8 @@ To get ReST-compatible tables use
 
 ## Demo
 
-<a href="https://www.youtube.com/watch?v=qA-ZT2r5-t0"><img
-src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
+<a href="http://www.youtube.com/watch?v=9lVQ0VJY3ps"><img
+src="https://raw.github.com/axil/vim-table-mode/master/youtube.png"/></a>
 
 ## Change Log
 See <a
