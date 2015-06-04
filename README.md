@@ -32,21 +32,72 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
 ### Usage
 
-- **On the fly table creation** :
+- **Create table on-the-fly** :
 
-   By default the table column separator is <kbd>|</kbd> defined by the
-   `g:table_mode_separator` option. As soon as you type it on a new line (ignores
-   indentation) the script gets to work on creating a table around it. As you
-   type and define more columns, the table is completed, formatted and aligned
-   automatically on the fly.
+To start using the plugin in the on-the-fly mode use `:TableModeToggle` mapped to <kbd>\<Leader\>tm</kbd> by default (which means <kbd>\\</kbd> <kbd>t</kbd> <kbd>m</kbd> if you didn't override the <Leader> by `:let mapleader = ","` to have <kbd>,</kbd> <kbd>t</kbd> <kbd>m</kbd>).
 
-   Since this could lead to unwanted behavior I have disabled table mode by
-   default. You have to use `:TableModeToggle` command or the table mode
-   toggle mapping, which is <kbd>\<Leader\>tm</kbd> defined by `g:table_mode_toggle_map`
-   option to toggle the table mode or you can directly use `:TableModeEnable`
-   and `:TableModeDisable` to enable or disable the table mode. This is on a
-   per buffer basis and so it does not cause any unusual behavior unless it is
-   enabled explicitly. Please read `:h table-mode` for further information.
+Enter the first line, delimiting columns by the `|` symbol. The plugin reacts by inserting spaces between the text and the separator if you omit them:
+
+    | name | address | phone |
+
+In the second line (without leaving Insert mode), enter `|` twice. The plugin will write a properly formatted horizontal line:
+
+    | name | address | phone |
+    |------+---------+-------|
+
+When you enter the subsequent lines, the plugin will automatically adjust the formatting to match the text you’re entering every time you press `|`:
+
+    | name       | address | phone |
+    |------------+---------+-------|
+    | John Adams |
+
+Go on until the table is ready:
+
+    | name            | address                  | phone      |
+    |-----------------+--------------------------+------------|
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    |-----------------+--------------------------+------------|
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    |-----------------+--------------------------+------------|
+
+Then you can return to the first line and above it enter `||`:
+
+    |-----------------+--------------------------+------------|
+    | name            | address                  | phone      |
+    |-----------------+--------------------------+------------|
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    |-----------------+--------------------------+------------|
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    |-----------------+--------------------------+------------|
+
+Corner separators are adjustable:
+
+For Markdown-compatible tables use
+
+    let g:table_mode_corner="|"
+
+
+    |-----------------|--------------------------|------------|
+    | name            | address                  | phone      |
+    |-----------------|--------------------------|------------|
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    |-----------------|--------------------------|------------|
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    |-----------------|--------------------------|------------|
+
+To get ReST-compatible tables use
+
+    let g:table_mode_corner_corner="+"
+
+
+    +-----------------+--------------------------+------------+
+    | name            | address                  | phone      |
+    +-----------------+--------------------------+------------+
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    +-----------------+--------------------------+------------+
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    +-----------------+--------------------------+------------+
+
 
    You can also define in a table header border how it's content should be
    aligned, whether center, right or left by using a `:` character defined by
