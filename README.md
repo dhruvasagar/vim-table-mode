@@ -3,12 +3,8 @@
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
-## Change Log
-See <a
-href="https://github.com/dhruvasagar/vim-table-mode/blob/master/CHANGELOG.md">
-CHANGELOG.md </a>
+## Getting Started 
 
-## Getting Started
 ### Installation
 
 There are several ways to do this
@@ -30,9 +26,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
    restart VIM
 
-### Usage
-
-- **Create table on-the-fly** :
+### Creating table on-the-fly
 
 To start using the plugin in the on-the-fly mode use `:TableModeToggle` mapped to <kbd>\<Leader\>tm</kbd> by default (which means <kbd>\\</kbd> <kbd>t</kbd> <kbd>m</kbd> if you didn't override the <Leader> by `:let mapleader = ","` to have <kbd>,</kbd> <kbd>t</kbd> <kbd>m</kbd>).
 
@@ -103,7 +97,7 @@ To get ReST-compatible tables use
    aligned, whether center, right or left by using a `:` character defined by
    `g:table_mode_align_char` option.
 
-- **Format existing content into a table** :
+### Formatting existing content into a table
 
    Table Mode wouldn't justify it's name if it didn't allow formatting
    existing content into a table. And it does as promised. Like table creation
@@ -125,7 +119,7 @@ To get ReST-compatible tables use
    You can use the mapping <kbd>\<Leader\>T</kbd> with a `[count]` to apply it to the
    next `[count]` lines in standard vim style.
 
-- **Move between cells** :
+### Moving around 
 
    Now you can move between cells using table mode motions <kbd>[|</kbd>,
    <kbd>]|</kbd>, <kbd>{|</kbd> & <kbd>}|</kbd> to move left | right | up |
@@ -133,7 +127,7 @@ To get ReST-compatible tables use
    and move to the next | previous row after the last | first cell in the
    current row if one exists. 
 
-- **Manipulating Table** :
+### Manipulating Table
 
   - **Cell Text Object** :
 
@@ -156,7 +150,9 @@ To get ReST-compatible tables use
       (provided you are within a table row), this can also be preceeded with a
       [count] to delete multiple columns.
 
-- **Table Formulas** :
+## Advanced Usage: Spreadsheet Capabilities
+
+### Table Formulas
 
   Table Mode now has support for formulas like a spreadsheet. There are 2 ways
   of defining formulas :
@@ -180,7 +176,7 @@ To get ReST-compatible tables use
 
   NOTE: You can now use the mapping <kbd>\<Leader\>t?</kbd>
 
-- **Formula Expressions** :
+### Formula Expressions
 
   Expressions are of the format `$target = formula`.
 
@@ -221,10 +217,15 @@ To get ReST-compatible tables use
       - `$5,3 = Sum(1,2:5,2)/$5,1`
       - `$5,3 = Average(1,2:5,2)/$5,1`
 
-### Demo
+## Demo
 
 <a href="https://www.youtube.com/watch?v=qA-ZT2r5-t0"><img
 src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
+
+## Change Log
+See <a
+href="https://github.com/dhruvasagar/vim-table-mode/blob/master/CHANGELOG.md">
+CHANGELOG.md </a>
 
 ## Contributing
 
