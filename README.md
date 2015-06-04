@@ -172,7 +172,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
 ### Demo
 
-<a href="http://www.youtube.com/watch?v=sK2IH1hiDkw"><img
+<a href="https://www.youtube.com/watch?v=qA-ZT2r5-t0"><img
 src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
 
 ## Contributing
