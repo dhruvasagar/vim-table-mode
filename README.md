@@ -3,12 +3,8 @@
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
 
-## Change Log
-See <a
-href="https://github.com/dhruvasagar/vim-table-mode/blob/master/CHANGELOG.md">
-CHANGELOG.md </a>
+## Getting Started 
 
-## Getting Started
 ### Installation
 
 There are several ways to do this
@@ -30,29 +26,79 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
    restart VIM
 
-### Usage
+### Creating table on-the-fly
 
-- **On the fly table creation** :
+To start using the plugin in the on-the-fly mode use `:TableModeToggle` mapped to <kbd>\<Leader\>tm</kbd> by default (which means <kbd>\\</kbd> <kbd>t</kbd> <kbd>m</kbd> if you didn't override the <Leader> by `:let mapleader = ","` to have <kbd>,</kbd> <kbd>t</kbd> <kbd>m</kbd>).
 
-   By default the table column separator is <kbd>|</kbd> defined by the
-   `g:table_mode_separator` option. As soon as you type it on a new line (ignores
-   indentation) the script gets to work on creating a table around it. As you
-   type and define more columns, the table is completed, formatted and aligned
-   automatically on the fly.
+Enter the first line, delimiting columns by the `|` symbol. The plugin reacts by inserting spaces between the text and the separator if you omit them:
 
-   Since this could lead to unwanted behavior I have disabled table mode by
-   default. You have to use `:TableModeToggle` command or the table mode
-   toggle mapping, which is <kbd>\<Leader\>tm</kbd> defined by `g:table_mode_toggle_map`
-   option to toggle the table mode or you can directly use `:TableModeEnable`
-   and `:TableModeDisable` to enable or disable the table mode. This is on a
-   per buffer basis and so it does not cause any unusual behavior unless it is
-   enabled explicitly. Please read `:h table-mode` for further information.
+    | name | address | phone |
+
+In the second line (without leaving Insert mode), enter `|` twice. The plugin will write a properly formatted horizontal line:
+
+    | name | address | phone |
+    |------+---------+-------|
+
+When you enter the subsequent lines, the plugin will automatically adjust the formatting to match the text you’re entering every time you press `|`:
+
+    | name       | address | phone |
+    |------------+---------+-------|
+    | John Adams |
+
+Go on until the table is ready:
+
+    | name            | address                  | phone      |
+    |-----------------+--------------------------+------------|
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    |-----------------+--------------------------+------------|
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    |-----------------+--------------------------+------------|
+
+Then you can return to the first line and above it enter `||`:
+
+    |-----------------+--------------------------+------------|
+    | name            | address                  | phone      |
+    |-----------------+--------------------------+------------|
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    |-----------------+--------------------------+------------|
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    |-----------------+--------------------------+------------|
+
+Corner separators are adjustable:
+
+For Markdown-compatible tables use
+
+    let g:table_mode_corner="|"
+
+
+    |-----------------|--------------------------|------------|
+    | name            | address                  | phone      |
+    |-----------------|--------------------------|------------|
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    |-----------------|--------------------------|------------|
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    |-----------------|--------------------------|------------|
+
+To get ReST-compatible tables use
+
+    let g:table_mode_corner_corner="+"
+    let g:table_mode_header_fillchar="="
+
+
+    +-----------------+--------------------------+------------+
+    | name            | address                  | phone      |
+    +=================+==========================+============+
+    | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
+    +-----------------+--------------------------+------------+
+    | Sherlock Holmes | 221B Baker Street        | 0987654321 |
+    +-----------------+--------------------------+------------+
+
 
    You can also define in a table header border how it's content should be
    aligned, whether center, right or left by using a `:` character defined by
    `g:table_mode_align_char` option.
 
-- **Format existing content into a table** :
+### Formatting existing content into a table
 
    Table Mode wouldn't justify it's name if it didn't allow formatting
    existing content into a table. And it does as promised. Like table creation
@@ -74,7 +120,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    You can use the mapping <kbd>\<Leader\>T</kbd> with a `[count]` to apply it to the
    next `[count]` lines in standard vim style.
 
-- **Move between cells** :
+### Moving around 
 
    Now you can move between cells using table mode motions <kbd>[|</kbd>,
    <kbd>]|</kbd>, <kbd>{|</kbd> & <kbd>}|</kbd> to move left | right | up |
@@ -82,7 +128,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    and move to the next | previous row after the last | first cell in the
    current row if one exists. 
 
-- **Manipulating Table** :
+### Manipulating Table
 
   - **Cell Text Object** :
 
@@ -105,7 +151,9 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
       (provided you are within a table row), this can also be preceeded with a
       [count] to delete multiple columns.
 
-- **Table Formulas** :
+## Advanced Usage: Spreadsheet Capabilities
+
+### Table Formulas
 
   Table Mode now has support for formulas like a spreadsheet. There are 2 ways
   of defining formulas :
@@ -129,7 +177,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
   NOTE: You can now use the mapping <kbd>\<Leader\>t?</kbd>
 
-- **Formula Expressions** :
+### Formula Expressions
 
   Expressions are of the format `$target = formula`.
 
@@ -170,10 +218,15 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
       - `$5,3 = Sum(1,2:5,2)/$5,1`
       - `$5,3 = Average(1,2:5,2)/$5,1`
 
-### Demo
+## Demo
 
-<a href="https://www.youtube.com/watch?v=qA-ZT2r5-t0"><img
-src="https://raw.github.com/dhruvasagar/vim-table-mode/master/youtube.png"/></a>
+<a href="http://www.youtube.com/watch?v=9lVQ0VJY3ps"><img
+src="https://raw.github.com/axil/vim-table-mode/master/youtube.png"/></a>
+
+## Change Log
+See <a
+href="https://github.com/dhruvasagar/vim-table-mode/blob/master/CHANGELOG.md">
+CHANGELOG.md </a>
 
 ## Contributing
 
