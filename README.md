@@ -82,11 +82,12 @@ For Markdown-compatible tables use
 To get ReST-compatible tables use
 
     let g:table_mode_corner_corner="+"
+    let g:table_mode_header_fillchar="="
 
 
     +-----------------+--------------------------+------------+
     | name            | address                  | phone      |
-    +-----------------+--------------------------+------------+
+    +=================+==========================+============+
     | John Adams      | 1600 Pennsylvania Avenue | 0123456789 |
     +-----------------+--------------------------+------------+
     | Sherlock Holmes | 221B Baker Street        | 0987654321 |
