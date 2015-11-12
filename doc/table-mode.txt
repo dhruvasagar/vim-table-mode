@@ -349,6 +349,10 @@ MAPPINGS						*table-mode-mappings*
 		would evaluate the formula line and update the table
 		accordingly. This invokes the |TableEvalFormulaLine| command.
 
+
+                                               *table-mode-mappings-sort-column*
+<Leader>ts      Sort a column under the cursor. This invokes *TableSort*
+
 ||              Expands to a header border. You can change this by changing
                 |table-mode-separator| option. You can change the character to
                 be used for te extreme corners of the border by changing
@@ -415,6 +419,14 @@ COMMANDS						*table-mode-commands*
 :TableEvalFormulaLine
 	This command when invoked from anywhere within the table or directly
 	on the formula line evaluates it and updates the table accordingly.
+
+                                                                  *:TableSort*
+                                                       *table-mode-:TableSort*
+:TableSort[!] [i][u][r][n][x][o]
+        This command sorts column under the cursor and inherits the same flags
+        as the *:sort* command.
+
+        With [!] the order is reversed.
 
 ===============================================================================
 CONTRIBUTING						*table-mode-contributing*
