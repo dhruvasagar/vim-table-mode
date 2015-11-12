@@ -108,7 +108,7 @@ nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#fo
 
 nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 
-nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort()<CR>
+nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort('')<CR>
 
 if !hasmapto('<Plug>(table-mode-tableize)')
   exec "nmap " . g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
