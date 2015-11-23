@@ -41,7 +41,7 @@ function! tablemode#spreadsheet#GetLastRow(line) "{{{2
   if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
 
-    while tablemode#table#IsRow(line + 1) || tablemode#table#IsBorder(line + 1)
+    while tablemode#table#IsTable(line + 1)
       let line += 1
     endwhile
     if tablemode#table#IsBorder(line) | let line -= 1 | endif
@@ -61,7 +61,7 @@ function! tablemode#spreadsheet#LineNr(line, row) "{{{2
     let line = tablemode#spreadsheet#GetFirstRow(a:line)
     let row_nr = 0
 
-    while tablemode#table#IsRow(line + 1) || tablemode#table#IsBorder(line + 1)
+    while tablemode#table#IsTable(line + 1)
       if tablemode#table#IsRow(line)
         let row_nr += 1
         if a:row ==# row_nr | break | endif
@@ -77,7 +77,7 @@ function! tablemode#spreadsheet#RowNr(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let rowNr = 0
-  while !tablemode#table#IsHeader(line) && (tablemode#table#IsRow(line) || tablemode#table#IsBorder(line))
+  while !tablemode#table#IsHeader(line) && tablemode#table#IsTable(line)
     if tablemode#table#IsRow(line) | let rowNr += 1 | endif
     let line -= 1
   endwhile
@@ -89,13 +89,13 @@ function! tablemode#spreadsheet#RowCount(line) "{{{2
   let line = tablemode#utils#line(a:line)
 
   let [tline, totalRowCount] = [line, 0]
-  while !tablemode#table#IsHeader(tline) && (tablemode#table#IsRow(tline) || tablemode#table#IsBorder(tline))
+  while !tablemode#table#IsHeader(tline) && tablemode#table#IsTable(tline)
     if tablemode#table#IsRow(tline) | let totalRowCount += 1 | endif
     let tline -= 1
   endwhile
 
   let tline = line + 1
-  while !tablemode#table#IsHeader(tline) && (tablemode#table#IsRow(tline) || tablemode#table#IsBorder(tline))
+  while !tablemode#table#IsHeader(tline) && tablemode#table#IsTable(tline)
     if tablemode#table#IsRow(tline) | let totalRowCount += 1 | endif
     let tline += 1
   endwhile

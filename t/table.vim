@@ -40,6 +40,29 @@ describe 'table'
     end
   end
 
+  describe 'IsTable'
+    before
+      new normal! ggdG
+      read t/fixtures/table/sample_with_header.txt
+    end
+
+    it 'should be true on a table row'
+      Expect tablemode#table#IsTable(2) to_be_true
+      Expect tablemode#table#IsTable(4) to_be_true
+      Expect tablemode#table#IsTable(5) to_be_true
+    end
+
+    it 'should be true when on a table border'
+      Expect tablemode#table#IsTable(1) to_be_true
+      Expect tablemode#table#IsTable(3) to_be_true
+      Expect tablemode#table#IsTable(6) to_be_true
+    end
+
+    it 'should not be true when not on a table'
+      Expect tablemode#table#IsTable(7) to_be_false
+    end
+  end
+
   describe 'IsHeader'
     before
       new

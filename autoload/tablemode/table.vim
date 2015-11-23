@@ -149,7 +149,11 @@ function! tablemode#table#IsHeader(line) "{{{2
 endfunction
 
 function! tablemode#table#IsRow(line) "{{{2
-  return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator)
+  return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator) . '[^' . g:table_mode_separator . ']\+'
+endfunction
+
+function! tablemode#table#IsTable(line) "{{{2
+  return tablemode#table#IsRow(a:line) || tablemode#table#IsBorder(a:line)
 endfunction
 
 function! tablemode#table#AddBorder(line) "{{{2
@@ -161,7 +165,7 @@ function! tablemode#table#Realign(line) "{{{2
 
   let lines = []
   let [lnum, blines] = [line, []]
-  while tablemode#table#IsRow(lnum) || tablemode#table#IsBorder(lnum)
+  while tablemode#table#IsTable(lnum)
     if tablemode#table#IsBorder(lnum)
       call insert(blines, lnum)
       let lnum -= 1
@@ -172,7 +176,7 @@ function! tablemode#table#Realign(line) "{{{2
   endwhile
 
   let lnum = line + 1
-  while tablemode#table#IsRow(lnum) || tablemode#table#IsBorder(lnum)
+  while tablemode#table#IsTable(lnum)
     if tablemode#table#IsBorder(lnum)
       call add(blines, lnum)
       let lnum += 1

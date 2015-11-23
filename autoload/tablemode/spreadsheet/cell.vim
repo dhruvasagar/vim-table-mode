@@ -58,7 +58,7 @@ function! tablemode#spreadsheet#cell#GetCells(line, ...) abort
     if row == 0
       let values = []
       let line = first_row
-      while tablemode#table#IsRow(line) || tablemode#table#IsBorder(line)
+      while tablemode#table#IsTable(line)
         if tablemode#table#IsRow(line)
           let row_line = getline(line)[stridx(getline(line), g:table_mode_separator):strridx(getline(line), g:table_mode_separator)]
           call add(values, tablemode#utils#strip(get(split(row_line, g:table_mode_separator), colm>0?colm-1:colm, '')))
@@ -70,7 +70,7 @@ function! tablemode#spreadsheet#cell#GetCells(line, ...) abort
       let row_nr = 0
       let row_diff = row > 0 ? 1 : -1
       let line = row > 0 ? first_row : last_row
-      while tablemode#table#IsRow(line) || tablemode#table#IsBorder(line)
+      while tablemode#table#IsTable(line)
         if tablemode#table#IsRow(line)
           let row_nr += row_diff
           if row ==# row_nr | break | endif
