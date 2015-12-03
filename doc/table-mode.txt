@@ -351,7 +351,7 @@ MAPPINGS						*table-mode-mappings*
 
 
                                                *table-mode-mappings-sort-column*
-<Leader>ts      Sort a column under the cursor. This invokes *TableSort*
+<Leader>ts      Sort a column under the cursor. This invokes |TableSort|
 
 ||              Expands to a header border. You can change this by changing
                 |table-mode-separator| option. You can change the character to
@@ -424,7 +424,7 @@ COMMANDS						*table-mode-commands*
                                                        *table-mode-:TableSort*
 :TableSort[!] [i][u][r][n][x][o]
         This command sorts column under the cursor and inherits the same flags
-        as the *:sort* command.
+        as the |:sort| command.
 
         With [!] the order is reversed.
 
