@@ -16,7 +16,10 @@ function! tablemode#spreadsheet#formula#Add(...) "{{{2
     if getline(fline) =~# 'tmf: '
       " Comment line correctly
       let line_val = getline(fline)
-      let line_expr = line_val[match(line_val, tablemode#table#StartCommentExpr()):match(line_val, tablemode#table#EndCommentExpr())]
+      let start_pos = match(line_val, tablemode#table#StartCommentExpr())
+      let end_pos = match(line_val, tablemode#table#EndCommentExpr())
+      if empty(end_pos) | let end_pos = len(line_val) | endif
+      let line_expr = strpart(line_val, start_pos, end_pos)
       let sce = matchstr(line_val, tablemode#table#StartCommentExpr() . '\zs')
       let ece = matchstr(line_val, tablemode#table#EndCommentExpr())
       call setline(fline, sce . line_expr . '; ' . fr . ece)
