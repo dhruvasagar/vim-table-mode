@@ -19,7 +19,7 @@ describe 'Formulas'
       call tablemode#spreadsheet#formula#Add("Sum(1:-1)")
       Expect tablemode#spreadsheet#cell#GetCell() == '250.0'
       call cursor(8, 15)
-      Expect getline('.') == '/* tmf: $4,2=Sum(1:3) ; $5,2=Sum(1:-1) */'
+      Expect getline('.') == '/* tmf: $4,2=Sum(1:3); $5,2=Sum(1:-1) */'
     end
   end
 
