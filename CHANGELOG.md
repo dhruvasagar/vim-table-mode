@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 4.6.4.1
+* Added a fix for markdown commentstring
+
 ## Version 4.6.4
 * Added support for center aligning columns
 
