@@ -58,8 +58,7 @@ augroup END
 
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2
-  exec "nnoremap <silent> " . g:table_mode_map_prefix . g:table_mode_toggle_map .
-       \ " <Esc>:call tablemode#Toggle()<CR>"
+  exec "nnoremap <silent>" g:table_mode_map_prefix . g:table_mode_toggle_map ":<C-U>call tablemode#Toggle()<CR>"
   command! -nargs=0 TableModeToggle call tablemode#Toggle()
   command! -nargs=0 TableModeEnable call tablemode#Enable()
   command! -nargs=0 TableModeDisable call tablemode#Disable()
@@ -111,8 +110,8 @@ nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort('')<CR>
 
 if !hasmapto('<Plug>(table-mode-tableize)')
-  exec "nmap " . g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
-  exec "xmap " . g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
+  exec "nmap" g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
+  exec "xmap" g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
 endif
 
 if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
