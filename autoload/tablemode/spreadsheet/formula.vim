@@ -1,4 +1,7 @@
 " Private Functions {{{1
+function! s:IsFormulaLine(line) "{{{2
+  return getline(a:line) =~# 'tmf: '
+endfunction
 
 " Public Functions {{{1
 function! tablemode#spreadsheet#formula#Add(...) "{{{2
@@ -105,14 +108,21 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
     let line = tablemode#spreadsheet#GetLastRow('.')
     let fline = line + 1
     if tablemode#table#IsBorder(fline) | let fline += 1 | endif
-    if getline(fline) =~# 'tmf: '
-      let exprs = split(matchstr(getline(fline), matchexpr), ';')
-    endif
-  elseif getline('.') =~# 'tmf: ' " We're on the formula line
+    while s:IsFormulaLine(fline)
+      let exprs += split(matchstr(getline(fline), matchexpr), ';')
+      let fline += 1
+    endwhile
+  elseif s:IsFormulaLine('.')
+    let fline = line('.')
     let line = line('.') - 1
+    while s:IsFormulaLine(line) | let fline = line | let line -= 1 | endwhile
     if tablemode#table#IsBorder(line) | let line -= 1 | endif
     if tablemode#table#IsRow(line)
-      let exprs = split(matchstr(getline('.'), matchexpr), ';')
+      " let exprs = split(matchstr(getline('.'), matchexpr), ';')
+      while s:IsFormulaLine(fline)
+        let exprs += split(matchstr(getline(fline), matchexpr), ';')
+        let fline += 1
+      endwhile
     endif
   endif
 
