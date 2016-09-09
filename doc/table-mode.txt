@@ -175,8 +175,8 @@ g:loaded_table_mode					*table-mode-loaded*
 		let g:loaded_table_mode = 1
 <
 g:loaded_table_verbose					*table-mode-verbose*
-	Use this option to enable notifications: >
-		let g:loaded_table_verbose = 1
+	Use this option to disable notifications: >
+		let g:loaded_table_verbose = 0
 <
 g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
