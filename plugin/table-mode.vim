@@ -16,7 +16,7 @@ endfunction
 
 " Set Global Defaults {{{1
 call s:SetGlobalOptDefault('table_mode_corner', '+')
-call s:SetGlobalOptDefault('table_mode_verbose', 0)
+call s:SetGlobalOptDefault('table_mode_verbose', 1)
 call s:SetGlobalOptDefault('table_mode_separator', '|')
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_header_fillchar', '-')
