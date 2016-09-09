@@ -1,5 +1,5 @@
 function! tablemode#logger#log(message)
   if g:table_mode_verbose
-    echom message
+    echom a:message
   endif
 endfunction

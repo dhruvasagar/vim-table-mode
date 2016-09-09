@@ -138,6 +138,7 @@ OPTIONS							*table-mode-options*
 
 Overview:
 	|table-mode-loaded| ............. Disable the plugin.
+	|table-mode-verbose| ............ Notify when Enabled/Disabled.
 	|table-mode-corner| ............. Set corner character.
 	|table-mode-separator| .......... Set separator character.
 	|table-mode-fillchar| ........... Set table fillchar character.
@@ -172,6 +173,10 @@ Overview:
 g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
 		let g:loaded_table_mode = 1
+<
+g:loaded_table_verbose					*table-mode-verbose*
+	Use this option to enable notifications: >
+		let g:loaded_table_verbose = 1
 <
 g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
