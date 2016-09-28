@@ -174,9 +174,9 @@ g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
 		let g:loaded_table_mode = 1
 <
-g:loaded_table_verbose					*table-mode-verbose*
+g:table_mode_verbose					*table-mode-verbose*
 	Use this option to disable notifications: >
-		let g:loaded_table_verbose = 0
+		let g:table_mode_verbose = 0
 <
 g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
