@@ -44,17 +44,13 @@ call s:SetGlobalOptDefault('table_mode_eval_formula_map', '<Leader>tfe')
 call s:SetGlobalOptDefault('table_mode_echo_cell_map', '<Leader>t?')
 call s:SetGlobalOptDefault('table_mode_sort_map', '<Leader>ts')
 
+call s:SetGlobalOptDefault('table_mode_syntax', 1)
+
 function! s:TableEchoCell() "{{{1
   if tablemode#table#IsRow('.')
     echomsg '$' . tablemode#spreadsheet#RowNr('.') . ',' . tablemode#spreadsheet#ColumnNr('.')
   endif
 endfunction
-
-augroup TableMode
-  au!
-
-  autocmd Syntax * if tablemode#IsActive() | call tablemode#SyntaxEnable() | endif
-augroup END
 
 " Define Commands & Mappings {{{1
 if !g:table_mode_always_active "{{{2

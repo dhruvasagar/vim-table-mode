@@ -65,7 +65,7 @@ function! s:ToggleMapping() "{{{2
   endif
 endfunction
 
-function! tablemode#SyntaxEnable()
+function! tablemode#SyntaxEnable() "{{{2
   exec 'syntax match Table'
         \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
         \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
@@ -79,6 +79,8 @@ function! tablemode#SyntaxEnable()
 endfunction
 
 function! s:ToggleSyntax()
+  if !g:table_mode_syntax | return | endif
+
   if tablemode#IsActive()
     call tablemode#SyntaxEnable()
   else
