@@ -65,24 +65,20 @@ function! s:ToggleMapping() "{{{2
   endif
 endfunction
 
-function! tablemode#SyntaxEnable() "{{{2
-  exec 'syntax match Table'
-        \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
-        \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
-  syntax match TableSeparator /|/ contained
-  syntax match TableColumnAlign /:/ contained
-  syntax match TableBorder /[\-+]\+/ contained
-
-  hi! link TableBorder Delimiter
-  hi! link TableSeparator Delimiter
-  hi! link TableColumnAlign Type
-endfunction
-
-function! s:ToggleSyntax()
+function! s:ToggleSyntax() "{{{2
   if !g:table_mode_syntax | return | endif
 
   if tablemode#IsActive()
-    call tablemode#SyntaxEnable()
+    exec 'syntax match Table'
+          \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
+          \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
+    syntax match TableSeparator /|/ contained
+    syntax match TableColumnAlign /:/ contained
+    syntax match TableBorder /[\-+]\+/ contained
+
+    hi! link TableBorder Delimiter
+    hi! link TableSeparator Delimiter
+    hi! link TableColumnAlign Type
   else
     syntax clear Table
     syntax clear TableBorder
