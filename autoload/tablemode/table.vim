@@ -1,4 +1,8 @@
 " Private Functions {{{1
+function! s:blank(string) "{{{2
+  return a:string =~# '^\s*$'
+endfunction
+
 function! s:BorderExpr() "{{{2
   return tablemode#table#StartExpr() .
         \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
@@ -27,14 +31,11 @@ function! s:GenerateHeaderBorder(line) "{{{2
     endif
     if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultBorder() | endif
 
-    let border = substitute(line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)], g:table_mode_separator, g:table_mode_corner, 'g')
-    " To accurately deal with unicode double width characters
-    if tablemode#table#IsHeader(line - 1)
-      let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_header_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
-    else
-      let fill_columns = map(split(border, g:table_mode_corner),  'repeat(g:table_mode_fillchar, tablemode#utils#StrDisplayWidth(v:val))')
-    endif
-    let border = g:table_mode_corner . join(fill_columns, g:table_mode_corner) . g:table_mode_corner
+    let tline = line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)]
+    let fillchar = tablemode#table#IsHeader(line - 1) ? g:table_mode_header_fillchar : g:table_mode_fillchar
+    let seperator_match_regex = g:table_mode_separator . '\zs\([^' . g:table_mode_separator . ']*\)\ze' . g:table_mode_separator
+    let border = substitute(tline, seperator_match_regex, '\=repeat(fillchar, tablemode#utils#StrDisplayWidth(submatch(0)))', 'g')
+    let border = substitute(border, g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
 
     " Incorporate header alignment chars
@@ -135,7 +136,7 @@ function! tablemode#table#EndExpr() "{{{2
 endfunction
 
 function! tablemode#table#IsBorder(line) "{{{2
-  return !empty(getline(a:line)) && getline(a:line) =~# s:BorderExpr()
+  return !s:blank(getline(a:line)) && getline(a:line) =~# s:BorderExpr()
 endfunction
 
 function! tablemode#table#IsHeader(line) "{{{2
