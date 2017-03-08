@@ -28,7 +28,7 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
 ### Creating table on-the-fly
 
-To start using the plugin in the on-the-fly mode use `:TableModeToggle` mapped to <kbd>\<Leader\>tm</kbd> by default (which means <kbd>\\</kbd> <kbd>t</kbd> <kbd>m</kbd> if you didn't override the <Leader> by `:let mapleader = ","` to have <kbd>,</kbd> <kbd>t</kbd> <kbd>m</kbd>).
+To start using the plugin in the on-the-fly mode use `:TableModeToggle` mapped to <kbd>\<Leader\>tm</kbd> by default (which means <kbd>\\</kbd> <kbd>t</kbd> <kbd>m</kbd> if you didn't override the <Leader> by `:let mapleader = ','` to have <kbd>,</kbd> <kbd>t</kbd> <kbd>m</kbd>).
 
 > Tip :
 > You can use the following to quickly enable / disable table mode in insert
@@ -87,7 +87,7 @@ Corner separators are adjustable:
 
 For Markdown-compatible tables use
 
-    let g:table_mode_corner="|"
+    let g:table_mode_corner='|'
 
 
     |-----------------|--------------------------|------------|
@@ -100,8 +100,8 @@ For Markdown-compatible tables use
 
 To get ReST-compatible tables use
 
-    let g:table_mode_corner_corner="+"
-    let g:table_mode_header_fillchar="="
+    let g:table_mode_corner_corner='+'
+    let g:table_mode_header_fillchar='='
 
 
     +-----------------+--------------------------+------------+
