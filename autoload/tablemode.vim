@@ -91,10 +91,25 @@ function! s:ToggleSyntax() "{{{2
   endif
 endfunction
 
+function! s:ToggleAutoAlign() "{{{2
+  if !g:table_mode_auto_align | return | endif
+
+  if tablemode#IsActive()
+    augroup TableModeAutoAlign
+      au!
+
+      autocmd CursorHold,CursorHoldI * nested silent! call tablemode#table#Realign('.')
+    augroup END
+  else
+    silent! augroup! TableModeAutoAlign
+  endif
+endfunction
+
 function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleSyntax()
   call s:ToggleMapping()
+  call s:ToggleAutoAlign()
   if tablemode#IsActive()
     doautocmd User TableModeEnabled
   else

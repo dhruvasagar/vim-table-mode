@@ -1,7 +1,7 @@
 *table-mode.txt*			Table Mode for easy table formatting
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-                               VERSION 4.6.4.4
+                               VERSION 4.6.5
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -170,6 +170,8 @@ Overview:
         |table-mode-echo-cell-map| ...... Set the echo cell mapping
         |table-mode-sort-map| ........... Set the table sort mapping
         |table-mode-syntax| ............. Control table mode syntax
+        |table-mode-auto-align| ......... Set if the table mode should auto
+                                        align as you type
 
 g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -301,6 +303,11 @@ g:table_mode_syntax                                          *table-mode-syntax*
         Control whether table mode should define table syntax definitions or
         not. >
                 let g:table_mode_syntax = 1
+<
+g:table_mode_auto_align                                *table-mode-auto-align*
+        Set if the table mode should auto align as you type when table mode is
+        active. >
+                let g:table_mode_auto_align = 1
 <
 
 ===============================================================================
