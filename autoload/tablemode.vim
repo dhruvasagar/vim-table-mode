@@ -108,7 +108,7 @@ endfunction
 function! s:ToggleOptions() "{{{2
   if tablemode#IsActive()
     let b:old_update_time = &updatetime
-    setl updatetime = g:table_mode_update_time
+    exec 'set updatetime='.g:table_mode_update_time
   else
     exec 'set updatetime='.get(b:, 'old_update_time', 4000)
   endif

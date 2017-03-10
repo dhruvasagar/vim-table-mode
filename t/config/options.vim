@@ -28,3 +28,4 @@ let g:table_mode_sort_map = '<Leader>ts'
 
 let g:table_mode_syntax = 1
 let g:table_mode_auto_align = 1
+let g:table_mode_update_time = 500
