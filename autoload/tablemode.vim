@@ -105,11 +105,21 @@ function! s:ToggleAutoAlign() "{{{2
   endif
 endfunction
 
+function! s:ToggleOptions() "{{{2
+  if tablemode#IsActive()
+    let b:old_update_time = &updatetime
+    setl updatetime = g:table_mode_update_time
+  else
+    exec 'set updatetime='.get(b:, 'old_update_time', 4000)
+  endif
+endfunction
+
 function! s:SetActive(bool) "{{{2
   let b:table_mode_active = a:bool
   call s:ToggleSyntax()
   call s:ToggleMapping()
   call s:ToggleAutoAlign()
+  call s:ToggleOptions()
   if tablemode#IsActive()
     doautocmd User TableModeEnabled
   else
