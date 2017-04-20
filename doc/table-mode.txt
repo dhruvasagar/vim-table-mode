@@ -1,7 +1,7 @@
 *table-mode.txt*			Table Mode for easy table formatting
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-                               VERSION 4.6.6
+                               VERSION 4.6.7
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -379,7 +379,7 @@ MAPPINGS						*table-mode-mappings*
 
 ||              Expands to a header border. You can change this by changing
                 |table-mode-separator| option. You can change the character to
-                be used for te extreme corners of the border by changing
+                be used for the extreme corners of the border by changing
                 |table-mode-corner-corner| option.
 
 ===============================================================================
