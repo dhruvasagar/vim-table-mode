@@ -214,7 +214,7 @@ g:table_mode_toggle_map				     *table-mode-toggle-map*
 
 g:table_mode_always_active			    *table-mode-always-active*
 	Use this option to permanently enable the table mode: >
-		let g:table_mode_always_active = 0
+		let g:table_mode_always_active = 1
 <
 	This will trigger table creation once you type the
 	|table-mode-separator| as long as it's the first character on
