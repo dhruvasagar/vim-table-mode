@@ -79,7 +79,7 @@ endfunction
 function! tablemode#table#GetCommentStart() "{{{2
   let cstring = &commentstring
   if tablemode#utils#strlen(cstring) > 0
-    return substitute(split(cstring, '%s')[0], '[^()]', '\\\0', 'g')
+    return substitute(split(cstring, '%s')[0], '[^(%)]', '\\\0', 'g')
   else
     return ''
   endif
