@@ -36,13 +36,15 @@ call s:SetGlobalOptDefault('table_mode_motion_right_map', ']<Bar>')
 call s:SetGlobalOptDefault('table_mode_cell_text_object_a_map', 'a<Bar>')
 call s:SetGlobalOptDefault('table_mode_cell_text_object_i_map', 'i<Bar>')
 
-call s:SetGlobalOptDefault('table_mode_realign_map', '<Leader>tr')
-call s:SetGlobalOptDefault('table_mode_delete_row_map', '<Leader>tdd')
-call s:SetGlobalOptDefault('table_mode_delete_column_map', '<Leader>tdc')
-call s:SetGlobalOptDefault('table_mode_add_formula_map', '<Leader>tfa')
-call s:SetGlobalOptDefault('table_mode_eval_formula_map', '<Leader>tfe')
-call s:SetGlobalOptDefault('table_mode_echo_cell_map', '<Leader>t?')
-call s:SetGlobalOptDefault('table_mode_sort_map', '<Leader>ts')
+call s:SetGlobalOptDefault('table_mode_realign_map', g:table_mode_map_prefix.'r')
+call s:SetGlobalOptDefault('table_mode_delete_row_map', g:table_mode_map_prefix.'dd')
+call s:SetGlobalOptDefault('table_mode_delete_column_map', g:table_mode_map_prefix.'dc')
+call s:SetGlobalOptDefault('table_mode_add_formula_map', g:table_mode_map_prefix.'fa')
+call s:SetGlobalOptDefault('table_mode_eval_formula_map', g:table_mode_map_prefix.'fe')
+call s:SetGlobalOptDefault('table_mode_echo_cell_map', g:table_mode_map_prefix.'?')
+call s:SetGlobalOptDefault('table_mode_sort_map', g:table_mode_map_prefix.'s')
+call s:SetGlobalOptDefault('table_mode_tableize_map', g:table_mode_map_prefix.'t')
+call s:SetGlobalOptDefault('table_mode_tableize_d_map', '<Leader>T')
 
 call s:SetGlobalOptDefault('table_mode_syntax', 1)
 call s:SetGlobalOptDefault('table_mode_auto_align', 1)
@@ -108,12 +110,12 @@ nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort('')<CR>
 
 if !hasmapto('<Plug>(table-mode-tableize)')
-  exec "nmap" g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
-  exec "xmap" g:table_mode_map_prefix . "t <Plug>(table-mode-tableize)"
+  exec "nmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
+  exec "xmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
 endif
 
 if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
-  xmap <Leader>T <Plug>(table-mode-tableize-delimiter)
+  exec "xmap" g:table_mode_tableize_d_map "<Plug>(table-mode-tableize-delimiter)"
 endif
 
 augroup TableMode "{{{1

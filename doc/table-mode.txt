@@ -299,6 +299,16 @@ g:table_mode_sort_map                                      *table-mode-sort-map*
         current column. >
                 let g:table_mode_sort_map = '<Leader>ts'
 >
+g:table_mode_tableize_map                              *table-mode-tableize-map*
+        Set this to configure the mapping for converting the visual selection
+        to a table. >
+                let g:table_mode_tableize_map = '<Leader>tt'
+>
+g:table_mode_tableize_d_map                          *table-mode-tableize-d-map*
+        Set this to configure the mapping for converting the visual selection
+        to a table, asking the user for a delimiter. >
+                let g:table_mode_tableize_d_map = '<Leader>T'
+>
 g:table_mode_syntax                                          *table-mode-syntax*
         Control whether table mode should define table syntax definitions or
         not. >
