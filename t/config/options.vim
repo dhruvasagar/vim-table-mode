@@ -25,6 +25,8 @@ let g:table_mode_add_formula_map = '<Leader>tfa'
 let g:table_mode_eval_formula_map = '<Leader>tfe'
 let g:table_mode_echo_cell_map = '<Leader>t?'
 let g:table_mode_sort_map = '<Leader>ts'
+let g:table_mode_tableize_map = '<Leader>tt'
+let g:table_mode_tableize_d_map = '<Leader>T'
 
 let g:table_mode_syntax = 1
 let g:table_mode_auto_align = 1
