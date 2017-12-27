@@ -33,8 +33,12 @@ function! s:GenerateHeaderBorder(line) "{{{2
 
     let tline = line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)]
     let fillchar = tablemode#table#IsHeader(line - 1) ? g:table_mode_header_fillchar : g:table_mode_fillchar
-    let seperator_match_regex = g:table_mode_separator . '\zs\([^' . g:table_mode_separator . ']*\)\ze' . g:table_mode_separator
-    let border = substitute(tline, seperator_match_regex, '\=repeat(fillchar, tablemode#utils#StrDisplayWidth(submatch(0)))', 'g')
+
+    let special_replacement = '__'
+    let border = substitute(tline, g:table_mode_escaped_separator_regex, special_replacement, 'g')
+    let seperator_match_regex = special_replacement . '\zs\([^' . special_replacement . ']*\)\ze' . special_replacement
+    let border = substitute(border, seperator_match_regex, '\=repeat(fillchar, tablemode#utils#StrDisplayWidth(submatch(0)))', 'g')
+    let border = substitute(border, special_replacement, g:table_mode_separator, 'g')
     let border = substitute(border, g:table_mode_separator, g:table_mode_corner, 'g')
     let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
 
