@@ -98,7 +98,8 @@ function! s:ToggleAutoAlign() "{{{2
     augroup TableModeAutoAlign
       au!
 
-      autocmd CursorHold <buffer> nested silent! call tablemode#table#Realign('.')
+      autocmd CursorHold <buffer> nested silent! if &modified | call tablemode#table#Realign('.') | endif
+      autocmd CursorHoldI <buffer> nested silent! if &modified | call tablemode#table#Realign('.') | endif
     augroup END
   else
     autocmd! TableModeAutoAlign CursorHold
