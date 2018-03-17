@@ -102,7 +102,7 @@ function! s:ToggleAutoAlign() "{{{2
       autocmd InsertLeave <buffer> nested silent! if &modified | call tablemode#table#Realign('.') | endif
     augroup END
   else
-    autocmd! TableModeAutoAlign CursorHold
+    autocmd! TableModeAutoAlign
   endif
 endfunction
 
