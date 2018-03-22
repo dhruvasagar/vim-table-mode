@@ -99,7 +99,7 @@ function! s:ToggleAutoAlign() "{{{2
       au!
 
       autocmd CursorHold <buffer> nested silent! if &modified | call tablemode#table#Realign('.') | endif
-      autocmd InsertLeave <buffer> nested silent! if &modified | call tablemode#table#Realign('.') | endif
+      " autocmd InsertLeave <buffer> nested silent! if &modified | call tablemode#table#Realign('.') | endif
     augroup END
   else
     autocmd! TableModeAutoAlign
@@ -169,15 +169,17 @@ function! tablemode#IsActive() "{{{2
 endfunction
 
 function! tablemode#TableizeInsertMode() "{{{2
-  if tablemode#IsActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator)
-    call tablemode#table#AddBorder('.')
-    normal! A
-  elseif tablemode#IsActive() && getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
-    let column = tablemode#utils#strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
-    let position = tablemode#utils#strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
-    call tablemode#table#Realign('.')
-    normal! 0
-    call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
+  if tablemode#IsActive()
+    if getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator)
+      call tablemode#table#AddBorder('.')
+      normal! A
+    elseif getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
+      let column = tablemode#utils#strlen(substitute(getline('.')[0:col('.')], '[^' . g:table_mode_separator . ']', '', 'g'))
+      let position = tablemode#utils#strlen(matchstr(getline('.')[0:col('.')], '.*' . g:table_mode_separator . '\s*\zs.*'))
+      call tablemode#table#Realign('.')
+      normal! 0
+      call search(repeat('[^' . g:table_mode_separator . ']*' . g:table_mode_separator, column) . '\s\{-\}' . repeat('.', position), 'ce', line('.'))
+    endif
   endif
 endfunction
 
