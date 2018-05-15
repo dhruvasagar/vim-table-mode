@@ -166,6 +166,9 @@ function! tablemode#table#AddBorder(line) "{{{2
 endfunction
 
 function! tablemode#table#Realign(line) "{{{2
+  let current_fm = &foldmethod " save foldmethod to be restored
+  setlocal foldmethod=manual " manual foldmethod while table is being aligned
+
   let line = tablemode#utils#line(a:line)
 
   let lines = []
@@ -200,4 +203,7 @@ function! tablemode#table#Realign(line) "{{{2
   for bline in blines
     call tablemode#table#AddBorder(bline)
   endfor
+
+  " restore foldmethod
+  execute "setlocal foldmethod=" . current_fm
 endfunction
