@@ -170,7 +170,7 @@ endfunction
 
 function! tablemode#TableizeInsertMode() "{{{2
   if tablemode#IsActive()
-    if getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator)
+    if getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator . tablemode#table#EndExpr()) 
       call tablemode#table#AddBorder('.')
       normal! A
     elseif getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
