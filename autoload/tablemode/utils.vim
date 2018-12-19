@@ -47,3 +47,7 @@ function! tablemode#utils#StrDisplayWidth(string) "{{{2
     return rv
   endif
 endfunction
+
+function! tablemode#utils#get_buffer_or_global_option(table_option)
+  return get(b:, a:table_option, get(g:, a:table_option))
+endf

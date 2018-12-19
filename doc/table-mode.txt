@@ -185,6 +185,9 @@ g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
 		let g:table_mode_corner = '+'
 <
+        Or only in the current buffer: >
+		let b:table_mode_corner = '+'
+<
 g:table_mode_separator					*table-mode-separator*
 	Use this option to define the table column separator character: >
 		let g:table_mode_separator = '|'
@@ -232,6 +235,9 @@ g:table_mode_corner_corner                           *table-mode-corner-corner*
         Use this option to define the character to be used for the extreme
         corners of the table border. >
                 let g:table_mode_corner_corner = '|'
+<
+        Or only in the current buffer: >
+		let b:table_mode_corner_corner = '|'
 <
 g:table_mode_align_char                                  *table-mode-align-char*
         Use this option to define the character to be used for defining

@@ -67,7 +67,9 @@ function! tablemode#align#alignments(lnum, ncols) "{{{2
   let achr = g:table_mode_align_char
   let alignments = []
   if tablemode#table#IsBorder(a:lnum+1)
-    let hcols = tablemode#align#Split(getline(a:lnum+1), '[' . g:table_mode_corner . g:table_mode_corner_corner . ']')
+    let corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner')
+    let corner_corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner_corner')
+    let hcols = tablemode#align#Split(getline(a:lnum+1), '[' . corner . corner_corner . ']')
     for idx in range(len(hcols))
       " Right align if header
       call add(alignments, 'l')
