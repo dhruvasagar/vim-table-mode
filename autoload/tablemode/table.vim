@@ -4,16 +4,21 @@ function! s:blank(string) "{{{2
 endfunction
 
 function! s:BorderExpr() "{{{2
+  let corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner')
+  let corner_corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner_corner')
+  let header_fillchar = tablemode#utils#get_buffer_or_global_option('table_mode_header_fillchar')
   return tablemode#table#StartExpr() .
-        \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
-        \ '[' . escape(g:table_mode_fillchar . g:table_mode_header_fillchar . g:table_mode_corner . g:table_mode_align_char, '-') . ']\+' .
-        \ '[' . g:table_mode_corner . g:table_mode_corner_corner . ']' .
+        \ '[' . corner . corner_corner . ']' .
+        \ '[' . escape(g:table_mode_fillchar . header_fillchar . corner . g:table_mode_align_char, '-') . ']\+' .
+        \ '[' . corner . corner_corner . ']' .
         \ tablemode#table#EndExpr()
 endfunction
 
 function! s:DefaultBorder() "{{{2
   if tablemode#IsActive()
-    return g:table_mode_corner_corner . g:table_mode_fillchar . g:table_mode_corner . g:table_mode_fillchar . g:table_mode_corner_corner
+    let corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner')
+    let corner_corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner_corner')
+    return corner_corner . g:table_mode_fillchar . corner . g:table_mode_fillchar . corner_corner
   else
     return ''
   endif
@@ -31,20 +36,24 @@ function! s:GenerateHeaderBorder(line) "{{{2
     endif
     if tablemode#utils#strlen(line_val) <= 1 | return s:DefaultBorder() | endif
 
+    let corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner')
+    let corner_corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner_corner')
+    let header_fillchar = tablemode#utils#get_buffer_or_global_option('table_mode_header_fillchar')
+
     let tline = line_val[stridx(line_val, g:table_mode_separator):strridx(line_val, g:table_mode_separator)]
-    let fillchar = tablemode#table#IsHeader(line - 1) ? g:table_mode_header_fillchar : g:table_mode_fillchar
+    let fillchar = tablemode#table#IsHeader(line - 1) ? header_fillchar : g:table_mode_fillchar
 
     let special_replacement = '___'
     let border = substitute(tline, g:table_mode_escaped_separator_regex, special_replacement, 'g')
     let seperator_match_regex = special_replacement . '\zs\(.\{-}\)\ze' . special_replacement
     let border = substitute(border, seperator_match_regex, '\=repeat(fillchar, tablemode#utils#StrDisplayWidth(submatch(0)))', 'g')
     let border = substitute(border, special_replacement, g:table_mode_separator, 'g')
-    let border = substitute(border, g:table_mode_separator, g:table_mode_corner, 'g')
-    let border = substitute(border, '^' . g:table_mode_corner . '\(.*\)' . g:table_mode_corner . '$', g:table_mode_corner_corner . '\1' . g:table_mode_corner_corner, '')
+    let border = substitute(border, g:table_mode_separator, corner, 'g')
+    let border = substitute(border, '^' . corner . '\(.*\)' . corner . '$', corner_corner . '\1' . corner_corner, '')
 
     " Incorporate header alignment chars
     if getline(line) =~# g:table_mode_align_char
-      let pat = '[' . g:table_mode_corner_corner . g:table_mode_corner . ']'
+      let pat = '[' . corner_corner . corner . ']'
       let hcols = tablemode#align#Split(getline(line), pat)
       let gcols = tablemode#align#Split(border, pat)
 

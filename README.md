@@ -113,6 +113,7 @@ To get ReST-compatible tables use
     | Sherlock Holmes | 221B Baker Street        | 0987654321 |
     +-----------------+--------------------------+------------+
 
+Markdown and ReST filetypes have automatically configured corners.
 
    You can also define in a table header border how it's content should be
    aligned, whether center, right or left by using a `:` character defined by
