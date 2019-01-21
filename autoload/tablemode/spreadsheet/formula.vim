@@ -63,8 +63,8 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
     let expr = substitute(expr, 'Average(\([^)]*\))', 'tablemode#spreadsheet#Average("\1",'.line.','.colm.')', 'g')
   endif
 
-  if expr =~# '\$\d\+,\d\+'
-    let expr = substitute(expr, '\$\(\d\+\),\(\d\+\)',
+  if expr =~# '\$\-\?\d\+,\-\?\d\+'
+    let expr = substitute(expr, '\$\(\-\?\d\+\),\(\-\?\d\+\)',
           \ '\=str2float(tablemode#spreadsheet#cell#GetCells(line, submatch(1), submatch(2)))', 'g')
   endif
 
