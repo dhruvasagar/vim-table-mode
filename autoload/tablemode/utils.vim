@@ -48,6 +48,6 @@ function! tablemode#utils#StrDisplayWidth(string) "{{{2
   endif
 endfunction
 
-function! tablemode#utils#get_buffer_or_global_option(table_option)
+function! tablemode#utils#get_buffer_or_global_option(table_option) "{{{2
   return get(b:, a:table_option, get(g:, a:table_option))
 endf
