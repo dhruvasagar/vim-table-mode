@@ -472,13 +472,13 @@ COMMANDS						*table-mode-commands*
 CONTRIBUTING						*table-mode-contributing*
 
 If you want to take a stab at it, by all means, send me a pull request on
-Github (http://github.com/dhruvasagar/table-mode) or get in touch with me
+Github (http://github.com/dhruvasagar/vim-table-mode) or get in touch with me
 directly via e-mail at dhruva 'dot' sagar 'at' gmail.com.
 
 ===============================================================================
 REPORT ISSUES					      *table-mode-report-issues*
 
 If you discover any issues, please report them at
-http://github.com/dhruvasagar/table-mode/issues.
+http://github.com/dhruvasagar/vim-table-mode/issues.
 
  vim:tw=78:ts=8:ft=help:norl:ai:et
