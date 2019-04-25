@@ -75,7 +75,7 @@ endif
 " }}}2
 
 command! -nargs=? -range Tableize <line1>,<line2>call tablemode#TableizeRange(<q-args>)
-command! -nargs=? -bang TableSort call tablemode#spreadsheet#Sort(<bang>0, <q-args>)
+command! -nargs=? -bang -range TableSort <line1>,<line2>call tablemode#spreadsheet#Sort(<bang>0, <q-args>)
 command! TableAddFormula call tablemode#spreadsheet#formula#Add()
 command! TableModeRealign call tablemode#table#Realign('.')
 command! TableEvalFormulaLine call tablemode#spreadsheet#formula#EvaluateFormulaLine()

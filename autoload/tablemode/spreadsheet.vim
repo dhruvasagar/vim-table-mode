@@ -180,10 +180,14 @@ function! tablemode#spreadsheet#Average(range, ...) abort "{{{2
   return s:Average(call('tablemode#spreadsheet#cell#GetCellRange', args))
 endfunction
 
-function! tablemode#spreadsheet#Sort(bang, ...) "{{{2
+function! tablemode#spreadsheet#Sort(bang, ...) range "{{{2
   let opts = a:0 ? a:1 : ''
   let bang = a:bang ? '!' : ''
-  let [firstRow, lastRow] = [tablemode#spreadsheet#GetFirstRow('.'), tablemode#spreadsheet#GetLastRow('.')]
+  if a:firstline == a:lastline
+    let [firstRow, lastRow] = [tablemode#spreadsheet#GetFirstRow('.'), tablemode#spreadsheet#GetLastRow('.')]
+  else
+    let [firstRow, lastRow] = [a:firstline, a:lastline]
+  endif
   call tablemode#spreadsheet#MoveToStartOfCell()
-  exec ':'.firstRow.','.lastRow . 'sort'.bang opts '/.*\%'.col('.').'v/'
+  exec ':undojoin | '.firstRow.','.lastRow . 'sort'.bang opts '/.*\%'.col('.').'v/'
 endfunction
