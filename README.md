@@ -172,6 +172,15 @@ Markdown and ReST filetypes have automatically configured corners.
       (provided you are within a table row), this can also be preceeded with a
       [count] to delete multiple columns.
 
+  - **Insert Column** :
+
+      You can use the <kbd>\<Leader\>tic</kbd> mapping defined by the option
+      `g:table_mode_insert_column_map` to insert a column before current column
+      (provided you are within a table row), this can also be preceeded with a
+      [count] to insert multiple columns. If you want to insert columns after
+      current column, You can use the <kbd>\<Leader\>tac</kbd> mapping defined
+      by the option `g:table_mode_insert_column_after_map`.
+
 ## Advanced Usage: Spreadsheet Capabilities
 
 ### Table Formulas

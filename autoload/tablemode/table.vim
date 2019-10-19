@@ -163,7 +163,7 @@ function! tablemode#table#IsHeader(line) "{{{2
 endfunction
 
 function! tablemode#table#IsRow(line) "{{{2
-  return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator) . '[^' . g:table_mode_separator . ']\+'
+  return !tablemode#table#IsBorder(a:line) && getline(a:line) =~# (tablemode#table#StartExpr() . g:table_mode_separator . '\+') . '[^' . g:table_mode_separator . ']\+'
 endfunction
 
 function! tablemode#table#IsTable(line) "{{{2

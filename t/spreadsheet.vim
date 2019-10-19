@@ -101,5 +101,19 @@ describe 'spreadsheet'
       call tablemode#spreadsheet#DeleteColumn()
       Expect tablemode#spreadsheet#ColumnCount('.') == 1
     end
+
+    it 'should insert a column successfully'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(0)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline(line('.')) ==# "|  | test11 | test12 |"
+    end
+
+    it 'should insert a column after current column'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline(line('.')) ==# "| test11 |  | test12 |"
+    end
   end
 end

@@ -18,6 +18,16 @@ function! s:Average(list) "{{{2
 endfunction
 
 " Public Functions {{{1
+function! tablemode#spreadsheet#MoveToHeaderOrBorderOrFirstRow() "{{{2
+  if tablemode#table#IsTable('.')
+    let line = tablemode#utils#line('.')
+
+    while line > 1 && tablemode#table#IsTable(line - 1) | let line -= 1 | endwhile
+
+    call cursor(line, col('.'))
+  endif
+endfunction
+
 function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
   if tablemode#table#IsRow(a:line)
     let line = tablemode#utils#line(a:line)
@@ -138,14 +148,41 @@ function! tablemode#spreadsheet#MoveToStartOfCell() "{{{2
   endif
 endfunction
 
+function! tablemode#spreadsheet#MoveToEndOfCell() "{{{2
+  if getline('.')[col('.')-1] ==# g:table_mode_separator && (col('.') - 1 !=# stridx(getline('.'), g:table_mode_separator))
+    normal! 2h
+  else
+    execute 'normal! f' . g:table_mode_separator . '2h'
+  endif
+endfunction
+
 function! tablemode#spreadsheet#DeleteColumn() "{{{2
-  if tablemode#table#IsRow('.')
+  if tablemode#table#IsTable('.')
     for i in range(v:count1)
+      call tablemode#spreadsheet#MoveToHeaderOrBorderOrFirstRow()
       call tablemode#spreadsheet#MoveToStartOfCell()
-      call tablemode#spreadsheet#MoveToFirstRow()
       silent! execute "normal! h\<C-V>f" . g:table_mode_separator
       call tablemode#spreadsheet#MoveToLastRow()
       normal! d
+    endfor
+
+    call tablemode#table#Realign('.')
+  endif
+endfunction
+
+function! tablemode#spreadsheet#InsertColumn(insertAfter) "{{{2
+  if tablemode#table#IsTable('.')
+    for i in range(v:count1)
+      call tablemode#spreadsheet#MoveToHeaderOrBorderOrFirstRow()
+      if a:insertAfter
+        call tablemode#spreadsheet#MoveToEndOfCell()
+        silent! execute "normal! 2l\<C-V>"
+      else
+        call tablemode#spreadsheet#MoveToStartOfCell()
+        silent! execute "normal! h\<C-V>"
+      endif
+      call tablemode#spreadsheet#MoveToLastRow()
+      normal! I|
     endfor
 
     call tablemode#table#Realign('.')
