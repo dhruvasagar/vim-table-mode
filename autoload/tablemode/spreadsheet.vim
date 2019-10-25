@@ -182,7 +182,7 @@ function! tablemode#spreadsheet#InsertColumn(insertAfter) "{{{2
         silent! execute "normal! h\<C-V>"
       endif
       call tablemode#spreadsheet#MoveToLastRow()
-      normal! I|
+      exec 'normal! I' . g:table_mode_separator
     endfor
 
     call tablemode#table#Realign('.')
