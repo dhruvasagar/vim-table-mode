@@ -102,4 +102,25 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 1
     end
   end
+  
+  describe 'Repeated Manipulations'
+    before
+      new
+      normal! ggdG
+      read t/fixtures/big_sample.txt
+      call cursor(2, 3)
+    end
+
+    it 'should delete multiple rows correctly'
+      Expect tablemode#spreadsheet#RowCount('.') == 5
+      .,.+1 call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 3
+    end
+
+    it 'should delete multiple columns correctly'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      .,.+1 call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+    end
+  end
 end
