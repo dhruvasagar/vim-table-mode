@@ -100,8 +100,8 @@ onoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#spr
 xnoremap <silent> <Plug>(table-mode-cell-text-object-a) :<C-U>call tablemode#spreadsheet#cell#TextObject(0)<CR>
 xnoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#spreadsheet#cell#TextObject(1)<CR>
 
-nnoremap <silent> <Plug>(table-mode-delete-row) :call tablemode#spreadsheet#DeleteRow()<CR>
-nnoremap <silent> <Plug>(table-mode-delete-column) :call tablemode#spreadsheet#DeleteColumn()<CR>
+nnoremap <silent> <Plug>(table-mode-delete-row) :<C-U>call tablemode#spreadsheet#DeleteRow()<CR>
+nnoremap <silent> <Plug>(table-mode-delete-column) :<C-U>call tablemode#spreadsheet#DeleteColumn()<CR>
 
 nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#formula#Add()<CR>
 nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#formula#EvaluateFormulaLine()<CR>
