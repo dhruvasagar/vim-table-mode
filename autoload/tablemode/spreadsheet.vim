@@ -181,6 +181,11 @@ function! tablemode#spreadsheet#Average(range, ...) abort "{{{2
 endfunction
 
 function! tablemode#spreadsheet#Sort(bang, ...) range "{{{2
+  if exists('*getcurpos')
+    let col = getcurpos()[4] " curswant
+  else
+    let col = col('.')
+  endif
   let opts = a:0 ? a:1 : ''
   let bang = a:bang ? '!' : ''
   if a:firstline == a:lastline
@@ -189,5 +194,5 @@ function! tablemode#spreadsheet#Sort(bang, ...) range "{{{2
     let [firstRow, lastRow] = [a:firstline, a:lastline]
   endif
   call tablemode#spreadsheet#MoveToStartOfCell()
-  exec ':undojoin | '.firstRow.','.lastRow . 'sort'.bang opts '/.*\%'.col('.').'v/'
+  exec ':undojoin | '.firstRow.','.lastRow . 'sort'.bang opts '/.*\%'.col.'v/'
 endfunction
