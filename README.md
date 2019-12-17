@@ -119,6 +119,11 @@ Markdown and ReST filetypes have automatically configured corners.
    aligned, whether center, right or left by using a `:` character defined by
    `g:table_mode_align_char` option.
 
+If you manipulate the table when table mode is disabled or copy paste a table
+from clipboard from outside and it ends up being misaligned, you can realign
+it using `:TableModeRealign` or using the default mapping
+<kbd>\<Leader\>tr</kbd> defined by `g:table_mode_relign_map` option.
+
 ### Formatting existing content into a table
 
    Table Mode wouldn't justify it's name if it didn't allow formatting
