@@ -40,6 +40,8 @@ call s:SetGlobalOptDefault('table_mode_cell_text_object_i_map', 'i<Bar>')
 call s:SetGlobalOptDefault('table_mode_realign_map', g:table_mode_map_prefix.'r')
 call s:SetGlobalOptDefault('table_mode_delete_row_map', g:table_mode_map_prefix.'dd')
 call s:SetGlobalOptDefault('table_mode_delete_column_map', g:table_mode_map_prefix.'dc')
+call s:SetGlobalOptDefault('table_mode_insert_column_before_map', g:table_mode_map_prefix.'iC')
+call s:SetGlobalOptDefault('table_mode_insert_column_after_map', g:table_mode_map_prefix.'ic')
 call s:SetGlobalOptDefault('table_mode_add_formula_map', g:table_mode_map_prefix.'fa')
 call s:SetGlobalOptDefault('table_mode_eval_formula_map', g:table_mode_map_prefix.'fe')
 call s:SetGlobalOptDefault('table_mode_echo_cell_map', g:table_mode_map_prefix.'?')
@@ -102,6 +104,8 @@ xnoremap <silent> <Plug>(table-mode-cell-text-object-i) :<C-U>call tablemode#spr
 
 nnoremap <silent> <Plug>(table-mode-delete-row) :<C-U>call tablemode#spreadsheet#DeleteRow()<CR>
 nnoremap <silent> <Plug>(table-mode-delete-column) :<C-U>call tablemode#spreadsheet#DeleteColumn()<CR>
+nnoremap <silent> <Plug>(table-mode-insert-column-before) :<C-U>call tablemode#spreadsheet#InsertColumn(0)<CR>
+nnoremap <silent> <Plug>(table-mode-insert-column-after) :<C-U>call tablemode#spreadsheet#InsertColumn(1)<CR>
 
 nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#formula#Add()<CR>
 nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#formula#EvaluateFormulaLine()<CR>

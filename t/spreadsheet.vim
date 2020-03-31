@@ -101,6 +101,21 @@ describe 'spreadsheet'
       call tablemode#spreadsheet#DeleteColumn()
       Expect tablemode#spreadsheet#ColumnCount('.') == 1
     end
+
+    it 'should successfully insert a column before the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(0)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline('.') == '|  | test11 | test12 |'
+    end
+
+    it 'should successfully insert a column after the cursor'
+      normal! $
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline('.') == '| test11 | test12 |  |'
+    end
   end
 
   describe 'Manipulation of tables with headers'
@@ -125,6 +140,21 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 3
       Expect getline(4) == '| 9        |        a | z        |'
     end
+
+    it 'should successfully insert a column before the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      call tablemode#spreadsheet#InsertColumn(0)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 5
+      Expect getline(4) == '|  |     1    | 9        |        a | z        |'
+    end
+
+    it 'should successfully insert a column after the cursor'
+      normal! $
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 5
+      Expect getline(4) == '|     1    | 9        |        a | z        |  |'
+    end
   end
 
   describe 'Repeated Manipulations'
@@ -145,6 +175,22 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 4
       .,.+1 call tablemode#spreadsheet#DeleteColumn()
       Expect tablemode#spreadsheet#ColumnCount('.') == 2
+    end
+
+    it 'should insert multiple columns before the cursor correctly'
+      call cursor(2, 7)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      execute "normal! 2:\<C-u>call tablemode#spreadsheet#InsertColumn(0)\<CR>"
+      Expect tablemode#spreadsheet#ColumnCount('.') == 6
+      Expect getline('.') == '| 1 |  |  | 9 | a | z |'
+    end
+
+    it 'should insert multiple columns after the cursor correctly'
+      call cursor(2, 7)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      execute "normal! 2:\<C-u>call tablemode#spreadsheet#InsertColumn(1)\<CR>"
+      Expect tablemode#spreadsheet#ColumnCount('.') == 6
+      Expect getline('.') == '| 1 | 9 |  |  | a | z |'
     end
   end
 end

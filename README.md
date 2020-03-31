@@ -177,6 +177,16 @@ it using `:TableModeRealign` or using the default mapping
       (provided you are within a table row), this can also be preceeded with a
       [count] to delete multiple columns.
 
+  - **Insert Column** :
+
+      You can use the <kbd>\<Leader\>tic</kbd> mapping defined by the option
+      `g:table_mode_insert_column_after_map` to insert a column after the
+      cursor (provided you are within a table row). Of course you can use the
+      <kbd>\<Leader\>tiC</kbd> mapping defined by
+      `g:table_mode_insert_column_before_map` to insert a column before the
+      cursor. Both can also be preceeded with a [count] to insert multiple
+      columns.
+
 ## Advanced Usage: Spreadsheet Capabilities
 
 ### Table Formulas

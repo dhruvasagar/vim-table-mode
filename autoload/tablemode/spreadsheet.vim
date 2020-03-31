@@ -187,6 +187,57 @@ function! tablemode#spreadsheet#DeleteRow() "{{{2
   endif
 endfunction
 
+function! tablemode#spreadsheet#InsertColumn(after) "{{{2
+  if tablemode#table#IsRow('.')
+    let quantity = v:count1
+
+    call tablemode#spreadsheet#MoveToFirstRowOrHeader()
+    call tablemode#spreadsheet#MoveToStartOfCell()
+    if a:after
+      execute "normal! f".g:table_mode_separator
+    endif
+    execute "normal! h\<C-V>"
+    call tablemode#spreadsheet#MoveToLastRow()
+    normal! y
+
+    let corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner')
+    if a:after
+      let cell_line = g:table_mode_separator.'  '
+      let header_line = corner.g:table_mode_fillchar.g:table_mode_fillchar
+    else
+      let cell_line = '  '.g:table_mode_separator
+      let header_line = g:table_mode_fillchar.g:table_mode_fillchar.corner
+    endif
+    let cell_line = escape(cell_line, '\&')
+    let header_line = escape(header_line, '\&')
+
+    " This transforms the character column before or after the column separator
+    " into a new column with separator.
+    " This requires, that
+    "      g:table_mode_separator != g:table_mode_fillchar
+    "   && g:table_mode_separator != g:table_mode_header_fillchar
+    "   && g:table_mode_separator != g:table_mode_align_char
+    call setreg(
+      \ '"',
+      \ substitute(
+      \   substitute(@", ' ', cell_line, 'g'),
+      \   '\V\C'.escape(g:table_mode_fillchar, '\')
+      \     .'\|'.escape(g:table_mode_header_fillchar, '\')
+      \     .'\|'.escape(g:table_mode_align_char, '\'),
+      \   header_line,
+      \   'g'),
+      \ 'b')
+
+    if a:after
+      execute "normal! ".quantity."p2l"
+    else
+      execute "normal! ".quantity."Pl"
+    endif
+
+    call tablemode#table#Realign('.')
+  endif
+endfunction
+
 function! tablemode#spreadsheet#Sum(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
