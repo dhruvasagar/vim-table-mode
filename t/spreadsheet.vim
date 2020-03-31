@@ -102,7 +102,31 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 1
     end
   end
-  
+
+  describe 'Manipulation of tables with headers'
+    before
+      new
+      normal! ggdG
+      let g:table_mode_header_fillchar = '='
+      read t/fixtures/complex_header.txt
+      call cursor(4, 7)
+    end
+
+    it 'should successfully delete a row '
+      Expect tablemode#spreadsheet#RowCount('.') == 5
+      call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 4
+      Expect getline(4) == '|     2    | 8        |        b | y        |'
+    end
+
+    it 'should successfully delete a column'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline(4) == '| 9        |        a | z        |'
+    end
+  end
+
   describe 'Repeated Manipulations'
     before
       new

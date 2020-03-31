@@ -31,9 +31,28 @@ function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
   endif
 endfunction
 
+function! tablemode#spreadsheet#GetFirstRowOrHeader(line) "{{{2
+  if tablemode#table#IsRow(a:line)
+    let line = tablemode#utils#line(a:line)
+
+    while tablemode#table#IsTable(line - 1)
+      let line -= 1
+    endwhile
+    if tablemode#table#IsBorder(line) | let line += 1 | endif
+
+    return line
+  endif
+endfunction
+
 function! tablemode#spreadsheet#MoveToFirstRow() "{{{2
   if tablemode#table#IsRow('.')
     call cursor(tablemode#spreadsheet#GetFirstRow('.'), col('.'))
+  endif
+endfunction
+
+function! tablemode#spreadsheet#MoveToFirstRowOrHeader() "{{{2
+  if tablemode#table#IsRow('.')
+    call cursor(tablemode#spreadsheet#GetFirstRowOrHeader('.'), col('.'))
   endif
 endfunction
 
@@ -142,7 +161,7 @@ function! tablemode#spreadsheet#DeleteColumn() "{{{2
   if tablemode#table#IsRow('.')
     for i in range(v:count1)
       call tablemode#spreadsheet#MoveToStartOfCell()
-      call tablemode#spreadsheet#MoveToFirstRow()
+      call tablemode#spreadsheet#MoveToFirstRowOrHeader()
       silent! execute "normal! h\<C-V>f" . g:table_mode_separator
       call tablemode#spreadsheet#MoveToLastRow()
       normal! d
