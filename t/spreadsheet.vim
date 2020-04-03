@@ -193,4 +193,37 @@ describe 'spreadsheet'
       Expect getline('.') == '| 1 | 9 |  |  | a | z |'
     end
   end
+
+  describe 'Unicode table separators'
+    before
+      new
+      normal! ggdG
+      read t/fixtures/table/sample_realign_unicode_after.txt
+      call cursor(2, 19)
+    end
+
+    it 'should not prevent the deletion of rows'
+      Expect tablemode#spreadsheet#RowCount('.') == 4
+      call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 3
+    end
+
+    it 'should not prevent the deletion of columns'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+    end
+
+    it 'should not prevent the insertion of columns before the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+    end
+
+    it 'should not prevent the insertion of columns after the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+    end
+  end
 end

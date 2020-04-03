@@ -46,13 +46,13 @@ endfunction
 
 function! tablemode#spreadsheet#MoveToFirstRow() "{{{2
   if tablemode#table#IsRow('.')
-    call cursor(tablemode#spreadsheet#GetFirstRow('.'), col('.'))
+    call tablemode#utils#MoveToLine(tablemode#spreadsheet#GetFirstRow('.'))
   endif
 endfunction
 
 function! tablemode#spreadsheet#MoveToFirstRowOrHeader() "{{{2
   if tablemode#table#IsRow('.')
-    call cursor(tablemode#spreadsheet#GetFirstRowOrHeader('.'), col('.'))
+    call tablemode#utils#MoveToLine(tablemode#spreadsheet#GetFirstRowOrHeader('.'))
   endif
 endfunction
 
@@ -71,7 +71,7 @@ endfunction
 
 function! tablemode#spreadsheet#MoveToLastRow() "{{{2
   if tablemode#table#IsRow('.')
-    call cursor(tablemode#spreadsheet#GetLastRow('.'), col('.'))
+    call tablemode#utils#MoveToLine(tablemode#spreadsheet#GetLastRow('.'))
   endif
 endfunction
 
