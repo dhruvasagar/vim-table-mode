@@ -132,13 +132,11 @@ function! tablemode#spreadsheet#ColumnNr(pos) "{{{2
     return 0
   endif
   let row_start = stridx(getline(pos[0]), g:table_mode_separator)
-  return tablemode#utils#strlen(substitute(getline(pos[0])[(row_start):pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
+  return tablemode#utils#SeparatorCount(getline(pos[0])[row_start:pos[1]-2])
 endfunction
 
 function! tablemode#spreadsheet#ColumnCount(line) "{{{2
-  let line = tablemode#utils#line(a:line)
-
-  return tablemode#utils#strlen(substitute(getline(line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
+  return tablemode#utils#SeparatorCount(getline(tablemode#utils#line(a:line))) - 1
 endfunction
 
 function! tablemode#spreadsheet#IsFirstCell() "{{{2
@@ -150,11 +148,15 @@ function! tablemode#spreadsheet#IsLastCell() "{{{2
 endfunction
 
 function! tablemode#spreadsheet#MoveToStartOfCell() "{{{2
-  if getline('.')[col('.')-1] ==# g:table_mode_separator && !tablemode#spreadsheet#IsLastCell()
-    normal! 2l
-  else
-    execute 'normal! F' . g:table_mode_separator . '2l'
+  if getline('.')[col('.')-1] !=# g:table_mode_separator || tablemode#spreadsheet#IsLastCell()
+    call search(g:table_mode_escaped_separator_regex, 'b', line('.'))
   endif
+  normal! 2l
+endfunction
+
+function! tablemode#spreadsheet#MoveToEndOfCell() "{{{2
+  call search(g:table_mode_escaped_separator_regex, 'z', line('.'))
+  normal! 2h
 endfunction
 
 function! tablemode#spreadsheet#DeleteColumn() "{{{2
@@ -162,7 +164,9 @@ function! tablemode#spreadsheet#DeleteColumn() "{{{2
     for i in range(v:count1)
       call tablemode#spreadsheet#MoveToStartOfCell()
       call tablemode#spreadsheet#MoveToFirstRowOrHeader()
-      silent! execute "normal! h\<C-V>f" . g:table_mode_separator
+      silent! execute "normal! h\<C-V>"
+      call tablemode#spreadsheet#MoveToEndOfCell()
+      normal! 2l
       call tablemode#spreadsheet#MoveToLastRow()
       normal! d
     endfor
@@ -194,7 +198,8 @@ function! tablemode#spreadsheet#InsertColumn(after) "{{{2
     call tablemode#spreadsheet#MoveToFirstRowOrHeader()
     call tablemode#spreadsheet#MoveToStartOfCell()
     if a:after
-      execute "normal! f".g:table_mode_separator
+      call tablemode#spreadsheet#MoveToEndOfCell()
+      normal! 3l
     endif
     execute "normal! h\<C-V>"
     call tablemode#spreadsheet#MoveToLastRow()

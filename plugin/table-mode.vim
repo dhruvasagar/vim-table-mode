@@ -18,7 +18,7 @@ endfunction
 call s:SetGlobalOptDefault('table_mode_corner', '+')
 call s:SetGlobalOptDefault('table_mode_verbose', 1)
 call s:SetGlobalOptDefault('table_mode_separator', '|')
-call s:SetGlobalOptDefault('table_mode_escaped_separator_regex', '\(\\\)\@<!' . g:table_mode_separator)
+call s:SetGlobalOptDefault('table_mode_escaped_separator_regex', '\V\C\\\@1<!'.escape(g:table_mode_separator, '\'))
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_header_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_map_prefix', '<Leader>t')

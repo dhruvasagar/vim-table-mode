@@ -60,3 +60,7 @@ function tablemode#utils#MoveToLine(line) "{{{2
     execute "normal! ".(-offset)."k"
   endif
 endfunction
+
+function! tablemode#utils#SeparatorCount(str)
+  return tablemode#utils#strlen(substitute(a:str, '\V\C\(\\' . escape(g:table_mode_separator, '\') . '\|\[^' . escape(g:table_mode_separator, ']^-\') . ']\)', '', 'g'))
+endfunction

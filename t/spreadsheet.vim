@@ -226,4 +226,34 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 4
     end
   end
+
+  describe 'Escaped table separators'
+    before
+      new
+      normal! ggdG
+      read t/fixtures/escaped_seperator.txt
+      call cursor(2, 3)
+    end
+
+    it 'should not prevent the deletion of rows'
+      Expect tablemode#spreadsheet#RowCount('.') == 7
+      call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 6
+      Expect getline('.') == '| a separator.      |                         |'
+    end
+
+    it 'should not prevent the deletion of columns'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 1
+      Expect getline('.') == '| It can be escaped by a \. |'
+    end
+
+    it 'should not prevent the insertion of columns'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline('.') == '| The \| works as   |  | It can be escaped by a \. |'
+    end
+  end
 end
