@@ -234,12 +234,13 @@ function! tablemode#spreadsheet#InsertColumn(after) "{{{2
       \ 'b')
 
     if a:after
-      execute "normal! ".quantity."p2l"
+      execute "normal! ".quantity."pl"
     else
-      execute "normal! ".quantity."Pl"
+      execute "normal! ".quantity."P"
     endif
 
     call tablemode#table#Realign('.')
+    startinsert
   endif
 endfunction
 
