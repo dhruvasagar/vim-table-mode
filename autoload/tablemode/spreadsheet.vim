@@ -31,9 +31,28 @@ function! tablemode#spreadsheet#GetFirstRow(line) "{{{2
   endif
 endfunction
 
+function! tablemode#spreadsheet#GetFirstRowOrHeader(line) "{{{2
+  if tablemode#table#IsRow(a:line)
+    let line = tablemode#utils#line(a:line)
+
+    while tablemode#table#IsTable(line - 1)
+      let line -= 1
+    endwhile
+    if tablemode#table#IsBorder(line) | let line += 1 | endif
+
+    return line
+  endif
+endfunction
+
 function! tablemode#spreadsheet#MoveToFirstRow() "{{{2
   if tablemode#table#IsRow('.')
-    call cursor(tablemode#spreadsheet#GetFirstRow('.'), col('.'))
+    call tablemode#utils#MoveToLine(tablemode#spreadsheet#GetFirstRow('.'))
+  endif
+endfunction
+
+function! tablemode#spreadsheet#MoveToFirstRowOrHeader() "{{{2
+  if tablemode#table#IsRow('.')
+    call tablemode#utils#MoveToLine(tablemode#spreadsheet#GetFirstRowOrHeader('.'))
   endif
 endfunction
 
@@ -52,7 +71,7 @@ endfunction
 
 function! tablemode#spreadsheet#MoveToLastRow() "{{{2
   if tablemode#table#IsRow('.')
-    call cursor(tablemode#spreadsheet#GetLastRow('.'), col('.'))
+    call tablemode#utils#MoveToLine(tablemode#spreadsheet#GetLastRow('.'))
   endif
 endfunction
 
@@ -113,13 +132,11 @@ function! tablemode#spreadsheet#ColumnNr(pos) "{{{2
     return 0
   endif
   let row_start = stridx(getline(pos[0]), g:table_mode_separator)
-  return tablemode#utils#strlen(substitute(getline(pos[0])[(row_start):pos[1]-2], '[^' . g:table_mode_separator . ']', '', 'g'))
+  return tablemode#utils#SeparatorCount(getline(pos[0])[row_start:pos[1]-2])
 endfunction
 
 function! tablemode#spreadsheet#ColumnCount(line) "{{{2
-  let line = tablemode#utils#line(a:line)
-
-  return tablemode#utils#strlen(substitute(getline(line), '[^' . g:table_mode_separator . ']', '', 'g'))-1
+  return tablemode#utils#SeparatorCount(getline(tablemode#utils#line(a:line))) - 1
 endfunction
 
 function! tablemode#spreadsheet#IsFirstCell() "{{{2
@@ -131,19 +148,25 @@ function! tablemode#spreadsheet#IsLastCell() "{{{2
 endfunction
 
 function! tablemode#spreadsheet#MoveToStartOfCell() "{{{2
-  if getline('.')[col('.')-1] ==# g:table_mode_separator && !tablemode#spreadsheet#IsLastCell()
-    normal! 2l
-  else
-    execute 'normal! F' . g:table_mode_separator . '2l'
+  if getline('.')[col('.')-1] !=# g:table_mode_separator || tablemode#spreadsheet#IsLastCell()
+    call search(g:table_mode_escaped_separator_regex, 'b', line('.'))
   endif
+  normal! 2l
+endfunction
+
+function! tablemode#spreadsheet#MoveToEndOfCell() "{{{2
+  call search(g:table_mode_escaped_separator_regex, 'z', line('.'))
+  normal! 2h
 endfunction
 
 function! tablemode#spreadsheet#DeleteColumn() "{{{2
   if tablemode#table#IsRow('.')
     for i in range(v:count1)
       call tablemode#spreadsheet#MoveToStartOfCell()
-      call tablemode#spreadsheet#MoveToFirstRow()
-      silent! execute "normal! h\<C-V>f" . g:table_mode_separator
+      call tablemode#spreadsheet#MoveToFirstRowOrHeader()
+      silent! execute "normal! h\<C-V>"
+      call tablemode#spreadsheet#MoveToEndOfCell()
+      normal! 2l
       call tablemode#spreadsheet#MoveToLastRow()
       normal! d
     endfor
@@ -165,6 +188,59 @@ function! tablemode#spreadsheet#DeleteRow() "{{{2
     endfor
 
     call tablemode#table#Realign('.')
+  endif
+endfunction
+
+function! tablemode#spreadsheet#InsertColumn(after) "{{{2
+  if tablemode#table#IsRow('.')
+    let quantity = v:count1
+
+    call tablemode#spreadsheet#MoveToFirstRowOrHeader()
+    call tablemode#spreadsheet#MoveToStartOfCell()
+    if a:after
+      call tablemode#spreadsheet#MoveToEndOfCell()
+      normal! 3l
+    endif
+    execute "normal! h\<C-V>"
+    call tablemode#spreadsheet#MoveToLastRow()
+    normal! y
+
+    let corner = tablemode#utils#get_buffer_or_global_option('table_mode_corner')
+    if a:after
+      let cell_line = g:table_mode_separator.'  '
+      let header_line = corner.g:table_mode_fillchar.g:table_mode_fillchar
+    else
+      let cell_line = '  '.g:table_mode_separator
+      let header_line = g:table_mode_fillchar.g:table_mode_fillchar.corner
+    endif
+    let cell_line = escape(cell_line, '\&')
+    let header_line = escape(header_line, '\&')
+
+    " This transforms the character column before or after the column separator
+    " into a new column with separator.
+    " This requires, that
+    "      g:table_mode_separator != g:table_mode_fillchar
+    "   && g:table_mode_separator != g:table_mode_header_fillchar
+    "   && g:table_mode_separator != g:table_mode_align_char
+    call setreg(
+      \ '"',
+      \ substitute(
+      \   substitute(@", ' ', cell_line, 'g'),
+      \   '\V\C'.escape(g:table_mode_fillchar, '\')
+      \     .'\|'.escape(g:table_mode_header_fillchar, '\')
+      \     .'\|'.escape(g:table_mode_align_char, '\'),
+      \   header_line,
+      \   'g'),
+      \ 'b')
+
+    if a:after
+      execute "normal! ".quantity."pl"
+    else
+      execute "normal! ".quantity."P"
+    endif
+
+    call tablemode#table#Realign('.')
+    startinsert
   endif
 endfunction
 

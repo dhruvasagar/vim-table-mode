@@ -51,3 +51,16 @@ endfunction
 function! tablemode#utils#get_buffer_or_global_option(table_option) "{{{2
   return get(b:, a:table_option, get(g:, a:table_option))
 endf
+
+function tablemode#utils#MoveToLine(line) "{{{2
+  let offset = tablemode#utils#line(a:line) - line('.')
+  if offset > 0
+    execute "normal! ".offset."j"
+  elseif offset < 0
+    execute "normal! ".(-offset)."k"
+  endif
+endfunction
+
+function! tablemode#utils#SeparatorCount(str)
+  return tablemode#utils#strlen(substitute(a:str, '\V\C\(\\' . escape(g:table_mode_separator, '\') . '\|\[^' . escape(g:table_mode_separator, ']^-\') . ']\)', '', 'g'))
+endfunction

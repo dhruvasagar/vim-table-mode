@@ -101,8 +101,62 @@ describe 'spreadsheet'
       call tablemode#spreadsheet#DeleteColumn()
       Expect tablemode#spreadsheet#ColumnCount('.') == 1
     end
+
+    it 'should successfully insert a column before the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(0)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline('.') == '|  | test11 | test12 |'
+    end
+
+    it 'should successfully insert a column after the cursor'
+      normal! $
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline('.') == '| test11 | test12 |  |'
+    end
   end
-  
+
+  describe 'Manipulation of tables with headers'
+    before
+      new
+      normal! ggdG
+      let g:table_mode_header_fillchar = '='
+      read t/fixtures/complex_header.txt
+      call cursor(4, 7)
+    end
+
+    it 'should successfully delete a row '
+      Expect tablemode#spreadsheet#RowCount('.') == 5
+      call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 4
+      Expect getline(4) == '|     2    | 8        |        b | y        |'
+    end
+
+    it 'should successfully delete a column'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline(4) == '| 9        |        a | z        |'
+    end
+
+    it 'should successfully insert a column before the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      call tablemode#spreadsheet#InsertColumn(0)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 5
+      Expect getline(4) == '|  |     1    | 9        |        a | z        |'
+    end
+
+    it 'should successfully insert a column after the cursor'
+      normal! $
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 5
+      Expect getline(4) == '|     1    | 9        |        a | z        |  |'
+    end
+  end
+
   describe 'Repeated Manipulations'
     before
       new
@@ -121,6 +175,85 @@ describe 'spreadsheet'
       Expect tablemode#spreadsheet#ColumnCount('.') == 4
       .,.+1 call tablemode#spreadsheet#DeleteColumn()
       Expect tablemode#spreadsheet#ColumnCount('.') == 2
+    end
+
+    it 'should insert multiple columns before the cursor correctly'
+      call cursor(2, 7)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      execute "normal! 2:\<C-u>call tablemode#spreadsheet#InsertColumn(0)\<CR>"
+      Expect tablemode#spreadsheet#ColumnCount('.') == 6
+      Expect getline('.') == '| 1 |  |  | 9 | a | z |'
+    end
+
+    it 'should insert multiple columns after the cursor correctly'
+      call cursor(2, 7)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+      execute "normal! 2:\<C-u>call tablemode#spreadsheet#InsertColumn(1)\<CR>"
+      Expect tablemode#spreadsheet#ColumnCount('.') == 6
+      Expect getline('.') == '| 1 | 9 |  |  | a | z |'
+    end
+  end
+
+  describe 'Unicode table separators'
+    before
+      new
+      normal! ggdG
+      read t/fixtures/table/sample_realign_unicode_after.txt
+      call cursor(2, 19)
+    end
+
+    it 'should not prevent the deletion of rows'
+      Expect tablemode#spreadsheet#RowCount('.') == 4
+      call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 3
+    end
+
+    it 'should not prevent the deletion of columns'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+    end
+
+    it 'should not prevent the insertion of columns before the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+    end
+
+    it 'should not prevent the insertion of columns after the cursor'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 4
+    end
+  end
+
+  describe 'Escaped table separators'
+    before
+      new
+      normal! ggdG
+      read t/fixtures/escaped_seperator.txt
+      call cursor(2, 3)
+    end
+
+    it 'should not prevent the deletion of rows'
+      Expect tablemode#spreadsheet#RowCount('.') == 7
+      call tablemode#spreadsheet#DeleteRow()
+      Expect tablemode#spreadsheet#RowCount('.') == 6
+      Expect getline('.') == '| a separator.      |                         |'
+    end
+
+    it 'should not prevent the deletion of columns'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#DeleteColumn()
+      Expect tablemode#spreadsheet#ColumnCount('.') == 1
+      Expect getline('.') == '| It can be escaped by a \. |'
+    end
+
+    it 'should not prevent the insertion of columns'
+      Expect tablemode#spreadsheet#ColumnCount('.') == 2
+      call tablemode#spreadsheet#InsertColumn(1)
+      Expect tablemode#spreadsheet#ColumnCount('.') == 3
+      Expect getline('.') == '| The \| works as   |  | It can be escaped by a \. |'
     end
   end
 end

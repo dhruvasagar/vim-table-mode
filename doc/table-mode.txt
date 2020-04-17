@@ -75,6 +75,10 @@ Manipulation of tables:
 	3. Delete Row : Delete an entire table row using
 	|table-mode-delete-row-map|
 
+	4. Insert Column : Insert a table column either before the cursor
+        using |table-mode-insert-column-before-map| or after the cusor using
+	|table-mode-insert-column-after-map|.
+
 Table Formulas:
 	Table Mode now has support for formulas like a spreadsheet. There
 	are 2 ways of defining formulas :
@@ -165,6 +169,12 @@ Overview:
         |table-mode-realign-map| ........ Set the realign mapping
         |table-mode-delete-row-map| ..... Set the delete row mapping
         |table-mode-delete-column-map| .. Set the delete column mapping
+        |table-mode-insert-column-before-map|
+                                        Set the insert column before the
+                                        cursor mapping
+        |table-mode-insert-column-after-map|
+                                        Set the insert column after the
+                                        cursor mapping
         |table-mode-add-formula-map| .... Set the add formula mapping
         |table-mode-eval-formula-map| ... Set the eval formula mapping
         |table-mode-echo-cell-map| ...... Set the echo cell mapping
@@ -286,6 +296,16 @@ g:table_mode_delete_column_map                    *table-mode-delete-column-map*
         Set this to configure the mapping for deleting a table column. >
                 let g:table_mode_delete_column_map = '<Leader>tdc'
 >
+g:table_mode_insert_column_before_map      *table-mode-insert-column-before-map*
+        Set this to configure the mapping for inserting a table column before
+        the cursor. >
+                let g:table_mode_insert_column_before_map = '<Leader>tiC'
+>
+g:table_mode_insert_column_after_map        *table-mode-insert-column-after-map*
+        Set this to configure the mapping for inserting a table column after
+        the cursor. >
+                let g:table_mode_insert_column_after_map = '<Leader>tic'
+>
 g:table_mode_add_formula_map                        *table-mode-add-formula-map*
         Set this to configure the mapping for adding a formula for a table
         cell. >
@@ -378,6 +398,16 @@ MAPPINGS						*table-mode-mappings*
 <Leader>tdc	Delete entire table column you are within. You can preceed it
 		with a [count] to delete multiple columns to the right. You
 		can change this using |table-mode-delete-column-map| option.
+
+                                    *table-mode-mappings-insert-column-before*
+<Leader>tiC	Insert a table column before the column you are within. You can
+		preceed it with a [count] to insert multiple columns. You can
+		change this using |table-mode-insert-column-before-map| option.
+
+                                     *table-mode-mappings-insert-column-after*
+<Leader>tic	Insert a table column after the column you are within. You can
+		preceed it with a [count] to insert multiple columns. You can
+		change this using |table-mode-insert-column-after-map| option.
 
                                              *table-mode-mappings-add-formula*
 <Leader>tfa	Add a fomula for the current table cell. This invokes
