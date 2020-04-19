@@ -1,4 +1,8 @@
 " Private Functions {{{1
+function! s:IsHTMLComment(line) "{{{2
+  return getline(a:line) =~# '^\s*<!--'
+endfunction
+
 function! s:IsFormulaLine(line) "{{{2
   return getline(a:line) =~# 'tmf: '
 endfunction
@@ -15,6 +19,7 @@ function! tablemode#spreadsheet#formula#Add(...) "{{{2
     let fr = '$' . row . ',' . colm . '=' . fr
     let fline = tablemode#spreadsheet#GetLastRow('.') + 1
     if tablemode#table#IsBorder(fline) | let fline += 1 | endif
+    if s:IsHTMLComment(fline) | let fline += 1 | endif
     let cursor_pos = [line('.'), col('.')]
     if getline(fline) =~# 'tmf: '
       " Comment line correctly
@@ -55,12 +60,40 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
     let [row, colm] = [0, str2nr(cell)]
   endif
 
+  if expr =~# 'Min(.*)'
+    let expr = substitute(expr, 'Min(\([^)]*\))', 'tablemode#spreadsheet#Min("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'Max(.*)'
+    let expr = substitute(expr, 'Max(\([^)]*\))', 'tablemode#spreadsheet#Max("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'CountE(.*)'
+    let expr = substitute(expr, 'CountE(\([^)]*\))', 'tablemode#spreadsheet#CountE("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'CountNE(.*)'
+    let expr = substitute(expr, 'CountNE(\([^)]*\))', 'tablemode#spreadsheet#CountNE("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'PercentE(.*)'
+    let expr = substitute(expr, 'PercentE(\([^)]*\))', 'tablemode#spreadsheet#PercentE("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'PercentNE(.*)'
+    let expr = substitute(expr, 'PercentNE(\([^)]*\))', 'tablemode#spreadsheet#PercentNE("\1",'.line.','.colm.')', 'g')
+  endif
+
   if expr =~# 'Sum(.*)'
     let expr = substitute(expr, 'Sum(\([^)]*\))', 'tablemode#spreadsheet#Sum("\1",'.line.','.colm.')', 'g')
   endif
 
   if expr =~# 'Average(.*)'
     let expr = substitute(expr, 'Average(\([^)]*\))', 'tablemode#spreadsheet#Average("\1",'.line.','.colm.')', 'g')
+  endif
+
+  if expr =~# 'AverageNE(.*)'
+    let expr = substitute(expr, 'AverageNE(\([^)]*\))', 'tablemode#spreadsheet#AverageNE("\1",'.line.','.colm.')', 'g')
   endif
 
   if expr =~# '\$\-\?\d\+,\-\?\d\+'
@@ -107,6 +140,7 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
   if tablemode#table#IsRow('.') " We're inside the table
     let line = tablemode#spreadsheet#GetLastRow('.')
     let fline = line + 1
+    if s:IsHTMLComment(fline) | let fline += 1 | endif
     if tablemode#table#IsBorder(fline) | let fline += 1 | endif
     while s:IsFormulaLine(fline)
       let exprs += split(matchstr(getline(fline), matchexpr), ';')
@@ -116,6 +150,7 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
     let fline = line('.')
     let line = line('.') - 1
     while s:IsFormulaLine(line) | let fline = line | let line -= 1 | endwhile
+    if s:IsHTMLComment(line) | let line -= 1 | endif
     if tablemode#table#IsBorder(line) | let line -= 1 | endif
     if tablemode#table#IsRow(line)
       " let exprs = split(matchstr(getline('.'), matchexpr), ';')

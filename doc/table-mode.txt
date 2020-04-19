@@ -120,8 +120,11 @@ Formula Expressions :
 	The formula can be a simple mathematical expression involving cells
 	which are also defined by the same format as that of the target cell.
 	Apart from basic mathematical expressions, table mode also provides
-	special functions 'Sum' and 'Average'. Both these functions take a
-	range as input. A range can be of two forms :
+	special functions 'Min', 'Max', 'CountE' (number of empty cells),
+        'CountNE' (number of non-empty cells), 'PercentE' (percent of empty
+        cells), 'PercentNE' (percent of non-empty cells), 'Sum', 'Average',
+        and 'AverageNE' (average over non-empty cells). All these functions
+        take a range as input. A range can be of two forms :
 
 		'n:m': This represents cells in the current column from row
 		'n' through 'm'. If 'm' is negative it represents 'm' row

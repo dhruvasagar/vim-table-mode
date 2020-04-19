@@ -1,4 +1,106 @@
 " Private Functions {{{1
+function! s:TotalCells(list) "{{{2
+  let result = 0
+  for item in a:list
+    if type(item) == type([])
+      let result += s:TotalCells(item)
+    else
+      let result += 1
+    endif
+  endfor
+  return result
+endfunction
+
+function! s:Min(list) "{{{2
+  let found = v:false
+  let result = 0
+  for item in a:list
+    if empty(item)
+      continue
+    endif
+    if type(item) == type(1) || type(item) == type(1.0)
+      if found == v:false || item < result
+        let found = v:true
+        let result = item
+      endif
+    elseif type(item) == type('')
+      let val = str2float(item)
+      if found == v:false || val < result
+        let found = v:true
+        let result = val
+      endif
+    elseif type(item) == type([])
+      let val = s:Min(item)
+      if found == v:false || val < result
+        let found = v:true
+        let result = val
+      endif
+    endif
+  endfor
+  return result
+endfunction
+
+function! s:Max(list) "{{{2
+  let found = v:false
+  let result = 0
+  for item in a:list
+    if empty(item)
+      continue
+    endif
+    if type(item) == type(1) || type(item) == type(1.0)
+      if found == v:false || item > result
+        let found = v:true
+        let result = item
+      endif
+    elseif type(item) == type('')
+      let val = str2float(item)
+      if found == v:false || val > result
+        let found = v:true
+        let result = val
+      endif
+    elseif type(item) == type([])
+      let val = s:Max(item)
+      if found == v:false || val > result
+        let found = v:true
+        let result = val
+      endif
+    endif
+  endfor
+  return result
+endfunction
+
+function! s:CountE(list) "{{{2
+  let result = 0
+  for item in a:list
+    if empty(item)
+      let result += 1
+    elseif type(item) == type([])
+      let result += s:CountE(item)
+    endif
+  endfor
+  return result
+endfunction
+
+function! s:CountNE(list) "{{{2
+  let result = 0
+  for item in a:list
+    if type(item) == type([])
+      let result += s:CountNE(item)
+    elseif !empty(item)
+      let result += 1
+    endif
+  endfor
+  return result
+endfunction
+
+function! s:PercentE(list) "{{{2
+  return (s:CountE(a:list)*100)/s:TotalCells(a:list)
+endfunction
+
+function! s:PercentNE(list) "{{{2
+  return (s:CountNE(a:list)*100)/s:TotalCells(a:list)
+endfunction
+
 function! s:Sum(list) "{{{2
   let result = 0.0
   for item in a:list
@@ -14,7 +116,11 @@ function! s:Sum(list) "{{{2
 endfunction
 
 function! s:Average(list) "{{{2
-  return s:Sum(a:list)/len(a:list)
+  return s:Sum(a:list)/s:TotalCells(a:list)
+endfunction
+
+function! s:AverageNE(list) "{{{2
+  return s:Sum(a:list)/s:CountNE(a:list)
 endfunction
 
 " Public Functions {{{1
@@ -244,6 +350,42 @@ function! tablemode#spreadsheet#InsertColumn(after) "{{{2
   endif
 endfunction
 
+function! tablemode#spreadsheet#Min(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:Min(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
+function! tablemode#spreadsheet#Max(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:Max(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
+function! tablemode#spreadsheet#CountE(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:CountE(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
+function! tablemode#spreadsheet#CountNE(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:CountNE(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
+function! tablemode#spreadsheet#PercentE(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:PercentE(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
+function! tablemode#spreadsheet#PercentNE(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:PercentNE(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
 function! tablemode#spreadsheet#Sum(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
@@ -254,6 +396,12 @@ function! tablemode#spreadsheet#Average(range, ...) abort "{{{2
   let args = copy(a:000)
   call insert(args, a:range)
   return s:Average(call('tablemode#spreadsheet#cell#GetCellRange', args))
+endfunction
+
+function! tablemode#spreadsheet#AverageNE(range, ...) abort "{{{2
+  let args = copy(a:000)
+  call insert(args, a:range)
+  return s:AverageNE(call('tablemode#spreadsheet#cell#GetCellRange', args))
 endfunction
 
 function! tablemode#spreadsheet#Sort(bang, ...) range "{{{2
