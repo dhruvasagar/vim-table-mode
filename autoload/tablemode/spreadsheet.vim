@@ -1,68 +1,104 @@
 " Private Functions {{{1
+function! s:TotalCells(list) "{{{2
+  let result = 0
+  for item in a:list
+    if type(item) == type([])
+      let result += s:TotalCells(item)
+    else
+      let result += 1
+    endif
+  endfor
+  return result
+endfunction
+
 function! s:Min(list) "{{{2
-  let result = v:null
+  let found = v:false
+  let result = 0
   for item in a:list
     if empty(item)
       continue
     endif
     if type(item) == type(1) || type(item) == type(1.0)
-      if result == v:null || item < result
+      if found == v:false || item < result
+        let found = v:true
         let result = item
       endif
     elseif type(item) == type('')
       let val = str2float(item)
-      if result == v:null || val < result
+      if found == v:false || val < result
+        let found = v:true
         let result = val
       endif
     elseif type(item) == type([])
-      let val = s:Sum(item)
-      if result == v:null || val < result
+      let val = s:Min(item)
+      if found == v:false || val < result
+        let found = v:true
         let result = val
       endif
     endif
   endfor
-  return result == v:null ? 0 : result
+  return result
 endfunction
 
 function! s:Max(list) "{{{2
-  let result = v:null
+  let found = v:false
+  let result = 0
   for item in a:list
     if empty(item)
       continue
     endif
     if type(item) == type(1) || type(item) == type(1.0)
-      if result == v:null || item > result
+      if found == v:false || item > result
+        let found = v:true
         let result = item
       endif
     elseif type(item) == type('')
       let val = str2float(item)
-      if result == v:null || val > result
+      if found == v:false || val > result
+        let found = v:true
         let result = val
       endif
     elseif type(item) == type([])
-      let val = s:Sum(item)
-      if result == v:null || val > result
+      let val = s:Max(item)
+      if found == v:false || val > result
+        let found = v:true
         let result = val
       endif
     endif
   endfor
-  return result == v:null ? 0 : result
+  return result
 endfunction
 
 function! s:CountE(list) "{{{2
-  return len(filter(copy(a:list), {_,l -> empty(l)}))
+  let result = 0
+  for item in a:list
+    if empty(item)
+      let result += 1
+    elseif type(item) == type([])
+      let result += s:CountE(item)
+    endif
+  endfor
+  return result
 endfunction
 
 function! s:CountNE(list) "{{{2
-  return len(a:list)-s:CountE(a:list)
+  let result = 0
+  for item in a:list
+    if type(item) == type([])
+      let result += s:CountNE(item)
+    elseif !empty(item)
+      let result += 1
+    endif
+  endfor
+  return result
 endfunction
 
 function! s:PercentE(list) "{{{2
-  return (s:CountE(a:list)*100)/len(a:list)
+  return (s:CountE(a:list)*100)/s:TotalCells(a:list)
 endfunction
 
 function! s:PercentNE(list) "{{{2
-  return (s:CountNE(a:list)*100)/len(a:list)
+  return (s:CountNE(a:list)*100)/s:TotalCells(a:list)
 endfunction
 
 function! s:Sum(list) "{{{2
@@ -80,7 +116,7 @@ function! s:Sum(list) "{{{2
 endfunction
 
 function! s:Average(list) "{{{2
-  return s:Sum(a:list)/len(a:list)
+  return s:Sum(a:list)/s:TotalCells(a:list)
 endfunction
 
 function! s:AverageNE(list) "{{{2

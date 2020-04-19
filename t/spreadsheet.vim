@@ -74,10 +74,92 @@ describe 'spreadsheet'
         call cursor(1,3)
         Expect tablemode#spreadsheet#Average('1:2') == 2.0
         Expect tablemode#spreadsheet#Average('1,1:1,2') == 1.5
-        Expect tablemode#spreadsheet#Average('1,1:2,2') == 5.0
+        Expect tablemode#spreadsheet#Average('1,1:2,2') == 2.5
         call cursor(2,7)
         Expect tablemode#spreadsheet#Average('1:2') == 3.0
         Expect tablemode#spreadsheet#Average('2,1:2,2') == 3.5
+      end
+
+      it 'should return the min of cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#Min('1:2') == 1.0
+        Expect tablemode#spreadsheet#Min('1,1:1,2') == 1.0
+        Expect tablemode#spreadsheet#Min('1,1:2,2') == 1.0
+        call cursor(2,7)
+        Expect tablemode#spreadsheet#Min('1:2') == 2.0
+        Expect tablemode#spreadsheet#Min('2,1:2,2') == 3.0
+      end
+
+      it 'should return the max of cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#Max('1:2') == 3.0
+        Expect tablemode#spreadsheet#Max('1,1:1,2') == 2.0
+        Expect tablemode#spreadsheet#Max('1,1:2,2') == 4.0
+        call cursor(2,7)
+        Expect tablemode#spreadsheet#Max('1:2') == 4.0
+        Expect tablemode#spreadsheet#Max('2,1:2,2') == 4.0
+      end
+    end
+
+    describe 'Count'
+      before
+        new
+        read t/fixtures/cell/counts.txt
+      end
+
+      it 'should return the count of empty cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#CountE('1:3') == 1
+        Expect tablemode#spreadsheet#CountE('1,1:1,3') == 0
+        Expect tablemode#spreadsheet#CountE('2,1:2,3') == 2
+        Expect tablemode#spreadsheet#CountE('1,1:3,3') == 2
+        call cursor(3,11)
+        Expect tablemode#spreadsheet#CountE('1:3') == 1
+        Expect tablemode#spreadsheet#CountE('3,1:3,3') == 0
+      end
+
+      it 'should return the count of not-empty cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#CountNE('1:3') == 2
+        Expect tablemode#spreadsheet#CountNE('1,1:1,3') == 3
+        Expect tablemode#spreadsheet#CountNE('2,1:2,3') == 1
+        Expect tablemode#spreadsheet#CountNE('1,1:3,3') == 7
+        call cursor(3,11)
+        Expect tablemode#spreadsheet#CountNE('1:3') == 2
+        Expect tablemode#spreadsheet#CountNE('3,1:3,3') == 3
+      end
+
+      it 'should return the percent count of empty cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#PercentE('1:3') == 33
+        Expect tablemode#spreadsheet#PercentE('1,1:1,3') == 0
+        Expect tablemode#spreadsheet#PercentE('2,1:2,3') == 66
+        Expect tablemode#spreadsheet#PercentE('1,1:3,3') == 22
+        call cursor(3,11)
+        Expect tablemode#spreadsheet#PercentE('1:3') == 33
+        Expect tablemode#spreadsheet#PercentE('3,1:3,3') == 0
+      end
+
+      it 'should return the percent count of not-empty cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#PercentNE('1:3') == 66
+        Expect tablemode#spreadsheet#PercentNE('1,1:1,3') == 100
+        Expect tablemode#spreadsheet#PercentNE('2,1:2,3') == 33
+        Expect tablemode#spreadsheet#PercentNE('1,1:3,3') == 77
+        call cursor(3,11)
+        Expect tablemode#spreadsheet#PercentNE('1:3') == 66
+        Expect tablemode#spreadsheet#PercentNE('3,1:3,3') == 100
+      end
+
+      it 'should return the average of not-empty cell range'
+        call cursor(1,3)
+        Expect tablemode#spreadsheet#AverageNE('1:3') == 2.5
+        Expect tablemode#spreadsheet#AverageNE('1,1:1,3') == 2.0
+        Expect tablemode#spreadsheet#AverageNE('2,1:2,3') == 0.0
+        Expect tablemode#spreadsheet#AverageNE('1,1:3,3') == 3.0
+        call cursor(3,11)
+        Expect tablemode#spreadsheet#AverageNE('1:3') == 4.5
+        Expect tablemode#spreadsheet#AverageNE('3,1:3,3') == 5.0
       end
     end
   end
