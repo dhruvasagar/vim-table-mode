@@ -50,13 +50,7 @@ function! s:Max(list) "{{{2
 endfunction
 
 function! s:CountE(list) "{{{2
-  let result = 0
-  for item in a:list
-    if empty(item)
-      let result += 1
-    endif
-  endfor
-  return result
+  return len(filter(copy(a:list), {_,l -> empty(l)}))
 endfunction
 
 function! s:CountNE(list) "{{{2

@@ -1,4 +1,8 @@
 " Private Functions {{{1
+function! s:IsHTMLComment(line) "{{{2
+  return getline(a:line) =~# '^\s*<!--'
+endfunction
+
 function! s:IsFormulaLine(line) "{{{2
   return getline(a:line) =~# 'tmf: '
 endfunction
@@ -15,9 +19,7 @@ function! tablemode#spreadsheet#formula#Add(...) "{{{2
     let fr = '$' . row . ',' . colm . '=' . fr
     let fline = tablemode#spreadsheet#GetLastRow('.') + 1
     if tablemode#table#IsBorder(fline) | let fline += 1 | endif
-    if getline(fline) =~# '^\s*<!--' " ignore line with an HTML comment tag
-      let fline += 1
-    endif
+    if s:IsHTMLComment(fline) | let fline += 1 | endif
     let cursor_pos = [line('.'), col('.')]
     if getline(fline) =~# 'tmf: '
       " Comment line correctly
@@ -138,9 +140,7 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
   if tablemode#table#IsRow('.') " We're inside the table
     let line = tablemode#spreadsheet#GetLastRow('.')
     let fline = line + 1
-    if getline(fline) =~# '^\s*<!--' " ignore line with an HTML comment tag
-      let fline += 1
-    endif
+    if s:IsHTMLComment(fline) | let fline += 1 | endif
     if tablemode#table#IsBorder(fline) | let fline += 1 | endif
     while s:IsFormulaLine(fline)
       let exprs += split(matchstr(getline(fline), matchexpr), ';')
@@ -150,9 +150,7 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
     let fline = line('.')
     let line = line('.') - 1
     while s:IsFormulaLine(line) | let fline = line | let line -= 1 | endwhile
-    if getline(fline) =~# '^\s*<!--' " ignore line with an HTML comment tag
-      let line -= 1
-    endif
+    if s:IsHTMLComment(line) | let line -= 1 | endif
     if tablemode#table#IsBorder(line) | let line -= 1 | endif
     if tablemode#table#IsRow(line)
       " let exprs = split(matchstr(getline('.'), matchexpr), ';')
