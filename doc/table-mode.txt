@@ -1,7 +1,7 @@
 *table-mode.txt*			Table Mode for easy table formatting
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-                               VERSION 4.7.0
+                               VERSION 4.7.1
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -354,6 +354,9 @@ g:table_mode_update_time                              *table-mode-update-time*
         used in combination with |table-mode-auto-align|. >
                 let g:table_mode_update_time = 500
 <
+
+g:table_mode_disable_tableize_mappings  *table-mode-disable-tableize-mappings*
+        Disables mappings for tableize
 
 ===============================================================================
 MAPPINGS						*table-mode-mappings*

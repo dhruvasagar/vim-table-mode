@@ -28,6 +28,7 @@ call s:SetGlobalOptDefault('table_mode_delimiter', ',')
 call s:SetGlobalOptDefault('table_mode_corner_corner', '|')
 call s:SetGlobalOptDefault('table_mode_align_char', ':')
 call s:SetGlobalOptDefault('table_mode_disable_mappings', 0)
+call s:SetGlobalOptDefault('table_mode_disable_tableize_mappings', 0)
 
 call s:SetGlobalOptDefault('table_mode_motion_up_map', '{<Bar>')
 call s:SetGlobalOptDefault('table_mode_motion_down_map', '}<Bar>')
@@ -114,13 +115,15 @@ nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 
 nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort('')<CR>
 
-if !hasmapto('<Plug>(table-mode-tableize)')
-  exec "nmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
-  exec "xmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
-endif
+if !g:table_mode_disable_tableize_mappings 
+  if !hasmapto('<Plug>(table-mode-tableize)')
+    exec "nmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
+    exec "xmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
+  endif
 
-if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
-  exec "xmap" g:table_mode_tableize_d_map "<Plug>(table-mode-tableize-delimiter)"
+  if !hasmapto('<Plug>(table-mode-tableize-delimiter)')
+    exec "xmap" g:table_mode_tableize_d_map "<Plug>(table-mode-tableize-delimiter)"
+  endif
 endif
 
 augroup TableMode "{{{1
