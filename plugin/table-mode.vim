@@ -115,7 +115,7 @@ nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
 
 nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort('')<CR>
 
-if !g:table_mode_disable_tableize_mappings 
+if !g:table_mode_disable_tableize_mappings
   if !hasmapto('<Plug>(table-mode-tableize)')
     exec "nmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
     exec "xmap" g:table_mode_tableize_map "<Plug>(table-mode-tableize)"
