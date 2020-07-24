@@ -26,6 +26,8 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
    ~/.vim/autoload/, ~/.vim/plugin and ~/.vim/doc under UNIX or
    vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
    restart VIM
+   
+4. Alternatively, if using <a href="https://github.com/junegunn/vim-plug">vim-plug</a>, then add `Plug 'dhruvasagar/vim-table-mode'` to your ~/.vimrc. 
 
 ### Creating table on-the-fly
 
