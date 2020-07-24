@@ -31,9 +31,8 @@ $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-m
 
 To start using the plugin in the on-the-fly mode use `:TableModeToggle` mapped to <kbd>\<Leader\>tm</kbd> by default (which means <kbd>\\</kbd> <kbd>t</kbd> <kbd>m</kbd> if you didn't override the <Leader> by `:let mapleader = ','` to have <kbd>,</kbd> <kbd>t</kbd> <kbd>m</kbd>).
 
-> Tip :
-> You can use the following to quickly enable / disable table mode in insert
-> mode by using `||` or `__` :
+Tip:
+You can use the following to quickly enable / disable table mode in insert mode by using `||` or `__`:
 > ```vim
 > function! s:isAtStartOfLine(mapping)
 >   let text_before_cursor = getline('.')[0 : col('.')-1]
@@ -115,34 +114,33 @@ To get ReST-compatible tables use
 
 Markdown and ReST filetypes have automatically configured corners.
 
-   You can also define in a table header border how it's content should be
+   You can also define in a table header border how its content should be
    aligned, whether center, right or left by using a `:` character defined by
    `g:table_mode_align_char` option.
 
 If you manipulate the table when table mode is disabled or copy paste a table
 from clipboard from outside and it ends up being misaligned, you can realign
 it using `:TableModeRealign` or using the default mapping
-<kbd>\<Leader\>tr</kbd> defined by `g:table_mode_relign_map` option.
+<kbd>\<Leader\>tr</kbd> (defined by the option `g:table_mode_relign_map`).
 
 ### Formatting existing content into a table
 
-   Table Mode wouldn't justify it's name if it didn't allow formatting
-   existing content into a table. And it does as promised. Like table creation
-   on the fly as you type, formatting existing content into a table is equally
-   simple. You can visually select multiple lines and call `:Tableize` on it,
-   or alternatively use the mapping <kbd>\<Leader\>tt</kbd> defined by the
-   `g:table_mode_tableize_map` option which would convert CSV (Comma Separated
-   Value) data into a table and use `,` defined by `g:table_mode_delimiter`
-   option as the delimiter.
+   Table Mode wouldn't justify its name if it didn't allow formatting
+   existing content into a table. And it does as promised. Like table creation typing on the fly, 
+   formatting existing content into a table is equally
+   simple. You can visually select multiple lines and call `:Tableize` on it.
+   Alternatively, the mapping <kbd>\<Leader\>tt</kbd> can be used (defined by the
+   option `g:table_mode_tableize_map`). This converts CSV (Comma-separated
+   Values) data into a table. 
 
    If however you wish to use a different delimiter, you can use the command
-   `:Tableize/{pattern}` in a similar fashion as you use tabular (eg.
+   `:Tableize/{pattern}` in a similar fashion as you tabulate (e.g.
    `:Tableize/;` uses ';' as the delimiter) or use the mapping <kbd>\<Leader\>T</kbd>
-   defined by `g:table_mode_tableize_op_map` option which takes input in the
+   (defined by the option `g:table_mode_tableize_op_map`) which takes input in the
    cmd-line and uses the `{pattern}` input as the delimiter.
 
-   `:Tableize` also accepts a range and so you can also call it by giving
-   lines manually like `:line1,line2Tableize`, but this is not very intuitive.
+   `:Tableize` also accepts a range. Call it by giving
+   lines manually like `:line1,line2Tableize`. However this may not be intuitive.
    You can use the mapping <kbd>\<Leader\>T</kbd> with a `[count]` to apply it to the
    next `[count]` lines in standard vim style.
 
@@ -160,27 +158,27 @@ it using `:TableModeRealign` or using the default mapping
 
       Tableize provides a text object for manipulating table cells. Following
       the vim philosophy the you have <kbd>i|</kbd> & <kbd>a|</kbd> for the
-      inner and around (including the immidiate right table separator) the
+      inner and around (including the immediate right table separator) the
       table cell.
 
   - **Delete Row** :
 
-      You can use the <kbd>\<Leader\>tdd</kbd> mapping defined by the option
-      `g:table_mode_delete_row_map` to delete the current table row (provided
-      you are within a table row), this can be preceeded with a [count] to
-      delete multiple rows just like you would with 'dd'.
+      You can use the <kbd>\<Leader\>tdd</kbd> mapping (defined by the option
+      `g:table_mode_delete_row_map`) to delete the current table row (provided
+      you are within a table row). This can be preceeded with a `[count]` to
+      delete multiple rows as per Vim command grammar.
 
   - **Delete Column** :
 
-      You can use the <kbd>\<Leader\>tdc</kbd> mapping defined by the option
-      `g:table_mode_delete_column_map` to delete the entire current column
+      You can use the <kbd>\<Leader\>tdc</kbd> mapping (defined by the option
+      `g:table_mode_delete_column_map`) to delete the entire current column
       (provided you are within a table row), this can also be preceeded with a
-      [count] to delete multiple columns.
+      `[count]` to delete multiple columns.
 
   - **Insert Column** :
 
-      You can use the <kbd>\<Leader\>tic</kbd> mapping defined by the option
-      `g:table_mode_insert_column_after_map` to insert a column after the
+      You can use the <kbd>\<Leader\>tic</kbd> mapping (defined by the option
+      `g:table_mode_insert_column_after_map`) to insert a column after the
       cursor (provided you are within a table row). Of course you can use the
       <kbd>\<Leader\>tiC</kbd> mapping defined by
       `g:table_mode_insert_column_before_map` to insert a column before the
@@ -195,7 +193,7 @@ it using `:TableModeRealign` or using the default mapping
   of defining formulas :
 
   - You can add formulas using `:TableAddFormula` or the mapping <kbd>\<Leader\>tfa</kbd>
-    defined by the option `g:table_mode_add_formula_map` from within a table
+    (defined by the option `g:table_mode_add_formula_map`) from within a table
     cell, which will ask for input on the cmd-line with a `f=` prompt. The
     input formula will be appended to the formula line if one exists or a new
     one will be created with the input formula taking the current cell as the
@@ -208,7 +206,7 @@ it using `:TableModeRealign` or using the default mapping
     formulas on the line separated with a ';' eg) `# tmf: $3=$2*$1;$4=$3/3.14`
 
   You can evaluate the formula line using `:TableEvalFormulaLine` or the
-  mapping <kbd>\<Leader\>tfe</kbd> defined by the option `g:table_mode_eval_expr_map`
+  mapping <kbd>\<Leader\>tfe</kbd> (defined by the option `g:table_mode_eval_expr_map`)
   from anywhere inside the table or while on the formula line.
 
   NOTE: You can now use the mapping <kbd>\<Leader\>t?</kbd>
@@ -233,7 +231,7 @@ it using `:TableModeRealign` or using the default mapping
     which are also defined by the same format as that of the target cell.  You
     can use all native vim functions within the formula. Apart from that table
     mode also provides 2 special functions `Sum` and `Average`. Both these
-    functions take a range as input. A range can be of two forms :
+    functions take a range as input. A range can be of two forms:
 
       - `r1:r2`: This represents cells in the current column from row `r1`
         through `r2`. If `r2` is negative it represents `r2` rows above the
