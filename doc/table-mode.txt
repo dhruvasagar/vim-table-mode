@@ -53,11 +53,10 @@ Tableize content:
 
 Move between cells :
 	Now you can move between cells using table mode motions
-	'<Leader>t[hjkl]' to move left | down | up | right cells respectively.
-	You can use |table-mode-map-prefix| option to define the prefix
-	mapping to be used before 'hjkl'. The left | right motions wrap around
-	the table and move to the next | previous row after the last | first
-	cell in the current row if one exists.
+	'[|, ]|, {|, }|' to move left | down | up | right cells respectively.
+	The left | right motions wrap around the table and move to the next
+	| previous row after the last | first cell in the current row if one
+	exists.
 
 Manipulation of tables:
 	Tableize provides 3 easy ways to quickly manipulate tables.
