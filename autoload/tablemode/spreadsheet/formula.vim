@@ -109,15 +109,17 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
     call tablemode#spreadsheet#cell#SetCell(eval(expr), line, row, colm)
   else
     let [row, line] = [1, tablemode#spreadsheet#GetFirstRow(line)]
-    while tablemode#table#IsRow(line)
-      let texpr = expr
-      if expr =~# '\$'
-        let texpr = substitute(texpr, '\$\(\d\+\)',
-              \ '\=str2float(tablemode#spreadsheet#cell#GetCells(line, row, submatch(1)))', 'g')
-      endif
+    while !s:IsFormulaLine(line)
+      if !tablemode#table#IsBorder(line)
+        let texpr = expr
+        if expr =~# '\$'
+          let texpr = substitute(texpr, '\$\(\d\+\)',
+                \ '\=str2float(tablemode#spreadsheet#cell#GetCells(line, row, submatch(1)))', 'g')
+        endif
 
-      call tablemode#spreadsheet#cell#SetCell(eval(texpr), line, row, colm)
-      let row += 1
+        call tablemode#spreadsheet#cell#SetCell(eval(texpr), line, row, colm)
+        let row += 1
+      endif
       let line += 1
     endwhile
   endif
