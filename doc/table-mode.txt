@@ -1,7 +1,7 @@
 *table-mode.txt*			Table Mode for easy table formatting
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-                               VERSION 4.7.2
+                               VERSION 4.7.3
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -184,6 +184,7 @@ Overview:
         |table-mode-syntax| ............. Control table mode syntax
         |table-mode-auto-align| ......... Set if the table mode should auto
                                         align as you type
+        |table-mode-tableize-auto-border| Set if tableize adds row borders
 
 g:loaded_table_mode					*table-mode-loaded*
 	Use this option to disable the plugin: >
@@ -357,6 +358,11 @@ g:table_mode_update_time                              *table-mode-update-time*
 g:table_mode_disable_tableize_mappings  *table-mode-disable-tableize-mappings*
         Disables mappings for tableize. >
                 let g:table_mode_disable_tableize_mappings = 0
+<
+                                             *table-mode-tableize-auto-border*
+g:table_mode_tableize_auto_border
+        Enables adding row borders to tables when created using tableize. >
+                let g:table_mode_tableize_auto_border = 0
 <
 
 ===============================================================================

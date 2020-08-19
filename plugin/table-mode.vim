@@ -53,6 +53,7 @@ call s:SetGlobalOptDefault('table_mode_tableize_d_map', '<Leader>T')
 call s:SetGlobalOptDefault('table_mode_syntax', 1)
 call s:SetGlobalOptDefault('table_mode_auto_align', 1)
 call s:SetGlobalOptDefault('table_mode_update_time', 500)
+call s:SetGlobalOptDefault('table_mode_tableize_auto_border', 0)
 
 function! s:TableEchoCell() "{{{1
   if tablemode#table#IsRow('.')

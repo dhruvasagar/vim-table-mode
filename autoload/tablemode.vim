@@ -206,9 +206,24 @@ endfunction
 
 function! tablemode#TableizeRange(...) range "{{{2
   let lnum = a:firstline
-  while lnum < (a:firstline + (a:lastline - a:firstline + 1))
+  let total = (a:lastline - a:firstline + 1)
+  echom total
+  let cntr = 1
+  while cntr <= total
     call s:Tableizeline(lnum, a:1)
     undojoin
+    if g:table_mode_tableize_auto_border
+      if cntr == 1
+        normal! O
+        call tablemode#table#AddBorder('.')
+        normal! j
+        let lnum += 1
+      endif
+      normal! o
+      call tablemode#table#AddBorder('.')
+      let lnum += 1
+    endif
+    let cntr += 1
     let lnum += 1
   endwhile
 
