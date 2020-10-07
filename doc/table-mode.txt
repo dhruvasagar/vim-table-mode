@@ -147,7 +147,8 @@ Overview:
 	|table-mode-verbose| ............ Notify when Enabled/Disabled.
 	|table-mode-corner| ............. Set corner character.
 	|table-mode-separator| .......... Set separator character.
-	|table-mode-fillchar| ........... Set table fillchar character.
+	|table-mode-fillchar| ........... Set table border fillchar character.
+	|table-mode-header-fillchar| .... Set table header border fillchar character.
 	|table-mode-map-prefix| ......... Set prefix for table mode commands.
 	|table-mode-toggle-map| ......... Set table mode toggle mapping.
 	|table-mode-always-active| ...... Set table mode to always enabled.
@@ -209,6 +210,11 @@ g:table_mode_separator					*table-mode-separator*
 	table row in insert mode.
 
 g:table_mode_fillchar					*table-mode-fillchar*
+	Use this option to define the table border fill character: >
+		let g:table_mode_fillchar = '-'
+<
+
+g:table_mode_header_fillchar				*table-mode-header-fillchar*
 	Use this option to define the table header border fill character: >
 		let g:table_mode_fillchar = '-'
 <
