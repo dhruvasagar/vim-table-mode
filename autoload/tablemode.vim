@@ -22,13 +22,9 @@ function! s:UnMap(map, mode) "{{{2
 endfunction
 
 function! s:ToggleMapping() "{{{2
-  let separator_map = g:table_mode_separator
-  " '|' is a special character, we need to map <Bar> instead
-  if g:table_mode_separator ==# '|' | let separator_map = '<Bar>' | endif
-
   if !g:table_mode_disable_mappings
     if tablemode#IsActive()
-      call s:Map('<Plug>(table-mode-tableize)', separator_map, 'i')
+      call s:Map('<Plug>(table-mode-tableize)', g:table_mode_separator_map, 'i')
       call s:Map('<Plug>(table-mode-motion-up)', g:table_mode_motion_up_map, 'n')
       call s:Map('<Plug>(table-mode-motion-down)', g:table_mode_motion_down_map, 'n')
       call s:Map('<Plug>(table-mode-motion-left)', g:table_mode_motion_left_map, 'n')
@@ -47,7 +43,7 @@ function! s:ToggleMapping() "{{{2
       call s:Map('<Plug>(table-mode-echo-cell)', g:table_mode_echo_cell_map, 'n')
       call s:Map('<Plug>(table-mode-sort)', g:table_mode_sort_map, 'n')
     else
-      call s:UnMap(separator_map, 'i')
+      call s:UnMap(g:table_mode_separator_map, 'i')
       call s:UnMap(g:table_mode_motion_up_map, 'n')
       call s:UnMap(g:table_mode_motion_down_map, 'n')
       call s:UnMap(g:table_mode_motion_left_map, 'n')
@@ -207,7 +203,7 @@ endfunction
 function! tablemode#TableizeRange(...) range "{{{2
   let lnum = a:firstline
   let total = (a:lastline - a:firstline + 1)
-  echom total
+  " echom total
   let cntr = 1
   while cntr <= total
     call s:Tableizeline(lnum, a:1)
