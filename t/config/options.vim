@@ -1,5 +1,6 @@
 let g:table_mode_corner = '+'
 let g:table_mode_separator = '|'
+let g:table_mode_separator_map = '<Bar>'
 let g:table_mode_escaped_separator_regex = '\V\C\\\@1<!|'
 let g:table_mode_fillchar = '-'
 let g:table_mode_header_fillchar = '-'

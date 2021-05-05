@@ -18,6 +18,13 @@ endfunction
 call s:SetGlobalOptDefault('table_mode_corner', '+')
 call s:SetGlobalOptDefault('table_mode_verbose', 1)
 call s:SetGlobalOptDefault('table_mode_separator', '|')
+" '|' is a special character, we need to map <Bar> instead
+" the character to map from
+let g:table_mode_separator_map = get(g:, 'table_mode_separator_map', g:table_mode_separator)
+if g:table_mode_separator_map ==# '|' | let g:table_mode_separator_map = '<Bar>' | endif
+" the character to map to (when inserting the separator)
+let g:table_mode_separator_map_target = g:table_mode_separator
+if g:table_mode_separator_map_target ==# '|' | let g:table_mode_separator_map_target = '<Bar>' | endif
 call s:SetGlobalOptDefault('table_mode_escaped_separator_regex', '\V\C\\\@1<!'.escape(g:table_mode_separator, '\'))
 call s:SetGlobalOptDefault('table_mode_fillchar', '-')
 call s:SetGlobalOptDefault('table_mode_header_fillchar', '-')
@@ -62,19 +69,15 @@ function! s:TableEchoCell() "{{{1
 endfunction
 
 " Define Commands & Mappings {{{1
+
 if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent>" g:table_mode_map_prefix . g:table_mode_toggle_map ":<C-U>call tablemode#Toggle()<CR>"
   command! -nargs=0 TableModeToggle call tablemode#Toggle()
   command! -nargs=0 TableModeEnable call tablemode#Enable()
   command! -nargs=0 TableModeDisable call tablemode#Disable()
 else
-  let table_mode_separator_map = g:table_mode_separator
-  " '|' is a special character, we need to map <Bar> instead
-  if g:table_mode_separator ==# '|' | let table_mode_separator_map = '<Bar>' | endif
-
-  execute "inoremap <silent> " . table_mode_separator_map . ' ' .
-        \ table_mode_separator_map . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
-  unlet table_mode_separator_map
+  execute "inoremap <silent> " . g:table_mode_separator_map . ' ' .
+        \ g:table_mode_separator_map_target . "<Esc>:call tablemode#TableizeInsertMode()<CR>a"
 endif
 " }}}2
 
@@ -84,9 +87,7 @@ command! TableAddFormula call tablemode#spreadsheet#formula#Add()
 command! TableModeRealign call tablemode#table#Realign('.')
 command! TableEvalFormulaLine call tablemode#spreadsheet#formula#EvaluateFormulaLine()
 
-" '|' is a special character, we need to map <Bar> instead
-if g:table_mode_separator ==# '|' | let separator_map = '<Bar>' | endif
-execute 'inoremap <silent> <Plug>(table-mode-tableize)' separator_map . '<Esc>:call tablemode#TableizeInsertMode()<CR>a'
+execute 'inoremap <silent> <Plug>(table-mode-tableize)' g:table_mode_separator_map . '<Esc>:call tablemode#TableizeInsertMode()<CR>a'
 
 nnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
 xnoremap <silent> <Plug>(table-mode-tableize) :Tableize<CR>
