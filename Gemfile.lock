@@ -18,7 +18,7 @@ DEPENDENCIES
   vim-flavor (~> 1.1)
 
 RUBY VERSION
-   ruby 2.5.3p105
+   ruby 3.0.0p0
 
 BUNDLED WITH
-   2.0.1
+   2.2.3
