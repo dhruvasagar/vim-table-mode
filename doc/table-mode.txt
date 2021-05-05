@@ -147,6 +147,7 @@ Overview:
 	|table-mode-verbose| ............ Notify when Enabled/Disabled.
 	|table-mode-corner| ............. Set corner character.
 	|table-mode-separator| .......... Set separator character.
+	|table-mode-separator-map| ...... Set separator mapping.
 	|table-mode-fillchar| ........... Set table border fillchar character.
 	|table-mode-header-fillchar| .... Set table header border fillchar character.
 	|table-mode-map-prefix| ......... Set prefix for table mode commands.
@@ -208,6 +209,11 @@ g:table_mode_separator					*table-mode-separator*
 <
 	This option also defines the trigger to be used to start creating a
 	table row in insert mode.
+
+g:table_mode_separator_map			*table-mode-separator-map*
+	Use this option to define the mapping to be used for the table separator. >
+		let g:table_mode_separator_map = '<Bar>'
+<
 
 g:table_mode_fillchar					*table-mode-fillchar*
 	Use this option to define the table border fill character: >
@@ -530,4 +536,3 @@ REPORT ISSUES					      *table-mode-report-issues*
 If you discover any issues, please report them at
 http://github.com/dhruvasagar/vim-table-mode/issues.
 
- vim:tw=78:ts=8:ft=help:norl:ai:et
