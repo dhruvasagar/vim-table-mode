@@ -1,10 +1,10 @@
 " Private Functions {{{1
-function! s:IsHTMLComment(line) "{{{2
-  return getline(a:line) =~# '^\s*<!--'
-endfunction
-
 function! s:IsFormulaLine(line) "{{{2
   return getline(a:line) =~# 'tmf: '
+endfunction
+
+function! s:IsHTMLComment(line) "{{{2
+  return !s:IsFormulaLine(a:line) && getline(a:line) =~# '^\s*<!--'
 endfunction
 
 " Public Functions {{{1
