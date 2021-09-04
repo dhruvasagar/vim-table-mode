@@ -420,3 +420,9 @@ function! tablemode#spreadsheet#Sort(bang, ...) range "{{{2
   call tablemode#spreadsheet#MoveToStartOfCell()
   exec ':undojoin | '.firstRow.','.lastRow . 'sort'.bang opts '/.*\%'.col.'v/'
 endfunction
+
+function! tablemode#spreadsheet#EchoCell()
+  if tablemode#table#IsRow('.')
+    echomsg '$' . tablemode#spreadsheet#RowNr('.') . ',' . tablemode#spreadsheet#ColumnNr('.')
+  endif
+endfunction

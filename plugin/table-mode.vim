@@ -62,14 +62,6 @@ call s:SetGlobalOptDefault('table_mode_auto_align', 1)
 call s:SetGlobalOptDefault('table_mode_update_time', 500)
 call s:SetGlobalOptDefault('table_mode_tableize_auto_border', 0)
 
-function! s:TableEchoCell() "{{{1
-  if tablemode#table#IsRow('.')
-    echomsg '$' . tablemode#spreadsheet#RowNr('.') . ',' . tablemode#spreadsheet#ColumnNr('.')
-  endif
-endfunction
-
-" Define Commands & Mappings {{{1
-
 if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent>" g:table_mode_map_prefix . g:table_mode_toggle_map ":<C-U>call tablemode#Toggle()<CR>"
   command! -nargs=0 TableModeToggle call tablemode#Toggle()
@@ -113,7 +105,7 @@ nnoremap <silent> <Plug>(table-mode-insert-column-after) :<C-U>call tablemode#sp
 nnoremap <silent> <Plug>(table-mode-add-formula) :call tablemode#spreadsheet#formula#Add()<CR>
 nnoremap <silent> <Plug>(table-mode-eval-formula) :call tablemode#spreadsheet#formula#EvaluateFormulaLine()<CR>
 
-nnoremap <silent> <Plug>(table-mode-echo-cell) :call <SID>TableEchoCell()<CR>
+nnoremap <silent> <Plug>(table-mode-echo-cell) :call tablemode#spreadsheet#EchoCell()<CR>
 
 nnoremap <silent> <Plug>(table-mode-sort) :call tablemode#spreadsheet#Sort('')<CR>
 
