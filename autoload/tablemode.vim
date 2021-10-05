@@ -71,7 +71,8 @@ function! s:ToggleSyntax() "{{{2
   if tablemode#IsActive()
     exec 'syntax match Table'
           \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
-          \ 'contains=TableBorder,TableSeparator,TableColumnAlign containedin=ALL'
+          \ 'contains=TableBorder,TableSeparator,TableColumnAlign,yesCell,noCell,maybeCell'
+          \ 'containedin=ALL'
     syntax match TableSeparator /|/ contained
     syntax match TableColumnAlign /:/ contained
     syntax match TableBorder /[\-+]\+/ contained
@@ -79,6 +80,13 @@ function! s:ToggleSyntax() "{{{2
     hi! link TableBorder Delimiter
     hi! link TableSeparator Delimiter
     hi! link TableColumnAlign Type
+
+    if exists("g:table_mode_color_cells") && g:table_mode_color_cells
+      syntax match yesCell '[^|]*yes[^|]*'
+      syntax match noCell ' *no[^|]*'
+      syntax match maybeCell ' *?[^|]*'
+    endif
+
   else
     syntax clear Table
     syntax clear TableBorder
@@ -170,7 +178,7 @@ endfunction
 
 function! tablemode#TableizeInsertMode() "{{{2
   if tablemode#IsActive()
-    if getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator . tablemode#table#EndExpr()) 
+    if getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator . g:table_mode_separator . tablemode#table#EndExpr())
       call tablemode#table#AddBorder('.')
       normal! A
     elseif getline('.') =~# (tablemode#table#StartExpr() . g:table_mode_separator)
@@ -234,3 +242,7 @@ function! tablemode#TableizeByDelimiter() "{{{2
     exec line("'<") . ',' . line("'>") . "call tablemode#TableizeRange('/' . delim)"
   endif
 endfunction
+
+if !hlexists('yesCell') | hi yesCell cterm=bold ctermfg=10 ctermbg=2 | endif |
+if !hlexists('noCell') | hi noCell cterm=bold ctermfg=9 ctermbg=1 | endif |
+if !hlexists('maybeCell') | hi maybeCell cterm=bold ctermfg=11 ctermbg=3 | endif |
