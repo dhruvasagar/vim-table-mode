@@ -187,6 +187,17 @@ it using `:TableModeRealign` or using the default mapping
       cursor. Both can also be preceeded with a [count] to insert multiple
       columns.
 
+### Highlight cells based on content
+
+  You can highlight cells based on content by setting `let g:table_mode_color_cells` :
+    - cells starting with `yes` will use the `yesCell` highlight group.
+    - cells starting with `no` will use the `noCell` highlight group.
+    - cells starting with `?` will use the `maybeCell` hightlight group.
+
+  You can overwrite any highlight group. For exemple use `hi yesCell ctermfg=2` to remove the background color.
+
+
+
 ## Advanced Usage: Spreadsheet Capabilities
 
 ### Table Formulas
