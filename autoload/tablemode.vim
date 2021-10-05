@@ -83,7 +83,7 @@ function! s:ToggleSyntax() "{{{2
 
     if exists("g:table_mode_color_cells") && g:table_mode_color_cells
       syntax match yesCell '|\@<= *yes[^|]*' contained
-      syntax match noCell '|\@<= *no[^|]*' contained
+      syntax match noCell '|\@<= *no\A[^|]*' contained " \A to exclude words like notes
       syntax match maybeCell '|\@<= *?[^|]*' contained
       " '|\@<=' : Match previous characters, excluding them from the group
     endif
