@@ -82,9 +82,10 @@ function! s:ToggleSyntax() "{{{2
     hi! link TableColumnAlign Type
 
     if exists("g:table_mode_color_cells") && g:table_mode_color_cells
-      syntax match yesCell '[^|]*yes[^|]*'
-      syntax match noCell ' *no[^|]*'
-      syntax match maybeCell ' *?[^|]*'
+      syntax match yesCell '|\@<= *yes[^|]*' contained
+      syntax match noCell '|\@<= *no[^|]*' contained
+      syntax match maybeCell '|\@<= *?[^|]*' contained
+      " '|\@<=' : Match previous characters, excluding them from the group
     endif
 
   else
