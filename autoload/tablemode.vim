@@ -71,7 +71,7 @@ function! s:ToggleSyntax() "{{{2
   if tablemode#IsActive()
     exec 'syntax match Table'
           \ '/' . tablemode#table#StartExpr() . '\zs|.\+|\ze' . tablemode#table#EndExpr() . '/'
-          \ 'contains=TableBorder,TableSeparator,TableColumnAlign,yesCell,noCell,maybeCell'
+          \ 'contains=TableBorder,TableSeparator,TableColumnAlign,yesCell,noCell,maybeCell,redCell,greenCell,yellowCell,blueCell,whiteCell,darkCell'
           \ 'containedin=ALL'
     syntax match TableSeparator /|/ contained
     syntax match TableColumnAlign /:/ contained
@@ -81,9 +81,27 @@ function! s:ToggleSyntax() "{{{2
     hi! link TableSeparator Delimiter
     hi! link TableColumnAlign Type
 
+    syntax match redCell '|\@<= *r:[^|]*' contained
+    hi redCell ctermfg=9 ctermbg=1
+
+    syntax match greenCell '|\@<= *g:[^|]*' contained
+    hi greenCell ctermfg=10 ctermbg=2
+
+    syntax match yellowCell '|\@<= *y:[^|]*' contained
+    hi yellowCell ctermfg=11 ctermbg=3
+
+    syntax match blueCell '|\@<= *b:[^|]*' contained
+    hi blueCell ctermfg=12 ctermbg=4
+
+    syntax match whiteCell '|\@<= *w:[^|]*' contained
+    hi whiteCell ctermfg=0 ctermbg=15
+
+    syntax match darkCell '|\@<= *d:[^|]*' contained
+    hi darkCell ctermfg=15 ctermbg=0
+
     if exists("g:table_mode_color_cells") && g:table_mode_color_cells
       syntax match yesCell '|\@<= *yes[^|]*' contained
-      syntax match noCell '|\@<= *no[^|]*' contained
+      syntax match noCell '|\@<= *no\A[^|]*' contained " \A to exclude words like notes
       syntax match maybeCell '|\@<= *?[^|]*' contained
       " '|\@<=' : Match previous characters, excluding them from the group
     endif
