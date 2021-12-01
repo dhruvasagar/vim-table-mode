@@ -175,6 +175,12 @@ function! tablemode#table#AddBorder(line) "{{{2
 endfunction
 
 function! tablemode#table#Realign(line) "{{{2
+  let utree = undotree()
+  if utree.seq_cur != utree.seq_last
+    " skip during undo
+    return
+  endif
+
   let current_fm = &foldmethod " save foldmethod to be restored
   setlocal foldmethod=manual " manual foldmethod while table is being aligned
 
@@ -206,11 +212,11 @@ function! tablemode#table#Realign(line) "{{{2
   let lines = tablemode#align#Align(lines)
 
   for aline in lines
-    call setline(aline.lnum, aline.text)
+    undojoin | keepjumps call setline(aline.lnum, aline.text)
   endfor
 
   for bline in blines
-    call tablemode#table#AddBorder(bline)
+    undojoin | keepjumps call tablemode#table#AddBorder(bline)
   endfor
 
   " restore foldmethod
