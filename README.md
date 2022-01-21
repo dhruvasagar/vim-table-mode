@@ -116,6 +116,15 @@ To get ReST-compatible tables use
 
 Markdown and ReST filetypes have automatically configured corners.
 
+> If you wish to override their configurations, it should be done in an after
+> plugin, for example :
+> 
+> In a `$VIM/after/ftplugin/markdown/custom.vim` you can add the following :
+> 
+> ```viml
+> let b:table_mode_corner='+'
+> ```
+
    You can also define in a table header border how its content should be
    aligned, whether center, right or left by using a `:` character defined by
    `g:table_mode_align_char` option.
