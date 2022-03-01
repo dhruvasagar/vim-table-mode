@@ -115,7 +115,11 @@ function! tablemode#align#Align(lines) "{{{2
     endfor
   endfor
 
-  let alignments = tablemode#align#alignments(lines[0].lnum, len(lines[0].text))
+  if g:table_mode_ignore_align ==# 1
+    let alignments = []
+  else
+    let alignments = tablemode#align#alignments(lines[0].lnum, len(lines[0].text))
+  endif
 
   for idx in range(len(lines))
     let tlnum = lines[idx].lnum

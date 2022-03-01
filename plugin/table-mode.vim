@@ -61,6 +61,7 @@ call s:SetGlobalOptDefault('table_mode_syntax', 1)
 call s:SetGlobalOptDefault('table_mode_auto_align', 1)
 call s:SetGlobalOptDefault('table_mode_update_time', 500)
 call s:SetGlobalOptDefault('table_mode_tableize_auto_border', 0)
+call s:SetGlobalOptDefault('table_mode_ignore_align', 0)
 
 if !g:table_mode_always_active "{{{2
   exec "nnoremap <silent>" g:table_mode_map_prefix . g:table_mode_toggle_map ":<C-U>call tablemode#Toggle()<CR>"

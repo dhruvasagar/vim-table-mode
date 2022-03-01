@@ -36,3 +36,4 @@ let g:table_mode_syntax = 1
 let g:table_mode_auto_align = 1
 let g:table_mode_update_time = 500
 let g:table_mode_tableize_auto_border = 0
+let g:table_mode_ignore_align = 0

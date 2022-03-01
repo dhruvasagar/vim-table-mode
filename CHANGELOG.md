@@ -1,5 +1,31 @@
 # Change Log
 
+## Version 4.7.6
+* Add configuration `g:table_mode_ignore_align`
+
+## Version 4.7.5
+* Improved undo
+
+## Version 4.7.3
+* Adding option `g:table_mode_tableize_auto_border` to enable automatic border
+  creation when using Tableize to create tables
+
+## Version 4.7.2
+* Fix formula evaluation to respect border rows and apply formula expressions
+  correctly
+
+## Version 4.6.8
+* Upgrade rake
+
+## Version 4.6.7
+* Remove auto align feature for insert mode
+
+## Version 4.6.6
+* Add configuration `g:table_mode_update_time`
+
+## Version 4.6.5
+* Add support for auto aligning
+
 ## Version 4.6.4.1
 * Added a fix for markdown commentstring
 
