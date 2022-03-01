@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 4.7.6.1
+* Improved handling of `g:table_mode_ignore_align` configuration, now allows
+  per buffer overrides
+
 ## Version 4.7.6
 * Add configuration `g:table_mode_ignore_align`
 

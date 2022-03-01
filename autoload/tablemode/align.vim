@@ -115,7 +115,7 @@ function! tablemode#align#Align(lines) "{{{2
     endfor
   endfor
 
-  if g:table_mode_ignore_align ==# 1
+  if tablemode#utils#get_buffer_or_global_option('table_mode_ignore_align') ==# 1
     let alignments = []
   else
     let alignments = tablemode#align#alignments(lines[0].lnum, len(lines[0].text))
