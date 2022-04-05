@@ -50,7 +50,7 @@ function! tablemode#spreadsheet#formula#Add(...) "{{{2
   endif
 endfunction
 
-function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
+function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) "{{{2
   let line = tablemode#utils#line(a:line)
   let [target, expr] = map(split(a:expr, '='), 'tablemode#utils#strip(v:val)')
   let cell = substitute(target, '\$', '', '')
@@ -98,15 +98,15 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
 
   if expr =~# '\$\-\?\d\+,\-\?\d\+'
     let expr = substitute(expr, '\$\(\-\?\d\+\),\(\-\?\d\+\)',
-          \ '\=str2float(tablemode#spreadsheet#cell#GetCells(line, submatch(1), submatch(2)))', 'g')
+          \ '\=tablemode#spreadsheet#cell#GetCells(line, submatch(1), submatch(2))', 'g')
   endif
 
   if cell =~# ','
     if expr =~# '\$'
       let expr = substitute(expr, '\$\(\d\+\)',
-          \ '\=str2float(tablemode#spreadsheet#cell#GetCells(line, row, submatch(1)))', 'g')
+          \ '\=tablemode#spreadsheet#cell#GetCells(line, row, submatch(1))', 'g')
     endif
-    call tablemode#spreadsheet#cell#SetCell(eval(expr), line, row, colm)
+    silent! call tablemode#spreadsheet#cell#SetCell(eval(expr), line, row, colm)
   else
     let [row, line] = [1, tablemode#spreadsheet#GetFirstRow(line)]
     while !s:IsFormulaLine(line)
@@ -114,10 +114,10 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
         let texpr = expr
         if expr =~# '\$'
           let texpr = substitute(texpr, '\$\(\d\+\)',
-                \ '\=str2float(tablemode#spreadsheet#cell#GetCells(line, row, submatch(1)))', 'g')
+                \ '\=tablemode#spreadsheet#cell#GetCells(line, row, submatch(1))', 'g')
         endif
 
-        call tablemode#spreadsheet#cell#SetCell(eval(texpr), line, row, colm)
+        silent! call tablemode#spreadsheet#cell#SetCell(eval(texpr), line, row, colm)
         let row += 1
       endif
       let line += 1
@@ -125,7 +125,7 @@ function! tablemode#spreadsheet#formula#EvaluateExpr(expr, line) abort "{{{2
   endif
 endfunction
 
-function! tablemode#spreadsheet#formula#EvaluateFormulaLine() abort "{{{2
+function! tablemode#spreadsheet#formula#EvaluateFormulaLine() "{{{2
   let exprs = []
   let cstring = &commentstring
   let matchexpr = ''

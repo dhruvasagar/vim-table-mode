@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 4.8.0
+* Improved formula engine
+  - Does not cast column values to float
+  - Silences errors during evaluation, see `v:errmsg` for error information
+    from last evaluation for debugging issues with formulas
+
 ## Version 4.7.6.1
 * Improved handling of `g:table_mode_ignore_align` configuration, now allows
   per buffer overrides
