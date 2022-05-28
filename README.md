@@ -7,27 +7,28 @@ tables as you type.
 
 ### Installation
 
-There are several ways to do this
+#### <a href="https://www.danielfranklin.id.au/vim-8-package-management/">Vim 8+ native package manager</a>
+   clone into `.vim/pack/plugins/start` (the `plugins` folder can have any name)
+   
+   Add `packloadall` in your `~/.vimrc`.
 
-1. I recommend installing <a
-   href="https://github.com/Shougo/neobundle.vim">NeoBundle</a> and then just
-   add `NeoBundle 'dhruvasagar/vim-table-mode'` to your ~/.vimrc
+#### <a href="https://github.com/Shougo/neobundle.vim">NeoBundle</a>
+   Add `NeoBundle 'dhruvasagar/vim-table-mode'` to your `~/.vimrc`.
 
-2. If you are using <a
-   href="https://github.com/tpope/vim-pathogen">pathogen.vim</a>, then
-   add a git submodule for your plugin:
-
+#### <a href="https://github.com/tpope/vim-pathogen">pathogen.vim</a>
+   Add a git submodule for your plugin:
+   
 ```sh
 $ cd ~/.vim
 $ git submodule add git@github.com:dhruvasagar/vim-table-mode.git bundle/table-mode
 ```
-
-3. Copy all files under autoload/, plugin/, doc/ to respective
-   ~/.vim/autoload/, ~/.vim/plugin and ~/.vim/doc under UNIX or
-   vimfiles/autoload/, vimfiles/plugin/ and vimfiles/doc under WINDOWS and
-   restart VIM
+   Copy all files under `autoload/`, `plugin/`, and `doc/` to respective
+   `~/.vim/autoload/`, `~/.vim/plugin` and `~/.vim/doc` under UNIX, or
+   `vimfiles/autoload/`, `vimfiles/plugin/` and `vimfiles/doc` under WINDOWS and
+   restart Vim.
    
-4. Alternatively, if using <a href="https://github.com/junegunn/vim-plug">vim-plug</a>, then add `Plug 'dhruvasagar/vim-table-mode'` to your ~/.vimrc. 
+#### <a href="https://github.com/junegunn/vim-plug">vim-plug</a>
+   Add `Plug 'dhruvasagar/vim-table-mode'` to your `~/.vimrc`. 
 
 ### Creating table on-the-fly
 
