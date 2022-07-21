@@ -7,6 +7,10 @@ function! s:IsHTMLComment(line) "{{{2
   return !s:IsFormulaLine(a:line) && getline(a:line) =~# '^\s*<!--'
 endfunction
 
+function! s:IsBlankLine(line) "{{{2
+  return getline(a:line) =~# '^\s*$'
+endfunction
+
 " Public Functions {{{1
 function! tablemode#spreadsheet#formula#Add(...) "{{{2
   let fr = a:0 ? a:1 : input('f=')
@@ -144,6 +148,16 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() "{{{2
     let fline = line + 1
     if s:IsHTMLComment(fline) | let fline += 1 | endif
     if tablemode#table#IsBorder(fline) | let fline += 1 | endif
+    if s:IsBlankLine(fline) | let fline += 1 | endif
+    while s:IsFormulaLine(fline)
+      let exprs += split(matchstr(getline(fline), matchexpr), ';')
+      let fline += 1
+    endwhile
+  elseif s:IsBlankLine('.') " We're possibly in the blank line above the formula line
+    let fline = line('.') + 1
+    let line = line('.') - 1
+    if s:IsHTMLComment(fline) | let fline += 1 | endif
+    if tablemode#table#IsBorder(line) | let line -= 1 | endif
     while s:IsFormulaLine(fline)
       let exprs += split(matchstr(getline(fline), matchexpr), ';')
       let fline += 1
@@ -153,6 +167,7 @@ function! tablemode#spreadsheet#formula#EvaluateFormulaLine() "{{{2
     let line = line('.') - 1
     while s:IsFormulaLine(line) | let fline = line | let line -= 1 | endwhile
     if s:IsHTMLComment(line) | let line -= 1 | endif
+    if s:IsBlankLine(line) | let line -= 1 | endif
     if tablemode#table#IsBorder(line) | let line -= 1 | endif
     if tablemode#table#IsRow(line)
       " let exprs = split(matchstr(getline('.'), matchexpr), ';')
