@@ -224,9 +224,10 @@ it using `:TableModeRealign` or using the default mapping
     results.
 
   - You can directly add / manipulate formula expressions in the formula line.
-    The formula line is a commented line right after the table, beginning with
-    'tmf:' (table mode formula). eg) `# tmf: $3=$2*$1`.  You can add multiple
-    formulas on the line separated with a ';' eg) `# tmf: $3=$2*$1;$4=$3/3.14`
+    The formula line is a commented line right after the table, or optionally
+    separated from the table by a single empty line. It begins with 'tmf:'
+    (table mode formula). eg) `# tmf: $3=$2*$1`.  You can add multiple formulas on
+    the line separated with a ';' eg) `# tmf: $3=$2*$1;$4=$3/3.14`
 
   You can evaluate the formula line using `:TableEvalFormulaLine` or the
   mapping <kbd>\<Leader\>tfe</kbd> (defined by the option `g:table_mode_eval_expr_map`)
