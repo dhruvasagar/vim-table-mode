@@ -38,6 +38,7 @@ jobs:
         id: vim
         with:
           neovim: ${{ matrix.neovim }}
+          version: nightly
 
       - name: Run unit tests
         env:
