@@ -38,7 +38,7 @@ jobs:
           neovim: ${{ matrix.neovim }}
 
       - name: Create vimrc
-        run: echo "set packpath += ${{ github.workspace }}/vim-table-mode, ${{ github.workspace }}/vim-testify" > vimrc
+        run: echo "set packpath += ${{ github.workspace }}, ${{ github.workspace }}/vim-testify" > vimrc
 
       - name: Run unit tests
         env:
