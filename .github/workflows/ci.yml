@@ -24,12 +24,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          path: pack/plugins/start/vim-table-mode
 
       - name: Checkout vim-testify
         uses: actions/checkout@v3
         with:
           repository: dhruvasagar/vim-testify
-          path: vim-testify
+          path: pack/plugins/start/vim-testify
 
       - name: Install Vim or neovim
         uses: rhysd/action-setup-vim@v1
@@ -38,9 +40,11 @@ jobs:
           neovim: ${{ matrix.neovim }}
 
       - name: Create vimrc
-        run: echo "set packpath += ${{ github.workspace }}, ${{ github.workspace }}/vim-testify" > vimrc
+        run: echo "set packpath += ${{ github.workspace }}" > vimrc
 
       - name: Run unit tests
         env:
           VIM: ${{ steps.vim.outputs.executable }}
-        run: ${VIM} -u vimrc +TestifySuite
+        run: |
+          cd ${{ github.workspace }}/pack/plugins/start/vim-table-mode
+          ${VIM} -u vimrc +TestifySuite
