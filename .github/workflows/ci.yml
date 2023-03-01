@@ -39,12 +39,10 @@ jobs:
         with:
           neovim: ${{ matrix.neovim }}
 
-      - name: Create vimrc
-        run: echo "set packpath += ${{ github.workspace }}" > vimrc
-
       - name: Run unit tests
         env:
           VIM: ${{ steps.vim.outputs.executable }}
         run: |
           cd ${{ github.workspace }}/pack/plugins/start/vim-table-mode
+          echo "set packpath+=${{ github.workspace }}" > vimrc
           ${VIM} -u vimrc +TestifySuite
