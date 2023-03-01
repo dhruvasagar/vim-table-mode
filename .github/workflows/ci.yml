@@ -21,7 +21,7 @@ jobs:
     container:
       image: alpine:latest
     steps:
-      - name: Install git & vim
+      - name: Install vim
         run: apk --no-cache add vim
 
       - uses: actions/checkout@v3
