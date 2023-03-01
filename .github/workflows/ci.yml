@@ -17,7 +17,11 @@ concurrency:
 jobs:
   tests:
     name: Vim Table Mode Tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        neovim: [false, true]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
 
