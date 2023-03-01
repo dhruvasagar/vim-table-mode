@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - feature/switch-to-vim-testify
+  pull_request:
+    branches:
+      - master
+      - feature/switch-to-vim-testify
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Vim Table Mode Tests
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        neovim: [false, true]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Vim or neovim
+        uses: rhysd/action-setup-vim@v1
+        id: vim
+        with:
+          neovim: ${{ matrix.neovim }}
+
+      - name: Run unit tests
+        env:
+          VIM: ${{ steps.vim.outputs.executable }}
+        run: ${VIM} +"set hidden" +TestifySuite

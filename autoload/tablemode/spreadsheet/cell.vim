@@ -201,7 +201,7 @@ function! tablemode#spreadsheet#cell#TextObject(inner) "{{{2
   endif
 endfunction
 function! tablemode#spreadsheet#cell#Motion(direction, ...) "{{{2
-  let l:count = a:0 ? a:1 : v:count1
+  let l:count = a:0 ? a:1 : (v:count + 1)
   if tablemode#table#IsRow('.')
     for ii in range(l:count)
       if a:direction ==# 'l'
