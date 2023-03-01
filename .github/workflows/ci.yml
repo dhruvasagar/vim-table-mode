@@ -31,6 +31,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: dhruvasagar/vim-testify
+          path: vim-testify
 
       - name: Install Vim or neovim
         uses: rhysd/action-setup-vim@v1
@@ -41,4 +42,4 @@ jobs:
       - name: Run unit tests
         env:
           VIM: ${{ steps.vim.outputs.executable }}
-        run: ${VIM} +"set packpath +=${{ github.workspace }}/vim-testify,${{ github.workspace }}/vim-table-mode"  +"set hidden" +TestifySuite
+        run: ${VIM} +"set packpath +=${{ github.workspace }},${{ github.workspace }}/vim-table-mode"  +"set hidden" +TestifySuite
