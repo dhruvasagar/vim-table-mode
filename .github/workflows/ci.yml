@@ -42,4 +42,4 @@ jobs:
       - name: Run unit tests
         env:
           VIM: ${{ steps.vim.outputs.executable }}
-        run: ${VIM} +"set packpath +=.,./vim-testify"  +"set hidden" +TestifySuite
+        run: ${VIM} +"set packpath +=.,./vim-testify" +packloadall +"set hidden" +TestifySuite
