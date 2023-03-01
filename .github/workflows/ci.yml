@@ -27,6 +27,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Checkout vim-testify
+        uses: actions/checkout@v3
+        with:
+          repository: dhruvasagar/vim-testify
+          path: pack/plugins/start/vim-testify
+
       - name: Install Vim or neovim
         uses: rhysd/action-setup-vim@v1
         id: vim
