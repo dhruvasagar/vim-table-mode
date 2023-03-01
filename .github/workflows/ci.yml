@@ -22,19 +22,15 @@ jobs:
       image: alpine:latest
     steps:
       - name: Install git & vim
-        run: apk --no-cache add git vim
+        run: apk --no-cache add vim
 
       - uses: actions/checkout@v3
-        with:
-          path: ~/.vim/pack/plugins/start/vim-table-mode
 
       - name: Checkout vim-testify
         uses: actions/checkout@v3
         with:
           repository: dhruvasagar/vim-testify
-          path: ~/.vim/pack/plugins/start/vim-testify
+          path: vim-testify
 
       - name: Run unit tests
-        run: |
-          cd ~/.vim/pack/plugins/start/vim-table-mode
-          vim +TestifySuite
+        run: vim +"set packpath+=${{ github.workspace }}/vim-table-mode,${{ github.workspace }}/vim-testify" +TestifySuite
