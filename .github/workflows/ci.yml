@@ -18,12 +18,7 @@ jobs:
   tests:
     name: Vim Table Mode Tests
     runs-on: ubuntu-latest
-    container:
-      image: alpine:latest
     steps:
-      - name: Install vim
-        run: apk --no-cache add vim
-
       - uses: actions/checkout@v3
 
       - name: Checkout vim-testify
@@ -32,5 +27,16 @@ jobs:
           repository: dhruvasagar/vim-testify
           path: vim-testify
 
+      - name: Install Vim or neovim
+        uses: rhysd/action-setup-vim@v1
+        id: vim
+        with:
+          neovim: ${{ matrix.neovim }}
+
+      - name: Create vimrc
+        run: echo "set packpath += ${{ github.workspace }}/vim-table-mode, ${{ github.workspace }}/vim-testify" > vimrc
+
       - name: Run unit tests
-        run: vim +"set packpath+=${{ github.workspace }}/vim-table-mode,${{ github.workspace }}/vim-testify" +TestifySuite
+        env:
+          VIM: ${{ steps.vim.outputs.executable }}
+        run: ${VIM} -u vimrc +TestifySuite
