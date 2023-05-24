@@ -135,9 +135,7 @@ endfunction
 
 function! s:ToggleOptions() "{{{2
   if tablemode#IsActive()
-    let b:old_update_time = &updatetime
-    exec 'set updatetime='.g:table_mode_update_time
-  else
+" fix crash with auto exit insert mode
     exec 'set updatetime='.get(b:, 'old_update_time', 4000)
   endif
 endfunction
