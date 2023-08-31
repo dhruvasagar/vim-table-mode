@@ -7,7 +7,12 @@ function! s:setup()
   call utils#TestSetup(s:test_file)
 endfunction
 call testify#setup(function('s:setup'))
-call testify#teardown(function('utils#TestTeardown'))
+
+function! s:teardown()
+  let g:table_mode_header_fillchar = '-'
+  bw!
+endfunction
+call testify#teardown(function('s:teardown'))
 
 function! s:TestDeleteRow()
   call cursor(5, 7)

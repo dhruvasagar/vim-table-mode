@@ -47,3 +47,4 @@ jobs:
           cd ${{ github.workspace }}/pack/plugins/start/vim-table-mode
           echo "set packpath+=${{ github.workspace }}" > vimrc
           ${VIM} -u vimrc +TestifySuite +qall
+          cat testify_results.txt

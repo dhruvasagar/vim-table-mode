@@ -15,7 +15,7 @@ function! s:TestAddFormula()
   call testify#assert#equals(cell_value, '125.0')
 
   call cursor(9, 15)
-  call testify#assert#equals(getline('.'), '/* tmf: $4,2=Sum(1:3) */')
+  call testify#assert#equals(getline('.'), ' tmf: $4,2=Sum(1:3) ')
 
   call cursor(8, 15)
   call tablemode#spreadsheet#formula#Add('Sum(1:-1)')
@@ -23,6 +23,6 @@ function! s:TestAddFormula()
   call testify#assert#equals(cell_value, '250.0')
 
   call cursor(9, 15)
-  call testify#assert#equals(getline('.'), '/* tmf: $4,2=Sum(1:3); $5,2=Sum(1:-1) */')
+  call testify#assert#equals(getline('.'), ' tmf: $4,2=Sum(1:3) ; $5,2=Sum(1:-1)')
 endfunction
 call testify#it('Should Add a formula to the table correctly', function('s:TestAddFormula'))
