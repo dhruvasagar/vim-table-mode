@@ -1,7 +1,7 @@
 *table-mode.txt*			Table Mode for easy table formatting
 ===============================================================================
 	Table Mode, THE AWESOME AUTOMATIC TABLE CREATOR & FORMATTER
-                               VERSION 4.8.0
+                               VERSION 4.8.1
 
 		Author: Dhruva Sagar <http://dhruvasagar.com/>
 		License: MIT <http://opensource.org/licenses/MIT/>
@@ -544,4 +544,3 @@ REPORT ISSUES					      *table-mode-report-issues*
 
 If you discover any issues, please report them at
 http://github.com/dhruvasagar/vim-table-mode/issues.
-
