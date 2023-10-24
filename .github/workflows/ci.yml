@@ -17,9 +17,7 @@ concurrency:
 jobs:
   tests:
     name: Vim Table Mode Tests
-    continue-on-error: true
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
