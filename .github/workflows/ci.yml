@@ -4,11 +4,9 @@ on:
   push:
     branches:
       - master
-      - feature/switch-to-vim-testify
   pull_request:
     branches:
       - master
-      - feature/switch-to-vim-testify
 
 concurrency:
   group: ${{ github.workflow }}
