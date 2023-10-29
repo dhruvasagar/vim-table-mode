@@ -1,4 +1,4 @@
-# VIM Table Mode v4.8.1 ![Build](https://github.com/dhruvasagar/vim-table-mode/actions/workflows/ci.yml/badge.svg)
+# VIM Table Mode v4.8.1 [![Build](https://github.com/dhruvasagar/vim-table-mode/actions/workflows/ci.yml/badge.svg)](https://github.com/dhruvasagar/vim-table-mode/actions/workflows/ci.yml)
 
 An awesome automatic table creator & formatter allowing one to create neat
 tables as you type.
