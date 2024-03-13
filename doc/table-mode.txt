@@ -145,21 +145,20 @@ Formula Expressions :
 OPTIONS							*table-mode-options*
 
 Overview:
-        |table-mode-loaded| ............. Disable the plugin.
-        |table-mode-loaded| ............. Disable the plugin.
-        |table-mode-verbose| ............ Notify when Enabled/Disabled.
-        |table-mode-disable-mappings| ... Disable default mappings.
-        |table-mode-disable-tableize-mappings|
-                                          Disable tableize mappings.
-        |table-mode-corner| ............. Set corner character.
-        |table-mode-separator| .......... Set separator character.
-        |table-mode-separator-map| ...... Set separator mapping.
-        |table-mode-fillchar| ........... Set table border fillchar character.
-        |table-mode-header-fillchar| .... Set table header border fillchar character.
-        |table-mode-map-prefix| ......... Set prefix for table mode commands.
-        |table-mode-toggle-map| ......... Set table mode toggle mapping.
-        |table-mode-always-active| ...... Set table mode to always enabled.
-        |table-mode-delimiter| .......... Set the delimiter for Tableize.
+	|table-mode-loaded| ............. Disable the plugin.
+	|table-mode-verbose| ............ Notify when Enabled/Disabled.
+	|table-mode-disable-mappings| ... Disable default mappings.
+	|table-mode-disable-tableize-mappings|
+                                        Disable tableize mappings.
+	|table-mode-corner| ............. Set corner character.
+	|table-mode-separator| .......... Set separator character.
+	|table-mode-separator-map| ...... Set separator mapping.
+	|table-mode-fillchar| ........... Set table border fillchar character.
+	|table-mode-header-fillchar| .... Set table header border fillchar character.
+	|table-mode-map-prefix| ......... Set prefix for table mode commands.
+	|table-mode-toggle-map| ......... Set table mode toggle mapping.
+	|table-mode-always-active| ...... Set table mode to always enabled.
+	|table-mode-delimiter| .......... Set the delimiter for Tableize.
         |table-mode-corner-corner| ...... Set the character to be used for
                                         extreme corners of the table border.
         |table-mode-align-char|.......... Set the alignment character which
