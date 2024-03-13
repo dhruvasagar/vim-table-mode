@@ -147,6 +147,9 @@ OPTIONS							*table-mode-options*
 Overview:
 	|table-mode-loaded| ............. Disable the plugin.
 	|table-mode-verbose| ............ Notify when Enabled/Disabled.
+	|table-mode-disable-mappings| ... Disable default mappings.
+	|table-mode-disable-tableize-mappings|
+                                        Disable tableize mappings.
 	|table-mode-corner| ............. Set corner character.
 	|table-mode-separator| .......... Set separator character.
 	|table-mode-separator-map| ...... Set separator mapping.
@@ -198,6 +201,15 @@ g:loaded_table_mode					*table-mode-loaded*
 g:table_mode_verbose					*table-mode-verbose*
 	Use this option to disable notifications: >
 		let g:table_mode_verbose = 0
+<
+g:table_mode_disable_mappings			*table-mode-disable-mappings*
+	Use this option to disable default mappings: >
+		let g:table_mode_disable_mappings = 1
+<
+					*table-mode-disable-tableize-mappings*
+g:table_mode_disable_tableize_mappings
+	Use this option to disable tableize mappings: >
+		let g:table_mode_disable_tableize_mappings = 1
 <
 g:table_mode_corner					*table-mode-corner*
 	Use this option to define the table corner character: >
