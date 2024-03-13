@@ -183,13 +183,15 @@ Overview:
     |table-mode-eval-formula-map| .......... Set the eval formula mapping
     |table-mode-echo-cell-map| ............. Set the echo cell mapping
     |table-mode-sort-map| .................. Set the table sort mapping
+    |table-mode-tableize-map| .............. Set the tableize mapping
+    |table-mode-tableize-d-map| ............ Set the tableize visual mapping
     |table-mode-syntax| .................... Control table mode syntax
     |table-mode-auto-align| ................ Set if the table mode should auto
                                            align as you type
     |table-mode-tableize-auto-border| ...... Set if tableize adds row borders
     |table-mode-ignore-align| .............. Set to ignore alignment characters
 
-g:loaded_table_mode                                        *table-mode-loaded*
+g:loaded_table_mode                                          *table-mode-loaded*
     Use this option to disable the plugin: >
         let g:loaded_table_mode = 1
 <
@@ -200,6 +202,10 @@ g:table_mode_verbose                                        *table-mode-verbose*
 g:table_mode_disable_mappings                      *table-mode-disable-mappings*
     Use this option to disable default mappings: >
         let g:table_mode_disable_mappings = 1
+<
+g:table_mode_disable_tableize_mappings    *table-mode-disable-tableize-mappings*
+    Disables mappings for tableize. >
+        let g:table_mode_disable_tableize_mappings = 0
 <
 g:table_mode_corner                                          *table-mode-corner*
     Use this option to define the table corner character: >
@@ -269,10 +275,6 @@ g:table_mode_align_char                                  *table-mode-align-char*
     Use this option to define the character to be used for defining
     alignments for columns in the table header border. >
         let g:table_mode_align_char = ':'
-<
-g:table_mode_disable_mappings                      *table-mode-disable-mappings*
-    Set this to true to disable all mappings. >
-        let g:table_mode_disable_mappings = 1
 <
 g:table_mode_motion_up_map                            *table-mode-motion-up-map*
     Set this to configure the mapping to move up a cell vertically. >
@@ -364,10 +366,6 @@ g:table_mode_update_time                              *table-mode-update-time*
     combination with |table-mode-auto-align|. >
         let g:table_mode_update_time = 500
 <
-g:table_mode_disable_tableize_mappings  *table-mode-disable-tableize-mappings*
-    Disables mappings for tableize. >
-        let g:table_mode_disable_tableize_mappings = 0
-<
 g:table_mode_tableize_auto_border            *table-mode-tableize-auto-border*
     Enables adding row borders to tables when created using tableize. >
         let g:table_mode_tableize_auto_border = 0
@@ -443,7 +441,6 @@ MAPPINGS                                                 *table-mode-mappings*
     after the table beginning with 'tmf:'. If one exists this would evaluate the
     formula line and update the table accordingly. This invokes the
     |TableEvalFormulaLine| command.
-
 
                                                *table-mode-mappings-sort-column*
     `<Leader>ts`: Sort a column under the cursor. This invokes |TableSort|
